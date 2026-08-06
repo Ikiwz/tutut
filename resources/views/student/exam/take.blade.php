@@ -1533,13 +1533,62 @@
 
 
 
-        // T — read time remaining
+        // T — Test Suara
         if (key === 'T') {
             e.preventDefault();
-            const mins = Math.floor(timeLeft / 60);
-            const secs = timeLeft % 60;
-            speak(`${mins} minutes and ${secs} seconds remaining`);
-            announce(`${mins}:${String(secs).padStart(2, '0')} remaining`);
+            try {
+                let ac = window.audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+                if (ac.state === 'suspended') ac.resume();
+                const osc = ac.createOscillator();
+                const gain = ac.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(440, ac.currentTime);
+                gain.gain.setValueAtTime(0.1, ac.currentTime);
+                osc.connect(gain);
+                gain.connect(ac.destination);
+                osc.start();
+                osc.stop(ac.currentTime + 0.5);
+                announce('Test suara berhasil diputar.');
+            } catch(e) {
+                if (typeof speak === 'function') speak('Sound test.');
+                announce('Test suara diputar.');
+            }
+            return;
+        }
+
+        // F — Flag / Ragu-ragu
+        if (key === 'F') {
+            e.preventDefault();
+            if (currentQuestionIndex >= 0) {
+                const btn = document.getElementById(`q-nav-${currentQuestionIndex}`);
+                if (btn) {
+                    btn.classList.toggle('flagged');
+                    if (btn.classList.contains('flagged')) {
+                        btn.style.border = '2px solid #f59e0b'; // orange
+                        btn.style.color = '#f59e0b';
+                        btn.style.backgroundColor = 'rgba(245, 158, 11, 0.1)';
+                        announce('Soal ditandai ragu-ragu.');
+                    } else {
+                        btn.style.border = '';
+                        btn.style.color = '';
+                        btn.style.backgroundColor = '';
+                        announce('Tanda ragu-ragu dihapus.');
+                    }
+                }
+            }
+            return;
+        }
+
+        // R — Play Audio Reading (Baca Ulang Soal)
+        if (key === 'R') {
+            e.preventDefault();
+            const step = stepMap[currentStep];
+            if (step && step.type === 'question' && !isListening) {
+                stopCurrentAudio();
+                passageHasBeenRead = false; // allow reading passage again if needed
+                readCurrentQuestion();
+                announce('Membaca ulang soal.');
+            }
             return;
         }
 
