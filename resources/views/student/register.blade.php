@@ -75,11 +75,7 @@
     <div class="login-card">
         <div class="card">
             <div class="login-header">
-                <div class="login-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                    </svg>
-                </div>
+                <img src="{{ asset('images/logo.png') }}" alt="Logo TUTUT" class="login-icon-img" style="height: 64px; width: auto; margin: 0 auto 20px; display: block;" aria-hidden="true">
                 <h1>Daftar Akun Baru</h1>
                 <p>Platform ujian TOEFL untuk tunanetra</p>
             </div>

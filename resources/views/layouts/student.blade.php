@@ -472,11 +472,7 @@
 
     <nav class="navbar" role="navigation" aria-label="Navigasi utama">
         <a href="{{ route('student.dashboard') }}" class="navbar-brand" aria-label="TUTUT - Halaman Utama">
-            <div class="logo-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                </svg>
-            </div>
+            <img src="{{ asset('images/logo.png') }}" alt="Logo TUTUT" class="logo-icon" style="height: 32px; width: auto;" aria-hidden="true">
             <span>TUTUT</span>
         </a>
 
