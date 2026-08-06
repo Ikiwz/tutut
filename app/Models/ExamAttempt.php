@@ -38,6 +38,40 @@ class ExamAttempt extends Model
         return $this->hasMany(ExamAnswer::class);
     }
 
+    private function getConvertedScore(string $sectionSlug, int $correctCount): int
+    {
+        // Tabel konversi TOEFL PBT (berdasarkan referensi umum dan gambar yang Anda berikan)
+        // Jika ada nilai yang kurang tepat, Anda bisa menyesuaikan angka di dalam array ini.
+        $conversionTables = [
+            'listening' => [
+                50=>68, 49=>67, 48=>66, 47=>65, 46=>63, 45=>62, 44=>61, 43=>60, 42=>59, 41=>58,
+                40=>57, 39=>57, 38=>56, 37=>55, 36=>54, 35=>54, 34=>53, 33=>53, 32=>52, 31=>52,
+                30=>51, 29=>50, 28=>49, 27=>49, 26=>48, 25=>48, 24=>47, 23=>47, 22=>46, 21=>45,
+                20=>45, 19=>44, 18=>43, 17=>42, 16=>41, 15=>41, 14=>39, 13=>38, 12=>37, 11=>35,
+                10=>33, 9=>32, 8=>32, 7=>31, 6=>30, 5=>29, 4=>28, 3=>27, 2=>26, 1=>25, 0=>24
+            ],
+            'structure' => [
+                40=>68, 39=>68, 38=>65, 37=>63, 36=>61, 35=>60, 34=>58, 33=>57, 32=>56, 31=>55,
+                30=>54, 29=>53, 28=>52, 27=>51, 26=>50, 25=>49, 24=>48, 23=>47, 22=>46, 21=>45,
+                20=>44, 19=>43, 18=>42, 17=>41, 16=>40, 15=>40, 14=>38, 13=>37, 12=>36, 11=>35,
+                10=>33, 9=>31, 8=>29, 7=>27, 6=>26, 5=>25, 4=>23, 3=>22, 2=>21, 1=>20, 0=>20
+            ],
+            'reading' => [
+                50=>67, 49=>66, 48=>65, 47=>63, 46=>61, 45=>60, 44=>59, 43=>58, 42=>57, 41=>56,
+                40=>55, 39=>54, 38=>54, 37=>53, 36=>52, 35=>52, 34=>51, 33=>50, 32=>49, 31=>48,
+                30=>48, 29=>47, 28=>46, 27=>46, 26=>45, 25=>44, 24=>43, 23=>43, 22=>42, 21=>41,
+                20=>40, 19=>39, 18=>38, 17=>37, 16=>36, 15=>35, 14=>34, 13=>33, 12=>32, 11=>31,
+                10=>30, 9=>29, 8=>28, 7=>28, 6=>27, 5=>26, 4=>25, 3=>23, 2=>23, 1=>22, 0=>21
+            ],
+        ];
+
+        if (isset($conversionTables[$sectionSlug]) && isset($conversionTables[$sectionSlug][$correctCount])) {
+            return $conversionTables[$sectionSlug][$correctCount];
+        }
+
+        return 0;
+    }
+
     public function calculateScores(): void
     {
         $sections = $this->testSession->sections;
@@ -48,10 +82,9 @@ class ExamAttempt extends Model
                 ->whereIn('question_id', $questionIds)
                 ->where('is_correct', true)
                 ->count();
-            $total = $questionIds->count();
-
-            // TOEFL PBT-like scoring: scale to section score range
-            $score = $total > 0 ? round(($correct / $total) * 68) : 0;
+            
+            // Dapatkan nilai konversi berdasarkan tabel
+            $score = $this->getConvertedScore($section->slug, $correct);
 
             match ($section->slug) {
                 'listening' => $this->score_listening = $score,
@@ -61,8 +94,15 @@ class ExamAttempt extends Model
             };
         }
 
-        $scores = array_filter([$this->score_listening, $this->score_structure, $this->score_reading]);
-        $this->total_score = count($scores) > 0 ? (int) round((array_sum($scores) / count($scores)) * 10) : 0;
+        // Ambil nilai dari masing-masing section (default ke 0 jika belum ada)
+        $scoreListening = $this->score_listening ?? 0;
+        $scoreStructure = $this->score_structure ?? 0;
+        $scoreReading = $this->score_reading ?? 0;
+
+        // Rumus TOEFL: (Listening + Structure + Reading) * 10 / 3
+        $totalConverted = $scoreListening + $scoreStructure + $scoreReading;
+        $this->total_score = (int) round(($totalConverted * 10) / 3);
+        
         $this->status = 'completed';
         $this->completed_at = now();
         $this->save();
