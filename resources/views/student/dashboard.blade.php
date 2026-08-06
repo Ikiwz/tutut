@@ -238,7 +238,7 @@
     <!-- AUDIO TEST MODAL -->
     <div id="audioTestModal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Tes Audio" style="z-index: 99999;">
         <div class="modal" style="text-align: center; border: 2px solid var(--primary);">
-            <div style="font-size: 3rem; margin-bottom: 16px;" aria-hidden="true">🔊</div>
+            <img src="{{ asset('images/welcome.gif') }}" alt="Audio Test Animation" style="max-width: 100%; width: 240px; border-radius: var(--radius); margin-bottom: 20px;">
             <h2 style="margin-bottom: 12px;">Tes Suara Berlangsung</h2>
             <p style="color: var(--text-muted); margin-bottom: 24px;">Pastikan headset atau speaker Anda berfungsi dengan baik.</p>
             <button class="btn btn-primary" onclick="closeAudioTestModal()" aria-label="Tutup tes audio">
