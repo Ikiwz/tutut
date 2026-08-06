@@ -103,6 +103,15 @@ class ExamAttempt extends Model
         $totalConverted = $scoreListening + $scoreStructure + $scoreReading;
         $this->total_score = (int) round(($totalConverted * 10) / 3);
         
+        // Jika tidak ada satu pun jawaban yang benar (atau kosong), set skor ke 0
+        $totalCorrectAnswers = $this->answers()->where('is_correct', true)->count();
+        if ($totalCorrectAnswers === 0) {
+            $this->score_listening = 0;
+            $this->score_structure = 0;
+            $this->score_reading = 0;
+            $this->total_score = 0;
+        }
+        
         $this->status = 'completed';
         $this->completed_at = now();
         $this->save();
