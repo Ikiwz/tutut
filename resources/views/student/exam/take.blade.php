@@ -1367,8 +1367,8 @@
                     <h2 id="confirm-title" style="margin-bottom: 12px;"></h2>
                     <p id="confirm-msg" style="margin-bottom: 24px; color: var(--text-muted);"></p>
                     <div style="display: flex; gap: 12px; justify-content: flex-end;">
-                        <button class="btn btn-secondary" id="confirm-cancel" aria-label="Batal">Batal (Esc)</button>
-                        <button class="btn btn-primary" id="confirm-ok" aria-label="Ya, Lanjutkan">Lanjutkan (Enter)</button>
+                        <button class="btn btn-secondary" id="confirm-cancel" aria-label="Batal">Batal (P / Esc)</button>
+                        <button class="btn btn-primary" id="confirm-ok" aria-label="Ya, Lanjutkan">Lanjutkan (Y / Enter)</button>
                     </div>
                 </div>
             `;
@@ -1400,8 +1400,9 @@
             okBtn.onclick = handleYes;
 
             const keyHandler = (e) => {
-                if (e.key === 'Escape') { e.preventDefault(); handleNo(); }
-                if (e.key === 'Enter') { e.preventDefault(); handleYes(); }
+                const key = e.key.toUpperCase();
+                if (key === 'ESCAPE' || key === 'P') { e.preventDefault(); handleNo(); }
+                if (key === 'ENTER' || key === 'Y') { e.preventDefault(); handleYes(); }
             };
             document.addEventListener('keydown', keyHandler);
         });
@@ -1556,28 +1557,7 @@
             return;
         }
 
-        // F — Flag / Ragu-ragu
-        if (key === 'F') {
-            e.preventDefault();
-            if (currentQuestionIndex >= 0) {
-                const btn = document.getElementById(`q-nav-${currentQuestionIndex}`);
-                if (btn) {
-                    btn.classList.toggle('flagged');
-                    if (btn.classList.contains('flagged')) {
-                        btn.style.border = '2px solid #f59e0b'; // orange
-                        btn.style.color = '#f59e0b';
-                        btn.style.backgroundColor = 'rgba(245, 158, 11, 0.1)';
-                        announce('Soal ditandai ragu-ragu.');
-                    } else {
-                        btn.style.border = '';
-                        btn.style.color = '';
-                        btn.style.backgroundColor = '';
-                        announce('Tanda ragu-ragu dihapus.');
-                    }
-                }
-            }
-            return;
-        }
+
 
         // R — Play Audio Reading (Baca Ulang Soal)
         if (key === 'R') {
