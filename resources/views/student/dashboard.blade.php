@@ -235,17 +235,6 @@
     </div>
     @endif
 
-    <!-- AUDIO TEST MODAL -->
-    <div id="audioTestModal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Tes Audio" style="z-index: 99999;">
-        <div class="modal" style="text-align: center; border: 2px solid var(--primary);">
-            <img src="{{ asset('images/welcome.gif') }}" alt="Audio Test Animation" style="max-width: 100%; width: 240px; border-radius: var(--radius); margin-bottom: 20px;">
-            <h2 style="margin-bottom: 12px;">Tes Suara Berlangsung</h2>
-            <p style="color: var(--text-muted); margin-bottom: 24px;">Pastikan headset atau speaker Anda berfungsi dengan baik.</p>
-            <button class="btn btn-primary" onclick="closeAudioTestModal()" aria-label="Tutup tes audio">
-                Tutup (Enter / Esc)
-            </button>
-        </div>
-    </div>
 </div>
 @endsection
 
@@ -293,18 +282,7 @@
         @endif
     });
 
-    function openAudioTestModal() {
-        document.getElementById('audioTestModal').classList.add('active');
-        if (typeof announce === 'function') announce('Tes suara sedang berlangsung');
-    }
-
-    function closeAudioTestModal() {
-        document.getElementById('audioTestModal').classList.remove('active');
-        if (window.speechSynthesis) window.speechSynthesis.cancel();
-    }
-
     function testAudio() {
-        openAudioTestModal();
         const text = "Hallo, my name is TUTUT. TUTUT is designed to provide an accessible, independent, and comfortable testing experience. Please make sure your headset is connected and working properly before you begin. Good luck, and do your best.";
         
         if (window.speechSynthesis) {
@@ -324,9 +302,6 @@
             
             window.welcomeUtterance.onend = () => {
                 clearInterval(window.speechBugTimer);
-                if (document.getElementById('audioTestModal').classList.contains('active')) {
-                    closeAudioTestModal();
-                }
             };
             
             window.speechSynthesis.speak(window.welcomeUtterance);
@@ -335,28 +310,12 @@
             // Fallback for browsers without speech synthesis
             if (typeof speak === 'function') speak(text);
             if (typeof announce === 'function') announce(text);
-            setTimeout(() => {
-                if (document.getElementById('audioTestModal').classList.contains('active')) {
-                    closeAudioTestModal();
-                }
-            }, 15000);
         }
     }
 
     // Keyboard Shortcuts for Dashboard
     document.addEventListener('keydown', (e) => {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-        
-        // Modal audio test handler
-        const audioModal = document.getElementById('audioTestModal');
-        if (audioModal && audioModal.classList.contains('active')) {
-            if (e.key === 'Escape' || e.key === 'Enter') {
-                e.preventDefault();
-                closeAudioTestModal();
-                return;
-            }
-        }
-        
         // Ignore modifier keys to prevent conflicting with browser shortcuts
         if (e.ctrlKey || e.altKey || e.metaKey) return;
 
