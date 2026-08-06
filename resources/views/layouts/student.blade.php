@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
-    <title>@yield('title', 'TUTUT') — TUTUT (TOEFL untuk Tunanetra)</title>
-    <meta name="description" content="Platform ujian TOEFL yang dirancang khusus untuk pengguna tunanetra dengan aksesibilitas penuh">
+    <title>@yield('title', 'TUTUT') — TUTUT (TOEFL for the Blind)</title>
+    <meta name="description" content="TOEFL exam platform specifically designed for visually impaired users with full accessibility">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -464,31 +464,31 @@
     @yield('styles')
 </head>
 <body>
-    <a href="#main-content" class="skip-link" aria-label="Langsung ke konten utama">
-        Langsung ke Konten Utama
+    <a href="#main-content" class="skip-link" aria-label="Skip to main content">
+        Skip to Main Content
     </a>
 
     <!-- Live region for announcements -->
     <div id="aria-live" class="aria-live-region" aria-live="assertive" aria-atomic="true" role="status"></div>
 
-    <nav class="navbar" role="navigation" aria-label="Navigasi utama">
-        <a href="{{ route('student.dashboard') }}" class="navbar-brand" aria-label="TUTUT - Halaman Utama">
-            <img src="{{ asset('images/logo.png') }}" alt="Logo TUTUT" class="logo-icon" style="height: 32px; width: auto;" aria-hidden="true">
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
+        <a href="{{ route('student.dashboard') }}" class="navbar-brand" aria-label="TUTUT - Home Page">
+            <img src="{{ asset('images/logo.png') }}" alt="TUTUT Logo" class="logo-icon" style="height: 32px; width: auto;" aria-hidden="true">
             <span>TUTUT</span>
         </a>
 
         <div class="navbar-actions">
-            <div class="a11y-toolbar" role="toolbar" aria-label="Pengaturan aksesibilitas">
-                <button onclick="decreaseFontSize()" aria-label="Perkecil ukuran teks" title="Perkecil Teks (Ctrl+-)">A-</button>
-                <button onclick="increaseFontSize()" aria-label="Perbesar ukuran teks" title="Perbesar Teks (Ctrl++)">A+</button>
-                <button id="contrast-toggle" onclick="toggleHighContrast()" aria-label="Toggle kontras tinggi" title="Kontras Tinggi (Ctrl+U)">◐</button>
+            <div class="a11y-toolbar" role="toolbar" aria-label="Accessibility settings">
+                <button onclick="decreaseFontSize()" aria-label="Decrease text size" title="Decrease Text (Ctrl+-)">A-</button>
+                <button onclick="increaseFontSize()" aria-label="Increase text size" title="Increase Text (Ctrl++)">A+</button>
+                <button id="contrast-toggle" onclick="toggleHighContrast()" aria-label="Toggle high contrast" title="High Contrast (Ctrl+U)">◐</button>
                 <button id="tts-toggle" onclick="toggleTTS()" aria-label="Toggle text-to-speech" title="Text-to-Speech (Ctrl+T)">🔊</button>
             </div>
             @auth
                 <form method="POST" action="{{ route('student.logout') }}" style="display:inline">
                     @csrf
-                    <button type="submit" class="btn btn-secondary btn-sm" aria-label="Keluar dari akun">
-                        Keluar
+                    <button type="submit" class="btn btn-secondary btn-sm" aria-label="Logout of account">
+                        Logout
                     </button>
                 </form>
             @endauth
@@ -500,29 +500,29 @@
     </main>
 
     <!-- Keyboard Shortcuts Help Modal -->
-    <div id="shortcuts-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Bantuan Keyboard Shortcut">
+    <div id="shortcuts-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Keyboard Shortcuts Help">
         <div class="modal">
             <h2>⌨️ Keyboard Shortcuts</h2>
             <ul class="shortcut-list" role="list">
-                <li><span>Pilih jawaban A</span> <kbd>A</kbd></li>
-                <li><span>Pilih jawaban B</span> <kbd>B</kbd></li>
-                <li><span>Pilih jawaban C</span> <kbd>C</kbd></li>
-                <li><span>Pilih jawaban D</span> <kbd>D</kbd></li>
-                <li><span>Soal berikutnya</span> <kbd>→</kbd> atau <kbd>N</kbd></li>
-                <li><span>Soal sebelumnya</span> <kbd>←</kbd> atau <kbd>P</kbd></li>
-                <li><span>Baca ulang soal (TTS)</span> <kbd>R</kbd></li>
-                <li><span>Cek sisa waktu</span> <kbd>T</kbd></li>
-                <li><span>Submit section</span> <kbd>Enter</kbd> (di konfirmasi)</li>
-                <li><span>Jump ke soal nomor</span> <kbd>1</kbd>-<kbd>9</kbd></li>
-                <li><span>Bantuan shortcut</span> <kbd>H</kbd></li>
-                <li><span>Perbesar teks</span> <kbd>Ctrl</kbd>+<kbd>+</kbd></li>
-                <li><span>Perkecil teks</span> <kbd>Ctrl</kbd>+<kbd>-</kbd></li>
-                <li><span>Kontras tinggi</span> <kbd>Ctrl</kbd>+<kbd>U</kbd></li>
-                <li><span>Tutup dialog</span> <kbd>Esc</kbd></li>
+                <li><span>Select answer A</span> <kbd>A</kbd></li>
+                <li><span>Select answer B</span> <kbd>B</kbd></li>
+                <li><span>Select answer C</span> <kbd>C</kbd></li>
+                <li><span>Select answer D</span> <kbd>D</kbd></li>
+                <li><span>Next question</span> <kbd>→</kbd> or <kbd>N</kbd></li>
+                <li><span>Previous question</span> <kbd>←</kbd> or <kbd>P</kbd></li>
+                <li><span>Reread question (TTS)</span> <kbd>R</kbd></li>
+                <li><span>Check remaining time</span> <kbd>T</kbd></li>
+                <li><span>Submit section</span> <kbd>Enter</kbd> (in confirmation)</li>
+                <li><span>Jump to question number</span> <kbd>1</kbd>-<kbd>9</kbd></li>
+                <li><span>Shortcut help</span> <kbd>H</kbd></li>
+                <li><span>Increase text size</span> <kbd>Ctrl</kbd>+<kbd>+</kbd></li>
+                <li><span>Decrease text size</span> <kbd>Ctrl</kbd>+<kbd>-</kbd></li>
+                <li><span>High contrast</span> <kbd>Ctrl</kbd>+<kbd>U</kbd></li>
+                <li><span>Close dialog</span> <kbd>Esc</kbd></li>
             </ul>
             <div style="margin-top: 20px; text-align: right;">
-                <button class="btn btn-primary" onclick="closeShortcutsModal()" aria-label="Tutup bantuan shortcut">
-                    Tutup <kbd style="background: rgba(255,255,255,0.2); color: #fff; border-color: rgba(255,255,255,0.3);">Esc</kbd>
+                <button class="btn btn-primary" onclick="closeShortcutsModal()" aria-label="Close shortcut help">
+                    Close <kbd style="background: rgba(255,255,255,0.2); color: #fff; border-color: rgba(255,255,255,0.3);">Esc</kbd>
                 </button>
             </div>
         </div>

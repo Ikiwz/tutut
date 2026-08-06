@@ -227,10 +227,10 @@
 
     @if(session('login_success'))
     <!-- WELCOME SPLASH SCREEN MODAL -->
-    <div id="welcomeSplashScreen" class="modal-overlay active" role="dialog" aria-modal="true" aria-label="Selamat datang di TUTUT" style="z-index: 99999;">
+    <div id="welcomeSplashScreen" class="modal-overlay active" role="dialog" aria-modal="true" aria-label="Welcome to TUTUT" style="z-index: 99999;">
         <div class="modal" style="text-align: center; border: 2px solid var(--primary);">
             <img src="{{ asset('images/welcome.gif') }}" alt="Welcome Animation" style="max-width: 100%; width: 320px; border-radius: var(--radius); margin-bottom: 24px;">
-            <h2 style="margin-bottom: 0;">Selamat Datang di TUTUT!</h2>
+            <h2 style="margin-bottom: 0;">Welcome to TUTUT!</h2>
         </div>
     </div>
     @endif
@@ -306,15 +306,41 @@
     function testAudio() {
         openAudioTestModal();
         const text = "Hallo, my name is TUTUT. TUTUT is designed to provide an accessible, independent, and comfortable testing experience. Please make sure your headset is connected and working properly before you begin. Good luck, and do your best.";
-        if (typeof speak === 'function') speak(text);
-        if (typeof announce === 'function') announce(text);
         
-        // Auto close after roughly 12 seconds if not manually closed
-        setTimeout(() => {
-            if (document.getElementById('audioTestModal').classList.contains('active')) {
-                closeAudioTestModal();
-            }
-        }, 12000);
+        if (window.speechSynthesis) {
+            window.speechSynthesis.cancel();
+            window.welcomeUtterance = new SpeechSynthesisUtterance(text);
+            window.welcomeUtterance.lang = 'en-US';
+            
+            // Interval hack to prevent Chrome from cutting off after 15s
+            window.speechBugTimer = setInterval(() => {
+                if (!window.speechSynthesis.speaking) {
+                    clearInterval(window.speechBugTimer);
+                } else {
+                    window.speechSynthesis.pause();
+                    window.speechSynthesis.resume();
+                }
+            }, 10000);
+            
+            window.welcomeUtterance.onend = () => {
+                clearInterval(window.speechBugTimer);
+                if (document.getElementById('audioTestModal').classList.contains('active')) {
+                    closeAudioTestModal();
+                }
+            };
+            
+            window.speechSynthesis.speak(window.welcomeUtterance);
+            if (typeof announce === 'function') announce("Membacakan teks tes audio.");
+        } else {
+            // Fallback for browsers without speech synthesis
+            if (typeof speak === 'function') speak(text);
+            if (typeof announce === 'function') announce(text);
+            setTimeout(() => {
+                if (document.getElementById('audioTestModal').classList.contains('active')) {
+                    closeAudioTestModal();
+                }
+            }, 15000);
+        }
     }
 
     // Keyboard Shortcuts for Dashboard
