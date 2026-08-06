@@ -226,13 +226,40 @@
     @endif
 
     @if(session('login_success'))
-    <!-- WELCOME SPLASH SCREEN MODAL SETELAH LOGIN -->
-    <div id="welcomeSplashScreen" class="welcome-splash-overlay" role="dialog" aria-modal="true" aria-label="Selamat datang di TUTUT">
-        <div class="welcome-splash-modal">
-            <!-- GANTI 'images/welcome.gif' DENGAN SOURCE FILE GIF ANDA -->
-            <img src="{{ asset('images/welcome.gif') }}" alt="Welcome Animation" class="welcome-gif-img">
-            <p class="welcome-splash-text">Selamat Datang di TUTUT!</p>
-        </div>
+    <!-- WELCOME SPLASH SCREEN MODAL SETELAH LOGIN (TALL Stack) -->
+    <div x-data="{ show: true }" 
+         x-init="
+            const audio = new Audio('{{ asset('audio/welcome.mp3') }}');
+            audio.play().catch(e => {
+                if(typeof speak === 'function') speak('Welcome to the TUTUT Website');
+                if(typeof announce === 'function') announce('Welcome to the TUTUT Website');
+            });
+            audio.addEventListener('ended', () => { show = false; });
+            setTimeout(() => { show = false; }, 5000);
+            
+            const handleKey = () => { show = false; };
+            window.addEventListener('keydown', handleKey);
+            $watch('show', value => {
+                if(!value) window.removeEventListener('keydown', handleKey);
+            });
+         "
+         x-show="show"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 scale-90"
+         x-transition:enter-end="opacity-100 scale-100"
+         x-transition:leave="transition ease-in duration-300"
+         x-transition:leave-start="opacity-100 scale-100"
+         x-transition:leave-end="opacity-0 scale-90"
+         @click="show = false"
+         class="fixed inset-0 z-[99999] flex items-center justify-center bg-slate-900/90 backdrop-blur-sm"
+         style="display: none;"
+         role="dialog"
+         aria-modal="true">
+         
+         <div class="bg-white dark:bg-slate-800 p-8 sm:p-10 rounded-2xl shadow-2xl flex flex-col items-center max-w-lg w-full mx-4 border-2 border-transparent dark:border-blue-500" @click.stop>
+            <img src="{{ asset('images/welcome.gif') }}" alt="Welcome Animation" class="w-full max-w-[320px] h-auto rounded-xl mb-6">
+            <h2 class="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-slate-50 text-center">Selamat Datang di TUTUT!</h2>
+         </div>
     </div>
     @endif
 </div>
@@ -241,122 +268,14 @@
 @section('styles')
 @parent
 <style>
-    .welcome-splash-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background-color: rgba(15, 23, 42, 0.95);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        z-index: 99999;
-        transition: opacity 0.5s ease, visibility 0.5s ease;
-    }
-
-    .welcome-splash-overlay.fade-out {
-        opacity: 0;
-        visibility: hidden;
-    }
-
-    .welcome-splash-modal {
-        background: #ffffff;
-        padding: 40px;
-        border-radius: 20px;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        max-width: 90%;
-        width: 450px;
-        animation: modalPopIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    @keyframes modalPopIn {
-        0% { transform: scale(0.9); opacity: 0; }
-        100% { transform: scale(1); opacity: 1; }
-    }
-
-    .high-contrast .welcome-splash-modal {
-        background: #1e293b;
-        border: 2px solid #3b82f6;
-    }
-
-    .welcome-gif-img {
-        max-width: 100%;
-        width: 320px;
-        height: auto;
-        border-radius: 12px;
-    }
-
-    .welcome-splash-text {
-        color: #0f172a;
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin-top: 24px;
-        letter-spacing: 0.5px;
-    }
-
-    .high-contrast .welcome-splash-text {
-        color: #f8fafc;
-    }
+    /* Custom styles removed - using Tailwind CSS now */
 </style>
 @endsection
 
 @section('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        @if(session('login_success'))
-            const splashScreen = document.getElementById('welcomeSplashScreen');
-            if (splashScreen) {
-                document.body.appendChild(splashScreen);
-            }
-
-            // GANTI 'audio/welcome.mp3' DENGAN SOURCE FILE AUDIO WELCOME ANDA
-            const welcomeAudio = new Audio("{{ asset('audio/welcome.mp3') }}");
-
-            function closeSplash() {
-                if (splashScreen && !splashScreen.classList.contains('fade-out')) {
-                    splashScreen.classList.add('fade-out');
-                    setTimeout(() => {
-                        splashScreen.remove();
-                    }, 500);
-                }
-            }
-
-            // Putar audio welcome saat masuk dashboard setelah login
-            welcomeAudio.play().then(() => {
-                console.log("Audio welcome berhasil diputar.");
-            }).catch(err => {
-                console.warn("Autoplay diblokir oleh browser, fallback ke TTS:", err);
-                speak('Welcome to the TUTUT Website');
-                announce('Welcome to the TUTUT Website');
-            });
-
-            // Tutup modal setelah audio selesai
-            welcomeAudio.addEventListener('ended', function() {
-                closeSplash();
-            });
-
-            // Fallback timeout 5 detik jika audio tidak ada
-            setTimeout(() => {
-                closeSplash();
-            }, 5000);
-
-            // Sembunyikan jika diklik atau ditekan tombol apa saja
-            if (splashScreen) {
-                splashScreen.addEventListener('click', closeSplash);
-            }
-            document.addEventListener('keydown', function handleSkip(e) {
-                if (splashScreen && !splashScreen.classList.contains('fade-out')) {
-                    closeSplash();
-                    document.removeEventListener('keydown', handleSkip);
-                }
-            });
-        @endif
+        // Vanilla JS modal logic removed - using Alpine.js now
     });
 
     function testAudio() {
