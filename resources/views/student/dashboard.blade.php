@@ -226,40 +226,12 @@
     @endif
 
     @if(session('login_success'))
-    <!-- WELCOME SPLASH SCREEN MODAL SETELAH LOGIN (TALL Stack) -->
-    <div x-data="{ show: true }" 
-         x-init="
-            const audio = new Audio('{{ asset('audio/welcome.mp3') }}');
-            audio.play().catch(e => {
-                if(typeof speak === 'function') speak('Welcome to the TUTUT Website');
-                if(typeof announce === 'function') announce('Welcome to the TUTUT Website');
-            });
-            audio.addEventListener('ended', () => { show = false; });
-            setTimeout(() => { show = false; }, 5000);
-            
-            const handleKey = () => { show = false; };
-            window.addEventListener('keydown', handleKey);
-            $watch('show', value => {
-                if(!value) window.removeEventListener('keydown', handleKey);
-            });
-         "
-         x-show="show"
-         x-transition:enter="transition ease-out duration-300"
-         x-transition:enter-start="opacity-0 scale-90"
-         x-transition:enter-end="opacity-100 scale-100"
-         x-transition:leave="transition ease-in duration-300"
-         x-transition:leave-start="opacity-100 scale-100"
-         x-transition:leave-end="opacity-0 scale-90"
-         @click="show = false"
-         class="fixed inset-0 flex items-center justify-center bg-slate-900/90 backdrop-blur-sm"
-         style="display: none; z-index: 999999;"
-         role="dialog"
-         aria-modal="true">
-         
-         <div class="bg-white dark:bg-slate-800 p-8 sm:p-10 rounded-2xl shadow-2xl flex flex-col items-center max-w-lg w-full mx-4 border-2 border-transparent dark:border-blue-500" @click.stop>
-            <img src="{{ asset('images/welcome.gif') }}" alt="Welcome Animation" class="w-full max-w-[320px] h-auto rounded-xl mb-6">
-            <h2 class="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-slate-50 text-center">Selamat Datang di TUTUT!</h2>
-         </div>
+    <!-- WELCOME SPLASH SCREEN MODAL -->
+    <div id="welcomeSplashScreen" class="modal-overlay active" role="dialog" aria-modal="true" aria-label="Selamat datang di TUTUT" style="z-index: 99999;">
+        <div class="modal" style="text-align: center; border: 2px solid var(--primary);">
+            <img src="{{ asset('images/welcome.gif') }}" alt="Welcome Animation" style="max-width: 100%; width: 320px; border-radius: var(--radius); margin-bottom: 24px;">
+            <h2 style="margin-bottom: 0;">Selamat Datang di TUTUT!</h2>
+        </div>
     </div>
     @endif
 </div>
@@ -275,7 +247,38 @@
 @section('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // Vanilla JS modal logic removed - using Alpine.js now
+        @if(session('login_success'))
+            const splashScreen = document.getElementById('welcomeSplashScreen');
+            const welcomeAudio = new Audio("{{ asset('audio/welcome.mp3') }}");
+
+            function closeSplash() {
+                if (splashScreen) {
+                    splashScreen.classList.remove('active');
+                    setTimeout(() => { splashScreen.remove(); }, 300);
+                }
+            }
+
+            welcomeAudio.play().then(() => {
+                console.log("Audio welcome berhasil diputar.");
+            }).catch(err => {
+                console.warn("Autoplay diblokir oleh browser, fallback ke TTS:", err);
+                if (typeof speak === 'function') speak('Welcome to the TUTUT Website');
+                if (typeof announce === 'function') announce('Welcome to the TUTUT Website');
+            });
+
+            welcomeAudio.addEventListener('ended', closeSplash);
+            setTimeout(closeSplash, 5000);
+
+            if (splashScreen) {
+                splashScreen.addEventListener('click', closeSplash);
+            }
+            
+            const handleSkip = (e) => {
+                closeSplash();
+                document.removeEventListener('keydown', handleSkip);
+            };
+            document.addEventListener('keydown', handleSkip);
+        @endif
     });
 
     function testAudio() {
