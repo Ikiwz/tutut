@@ -90,15 +90,15 @@ class ExamController extends Controller
             ->pluck('selected_answer', 'question_id')
             ->toArray();
 
-        // Get passage if reading section
-        $passage = null;
+        // Get passages if reading section (multiple passages for different question groups)
+        $passages = collect();
         if ($currentSection->slug === 'reading') {
-            $passage = $currentSection->passages()->first();
+            $passages = $currentSection->passages()->orderBy('order')->get();
         }
 
         return view('student.exam.take', compact(
             'examAttempt', 'testSession', 'sections', 'currentSection',
-            'questions', 'directions', 'existingAnswers', 'passage'
+            'questions', 'directions', 'existingAnswers', 'passages'
         ));
     }
 
