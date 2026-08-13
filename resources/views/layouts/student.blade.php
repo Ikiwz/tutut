@@ -508,24 +508,23 @@
         <div class="modal">
             <h2>⌨️ Keyboard Shortcuts</h2>
             <ul class="shortcut-list" role="list">
-                <li><span>Select answer A</span> <kbd>A</kbd></li>
-                <li><span>Select answer B</span> <kbd>B</kbd></li>
-                <li><span>Select answer C</span> <kbd>C</kbd></li>
-                <li><span>Select answer D</span> <kbd>D</kbd></li>
-                <li><span>Next question</span> <kbd>→</kbd> or <kbd>N</kbd></li>
-                <li><span>Previous question</span> <kbd>←</kbd> or <kbd>P</kbd></li>
-                <li><span>Play passage/story audio (Reading)</span> <kbd>R</kbd></li>
-                <li><span>Play question audio / Reread (Reading: <kbd>M</kbd>)</span> <kbd>M</kbd></li>
-                <li><span>Toggle Text to Speech (TTS)</span> <kbd>V</kbd></li>
-                <li><span>Test Suara / Audio</span> <kbd>T</kbd></li>
-                <li><span>Submit section</span> <kbd>Enter</kbd> (in confirmation)</li>
-                <li><span>Jump to question number</span> <kbd>1</kbd>-<kbd>9</kbd></li>
-                <li><span>Shortcut help</span> <kbd>H</kbd></li>
-                <li><span>Zoom in</span> <kbd>Ctrl</kbd>+<kbd>+</kbd></li>
-                <li><span>Zoom out</span> <kbd>Ctrl</kbd>+<kbd>-</kbd></li>
-                <li><span>Reset zoom (100%)</span> <kbd>Ctrl</kbd>+<kbd>0</kbd></li>
-                <li><span>High contrast</span> <kbd>Ctrl</kbd>+<kbd>U</kbd></li>
-                <li><span>Close dialog</span> <kbd>Esc</kbd></li>
+                <li><span>Pilih jawaban A, B, C, atau D</span> <span><kbd>A</kbd> <kbd>B</kbd> <kbd>C</kbd> <kbd>D</kbd></span></li>
+                <li><span>Soal selanjutnya</span> <span><kbd>→</kbd> / <kbd>N</kbd></span></li>
+                <li><span>Soal sebelumnya</span> <span><kbd>←</kbd> / <kbd>P</kbd></span></li>
+                <li><span>Putar audio cerita (Khusus Reading)</span> <kbd>R</kbd></li>
+                <li><span>Putar audio soal / Baca ulang soal</span> <kbd>M</kbd></li>
+                <li><span>Aktifkan/Matikan suara asisten (TTS)</span> <kbd>V</kbd></li>
+                <li><span>Tes suara / Audio perangkat</span> <kbd>T</kbd></li>
+                <li><span>Kumpulkan bagian saat ini (Submit)</span> <kbd>S</kbd></li>
+                <li><span>Lanjut ke section berikutnya</span> <kbd>L</kbd></li>
+                <li><span>Konfirmasi "Ya" (Pilih Ya di Popup)</span> <span><kbd>Y</kbd> / <kbd>Enter</kbd></span></li>
+                <li><span>Konfirmasi "Tidak" / Tutup popup</span> <span><kbd>P</kbd> / <kbd>Esc</kbd></span></li>
+                <li><span>Lompat ke nomor soal tertentu</span> <span><kbd>1</kbd>-<kbd>9</kbd></span></li>
+                <li><span>Buka menu bantuan ini</span> <kbd>H</kbd></li>
+                <li><span>Perbesar teks & layar (Zoom In)</span> <span><kbd>Ctrl</kbd> + <kbd>+</kbd></span></li>
+                <li><span>Perkecil teks & layar (Zoom Out)</span> <span><kbd>Ctrl</kbd> + <kbd>-</kbd></span></li>
+                <li><span>Reset ukuran layar normal (100%)</span> <span><kbd>Ctrl</kbd> + <kbd>0</kbd></span></li>
+                <li><span>Mode kontras tinggi (Layar Gelap)</span> <span><kbd>Ctrl</kbd> + <kbd>U</kbd></span></li>
             </ul>
             <div style="margin-top: 20px; text-align: right;">
                 <button class="btn btn-primary" onclick="closeShortcutsModal()" aria-label="Close shortcut help">
