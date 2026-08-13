@@ -479,11 +479,15 @@
 
         <div class="navbar-actions">
             <div class="a11y-toolbar" role="toolbar" aria-label="Accessibility settings">
-                <button onclick="decreaseFontSize()" aria-label="Decrease text size" title="Decrease Text (Ctrl+-)">A-</button>
-                <button onclick="increaseFontSize()" aria-label="Increase text size" title="Increase Text (Ctrl++)">A+</button>
                 <button id="contrast-toggle" onclick="toggleHighContrast()" aria-label="Toggle high contrast" title="High Contrast (Ctrl+U)">◐</button>
                 <button id="tts-toggle" onclick="toggleTTS()" aria-label="Toggle text-to-speech" title="Text-to-Speech (Ctrl+T)">🔊</button>
             </div>
+            @guest
+                <div style="display: flex; gap: 8px; margin-left: 12px;">
+                    <a href="{{ route('student.login') }}" class="btn btn-primary btn-sm" aria-label="Login Peserta">Login Peserta</a>
+                    <a href="{{ url('/admin') }}" class="btn btn-secondary btn-sm" aria-label="Login Admin">Login Admin</a>
+                </div>
+            @endguest
             @auth
                 <form method="POST" action="{{ route('student.logout') }}" style="display:inline">
                     @csrf
@@ -510,13 +514,16 @@
                 <li><span>Select answer D</span> <kbd>D</kbd></li>
                 <li><span>Next question</span> <kbd>→</kbd> or <kbd>N</kbd></li>
                 <li><span>Previous question</span> <kbd>←</kbd> or <kbd>P</kbd></li>
-                <li><span>Reread question (TTS)</span> <kbd>R</kbd></li>
-                <li><span>Check remaining time</span> <kbd>T</kbd></li>
+                <li><span>Play passage/story audio (Reading)</span> <kbd>R</kbd></li>
+                <li><span>Play question audio / Reread (Reading: <kbd>M</kbd>)</span> <kbd>M</kbd></li>
+                <li><span>Toggle Text to Speech (TTS)</span> <kbd>V</kbd></li>
+                <li><span>Test Suara / Audio</span> <kbd>T</kbd></li>
                 <li><span>Submit section</span> <kbd>Enter</kbd> (in confirmation)</li>
                 <li><span>Jump to question number</span> <kbd>1</kbd>-<kbd>9</kbd></li>
                 <li><span>Shortcut help</span> <kbd>H</kbd></li>
-                <li><span>Increase text size</span> <kbd>Ctrl</kbd>+<kbd>+</kbd></li>
-                <li><span>Decrease text size</span> <kbd>Ctrl</kbd>+<kbd>-</kbd></li>
+                <li><span>Zoom in</span> <kbd>Ctrl</kbd>+<kbd>+</kbd></li>
+                <li><span>Zoom out</span> <kbd>Ctrl</kbd>+<kbd>-</kbd></li>
+                <li><span>Reset zoom (100%)</span> <kbd>Ctrl</kbd>+<kbd>0</kbd></li>
                 <li><span>High contrast</span> <kbd>Ctrl</kbd>+<kbd>U</kbd></li>
                 <li><span>Close dialog</span> <kbd>Esc</kbd></li>
             </ul>
@@ -534,32 +541,69 @@
         // ============================================================
 
         let ttsEnabled = localStorage.getItem('tts') === 'true';
-        let currentFontLevel = parseInt(localStorage.getItem('fontLevel') || '0');
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
+            // Clean up leftover app zoom from old code
+            document.body.style.zoom = '';
+            document.documentElement.style.fontSize = '';
+            localStorage.removeItem('appZoom');
+            localStorage.removeItem('zoomVersion');
+
             // Restore high contrast
             if (localStorage.getItem('highContrast') === 'true') {
                 document.documentElement.classList.add('high-contrast');
                 document.getElementById('contrast-toggle')?.classList.add('active');
             }
-            // Restore font size
-            applyFontSize();
             // Restore TTS
             if (ttsEnabled) {
                 document.getElementById('tts-toggle')?.classList.add('active');
             }
         });
 
+        let currentSpeechJobId = 0;
+        
         // Text-to-Speech
-        function speak(text) {
+        function speak(textOrChunks) {
             if (!ttsEnabled) return;
             window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-US';
-            utterance.rate = 0.9;
-            utterance.pitch = 1;
-            window.speechSynthesis.speak(utterance);
+            
+            const jobId = ++currentSpeechJobId;
+            
+            if (typeof textOrChunks === 'string') {
+                const utterance = new SpeechSynthesisUtterance(textOrChunks);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                utterance.pitch = 1;
+                window.speechSynthesis.speak(utterance);
+            } else if (Array.isArray(textOrChunks) && textOrChunks.length > 0) {
+                let i = 0;
+                function speakChunk() {
+                    if (jobId !== currentSpeechJobId) return; // Abort if a new job has started
+                    
+                    if (i < textOrChunks.length) {
+                        let chunk = textOrChunks[i];
+                        const utterance = new SpeechSynthesisUtterance(chunk.text);
+                        utterance.lang = 'en-US';
+                        utterance.rate = chunk.rate || 0.9;
+                        utterance.pitch = chunk.pitch || 1;
+                        utterance.onend = () => {
+                            if (jobId !== currentSpeechJobId) return;
+                            i++;
+                            speakChunk();
+                        };
+                        // In case of an error on a chunk, we just continue
+                        utterance.onerror = (e) => {
+                            if (jobId !== currentSpeechJobId) return;
+                            console.warn('TTS chunk error:', e);
+                            i++;
+                            speakChunk();
+                        };
+                        window.speechSynthesis.speak(utterance);
+                    }
+                }
+                speakChunk();
+            }
         }
 
         function toggleTTS() {
@@ -581,30 +625,6 @@
             localStorage.setItem('highContrast', isHC);
             document.getElementById('contrast-toggle')?.classList.toggle('active', isHC);
             announce(isHC ? 'High contrast mode enabled' : 'High contrast mode disabled');
-        }
-
-        // Font Size
-        function increaseFontSize() {
-            if (currentFontLevel < 2) {
-                currentFontLevel++;
-                applyFontSize();
-                announce('Text size increased');
-            }
-        }
-
-        function decreaseFontSize() {
-            if (currentFontLevel > -1) {
-                currentFontLevel--;
-                applyFontSize();
-                announce('Text size decreased');
-            }
-        }
-
-        function applyFontSize() {
-            document.body.classList.remove('font-size-large', 'font-size-xl');
-            if (currentFontLevel === 1) document.body.classList.add('font-size-large');
-            if (currentFontLevel >= 2) document.body.classList.add('font-size-xl');
-            localStorage.setItem('fontLevel', currentFontLevel);
         }
 
         // Announce to screen readers
@@ -632,25 +652,30 @@
         // Web Audio API for Sound Effects
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playSaveBeep() {
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-            const oscillator = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            
-            oscillator.type = 'sine';
-            oscillator.frequency.setValueAtTime(880, audioCtx.currentTime); // A5 note
-            oscillator.frequency.exponentialRampToValueAtTime(1760, audioCtx.currentTime + 0.1); // Slide up to A6
-            
-            gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-            gainNode.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 0.05); // Fade in
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2); // Fade out
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            
-            oscillator.start(audioCtx.currentTime);
-            oscillator.stop(audioCtx.currentTime + 0.2);
+            // Coba memutar file audio kustom terlebih dahulu
+            const beepAudio = new Audio('{{ asset("audio/save-beep.mp3") }}');
+            beepAudio.play().catch(e => {
+                // Jika file tidak ditemukan atau gagal diputar, gunakan nada bawaan (synthesized)
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(880, audioCtx.currentTime); // A5 note
+                oscillator.frequency.exponentialRampToValueAtTime(1760, audioCtx.currentTime + 0.1); // Slide up to A6
+                
+                gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 0.05); // Fade in
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2); // Fade out
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                oscillator.start(audioCtx.currentTime);
+                oscillator.stop(audioCtx.currentTime + 0.2);
+            });
         }
 
         // Global keyboard shortcuts
@@ -658,12 +683,16 @@
             // Don't trigger when typing in inputs
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
-            // Ctrl combinations
+            // Ctrl combinations (zoom handled by browser natively)
             if (e.ctrlKey) {
-                if (e.key === '=' || e.key === '+') { e.preventDefault(); increaseFontSize(); }
-                if (e.key === '-') { e.preventDefault(); decreaseFontSize(); }
                 if (e.key === 'u' || e.key === 'U') { e.preventDefault(); toggleHighContrast(); }
-                if (e.key === 't' || e.key === 'T') { e.preventDefault(); toggleTTS(); }
+                return;
+            }
+
+            // V for Toggle TTS (Voice)
+            if (!e.ctrlKey && !e.altKey && !e.metaKey && (e.key === 'v' || e.key === 'V')) {
+                e.preventDefault();
+                toggleTTS();
                 return;
             }
 
