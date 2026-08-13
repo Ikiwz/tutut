@@ -397,6 +397,69 @@
     .listening-speaker-label.state-playing { color: #2563eb; }
     .listening-speaker-label.state-played { color: #ef4444; }
 
+    /* ========== Reading Audio Controls ========== */
+    .reading-audio-controls {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        justify-content: center;
+        padding: 16px 0;
+        flex-wrap: wrap;
+    }
+
+    .reading-audio-controls .listening-speaker-wrap {
+        padding: 12px 0;
+        gap: 8px;
+    }
+
+    .reading-audio-controls .listening-speaker-btn {
+        width: 64px;
+        height: 64px;
+        border-width: 2px;
+    }
+
+    .reading-audio-controls .listening-speaker-btn svg {
+        width: 28px;
+        height: 28px;
+    }
+
+    /* Passage btn uses warm amber/gold color scheme */
+    .reading-passage-btn.state-idle {
+        background: #fef3c7 !important;
+        border-color: #f59e0b !important;
+        color: #d97706 !important;
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4) !important;
+    }
+
+    .reading-passage-btn.state-idle:hover {
+        background: #fde68a !important;
+        box-shadow: 0 0 16px rgba(245, 158, 11, 0.3) !important;
+    }
+
+    .reading-passage-btn.state-playing {
+        background: #fef3c7 !important;
+        border-color: #f59e0b !important;
+        color: #d97706 !important;
+        animation: passage-pulse 1.5s ease-in-out infinite !important;
+    }
+
+    @keyframes passage-pulse {
+        0%   { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.5); transform: scale(1); }
+        50%  { box-shadow: 0 0 20px 6px rgba(245, 158, 11, 0.25); transform: scale(1.05); }
+        100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.5); transform: scale(1); }
+    }
+
+    .reading-audio-controls .listening-speaker-label {
+        font-size: 0.8125rem;
+    }
+
+    .reading-audio-controls .listening-speaker-wrap:first-child .listening-speaker-label.state-idle {
+        color: #d97706;
+    }
+    .reading-audio-controls .listening-speaker-wrap:first-child .listening-speaker-label.state-playing {
+        color: #f59e0b;
+    }
+
     /* ========== Directions Interstitial Block ========== */
     .directions-block {
         display: none;
@@ -539,16 +602,19 @@
 
     <!-- Main Content -->
     <div class="exam-main" id="exam-main" role="region" aria-label="Area soal ujian">
-        @if($passage)
-        <div class="passage-area" id="passage-area" tabindex="0" role="article"
-             aria-label="Bacaan: {{ $passage->title }}">
-            <h3>{{ $passage->title }}</h3>
-            @foreach(explode("\n", $passage->content) as $paragraph)
-                @if(trim($paragraph))
-                    <p>{{ trim($paragraph) }}</p>
-                @endif
-            @endforeach
+        @if($passages->isNotEmpty())
+        @foreach($passages as $psg)
+        <div class="passage-area passage-block" id="passage-area-{{ $psg->id }}" tabindex="0" role="article"
+             aria-label="Bacaan: {{ $psg->title }}"
+             data-passage-id="{{ $psg->id }}"
+             data-audio-src="{{ $psg->audio_path ? asset('storage/' . $psg->audio_path) : '' }}"
+             style="display: none;">
+            <h3>{{ $psg->title }}</h3>
+            <div class="passage-text text-left">
+                {!! $psg->content !!}
+            </div>
         </div>
+        @endforeach
         @endif
 
         <div id="question-area" role="region" aria-label="Pertanyaan dan pilihan jawaban">
@@ -593,6 +659,7 @@
             <div class="question-container" id="question-{{ $index }}"
                  data-question-id="{{ $question->id }}"
                  data-direction-id="{{ $question->direction_id ?? '' }}"
+                 data-passage-id="{{ $question->passage_id ?? '' }}"
                  
                  role="group"
                  aria-label="Soal nomor {{ $index + 1 }}">
@@ -601,6 +668,45 @@
                     <span class="question-number" aria-hidden="true">{{ $index + 1 }}</span>
                     <span id="q-text-{{ $index }}">{{ $question->question_text ?? ($currentSection->slug === 'listening' ? 'Listening Question' : '') }}</span>
                 </div>
+                @if($currentSection->slug === 'reading')
+                {{-- Reading Section: Two audio buttons - Passage (R) and Question (M) --}}
+                <div class="reading-audio-controls">
+                    <div class="listening-speaker-wrap">
+                        <button type="button"
+                                class="listening-speaker-btn state-idle reading-passage-btn"
+                                id="passage-speaker-btn-{{ $index }}"
+                                data-index="{{ $index }}"
+                                onclick="playReadingPassageAudio({{ $index }})"
+                                aria-label="Putar audio cerita/passage. Tekan R untuk memutar.">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"></path>
+                            </svg>
+                        </button>
+                        <span class="listening-speaker-label state-idle" id="passage-speaker-label-{{ $index }}">
+                            📖 Cerita <kbd>R</kbd>
+                        </span>
+                    </div>
+                    <div class="listening-speaker-wrap">
+                        <button type="button"
+                                class="listening-speaker-btn state-idle reading-question-btn"
+                                id="speaker-btn-{{ $index }}"
+                                data-audio-src="{{ $question->audio_path ? asset('storage/' . $question->audio_path) : '' }}"
+                                data-index="{{ $index }}"
+                                onclick="playReadingQuestionAudio({{ $index }})"
+                                aria-label="Putar audio soal {{ $index + 1 }}. Tekan M untuk memutar.">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                            </svg>
+                        </button>
+                        <span class="listening-speaker-label state-idle" id="speaker-label-{{ $index }}">
+                            🎧 Soal <kbd>M</kbd>
+                        </span>
+                    </div>
+                </div>
+                @else
                 <div class="listening-speaker-wrap">
                     <button type="button"
                             class="listening-speaker-btn state-idle"
@@ -619,6 +725,7 @@
                         Tekan <kbd>M</kbd> untuk memutar suara
                     </span>
                 </div>
+                @endif
 
                 <ul class="options-list" role="radiogroup" aria-label="Pilihan jawaban untuk soal {{ $index + 1 }}">
                     @foreach(['A' => $question->option_a, 'B' => $question->option_b, 'C' => $question->option_c, 'D' => $question->option_d] as $key => $option)
@@ -715,10 +822,21 @@
             </a>
             @endif
 
+            @if($currentSection->slug === 'reading')
+            <button class="btn btn-secondary btn-sm" onclick="playReadingPassageAudio(currentQuestionIndex)" style="width:100%;justify-content:center;margin-bottom:6px;"
+                    aria-label="Putar audio cerita. Shortcut: R">
+                📖 Audio Cerita <kbd>R</kbd>
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="playReadingQuestionAudio(currentQuestionIndex)" style="width:100%;justify-content:center;"
+                    aria-label="Putar audio soal. Shortcut: M">
+                🎧 Audio Soal <kbd>M</kbd>
+            </button>
+            @else
             <button class="btn btn-secondary btn-sm" onclick="readCurrentQuestion()" style="width:100%;justify-content:center;"
                     aria-label="Baca ulang soal saat ini. Shortcut: R">
                 🔊 Baca Soal <kbd>R</kbd>
             </button>
+            @endif
         </div>
     </div>
 </div>
@@ -797,14 +915,311 @@
     const directionsAudioStates = {};
     let currentListeningAudio = null;
 
+    // ============================================================
+    // READING SECTION — Separate Passage & Question Audio
+    // ============================================================
+    let currentReadingAudio = null; // Track current reading audio (passage or question)
+    let activePassageBtnIndex = -1; // Track which passage button is currently animated
+    let activeQuestionBtnIndex = -1; // Track which question button is currently animated
+    let readingTTSCheckInterval = null; // Track TTS polling interval
+
+    // Stop all reading audio AND reset all icon states
+    function stopReadingAudioFull() {
+        // Stop the audio object
+        if (currentReadingAudio) {
+            currentReadingAudio.pause();
+            currentReadingAudio.currentTime = 0;
+            currentReadingAudio = null;
+        }
+        // Stop TTS
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+        }
+        // Clear TTS check interval
+        if (readingTTSCheckInterval) {
+            clearInterval(readingTTSCheckInterval);
+            readingTTSCheckInterval = null;
+        }
+        // Reset passage button state
+        if (activePassageBtnIndex >= 0) {
+            updateReadingPassageBtnState(activePassageBtnIndex, 'idle');
+            activePassageBtnIndex = -1;
+        }
+        // Reset question button state
+        if (activeQuestionBtnIndex >= 0) {
+            updateReadingQuestionBtnState(activeQuestionBtnIndex, 'idle');
+            activeQuestionBtnIndex = -1;
+        }
+    }
+
+    function stopReadingAudio() {
+        stopReadingAudioFull();
+    }
+
+    // Play passage/story audio (R key)
+    function playReadingPassageAudio(index) {
+        if (!isReading) return;
+
+        // Find the passage for the current question
+        const qContainer = document.getElementById(`question-${index}`);
+        const passageId = qContainer ? qContainer.dataset.passageId : '';
+        const passageArea = passageId ? document.getElementById(`passage-area-${passageId}`) : null;
+        if (!passageArea) {
+            announce('Tidak ada passage/cerita pada halaman ini.');
+            return;
+        }
+
+        const audioSrc = passageArea.dataset.audioSrc;
+        if (!audioSrc) {
+            // Fallback: use TTS to read passage
+            // First stop everything (audio + icons)
+            stopReadingAudioFull();
+            stopCurrentAudio();
+
+            const title = passageArea.querySelector('h3')?.textContent || '';
+            let content = '';
+            passageArea.querySelectorAll('p').forEach(p => content += p.textContent + '. ');
+            speak(`Passage: ${title}. ${content}`);
+            announce('Membacakan cerita dengan TTS.');
+
+            // Mark passage button as playing
+            activePassageBtnIndex = index;
+            updateReadingPassageBtnState(index, 'playing');
+
+            if (window.speechSynthesis) {
+                readingTTSCheckInterval = setInterval(() => {
+                    if (!window.speechSynthesis.speaking) {
+                        clearInterval(readingTTSCheckInterval);
+                        readingTTSCheckInterval = null;
+                        updateReadingPassageBtnState(index, 'idle');
+                        activePassageBtnIndex = -1;
+                    }
+                }, 500);
+            }
+            return;
+        }
+
+        // Toggle play/pause ONLY if the same passage audio is still loaded
+        if (currentReadingAudio && currentReadingAudio._type === 'passage' && currentReadingAudio._index === index) {
+            if (!currentReadingAudio.paused && !currentReadingAudio.ended) {
+                currentReadingAudio.pause();
+                updateReadingPassageBtnState(index, 'idle');
+                activePassageBtnIndex = -1;
+                announce('Audio cerita dihentikan sementara. Tekan R untuk melanjutkan.');
+                return;
+            } else if (currentReadingAudio.paused && !currentReadingAudio.ended) {
+                currentReadingAudio.play().catch(e => console.error(e));
+                activePassageBtnIndex = index;
+                updateReadingPassageBtnState(index, 'playing');
+                announce('Melanjutkan pemutaran audio cerita.');
+                return;
+            }
+        }
+
+        // Stop everything first (including question audio + its icon)
+        stopReadingAudioFull();
+        stopCurrentAudio();
+
+        const audio = new Audio(audioSrc);
+        audio._type = 'passage';
+        audio._index = index;
+        currentReadingAudio = audio;
+
+        activePassageBtnIndex = index;
+        updateReadingPassageBtnState(index, 'playing');
+        announce('Memutar audio cerita...');
+
+        audio.play().catch(e => {
+            console.error('Passage audio play failed:', e);
+            updateReadingPassageBtnState(index, 'idle');
+            activePassageBtnIndex = -1;
+            announce('Gagal memutar audio cerita. Silakan coba lagi.');
+        });
+
+        audio.addEventListener('ended', () => {
+            updateReadingPassageBtnState(index, 'idle');
+            activePassageBtnIndex = -1;
+            currentReadingAudio = null;
+            announce('Audio cerita selesai diputar. Tekan R untuk mengulang.');
+        });
+
+        audio.addEventListener('error', () => {
+            updateReadingPassageBtnState(index, 'idle');
+            activePassageBtnIndex = -1;
+            currentReadingAudio = null;
+            announce('Error memutar audio cerita.');
+        });
+    }
+
+    // Play question audio (M key) — for reading section
+    function playReadingQuestionAudio(index) {
+        if (!isReading) return;
+        if (index < 0) return;
+
+        const btn = document.getElementById(`speaker-btn-${index}`);
+        if (!btn) return;
+        const audioSrc = btn.dataset.audioSrc;
+
+        if (!audioSrc) {
+            // Fallback: use TTS to read question + options
+            // First stop everything (audio + icons)
+            stopReadingAudioFull();
+            stopCurrentAudio();
+
+            passageHasBeenRead = true; // Don't re-read passage
+            readSpecificQuestion(index);
+            announce('Membacakan soal dengan TTS.');
+
+            // Mark question button as playing
+            activeQuestionBtnIndex = index;
+            updateReadingQuestionBtnState(index, 'playing');
+
+            if (window.speechSynthesis) {
+                readingTTSCheckInterval = setInterval(() => {
+                    if (!window.speechSynthesis.speaking) {
+                        clearInterval(readingTTSCheckInterval);
+                        readingTTSCheckInterval = null;
+                        updateReadingQuestionBtnState(index, 'idle');
+                        activeQuestionBtnIndex = -1;
+                    }
+                }, 500);
+            }
+            return;
+        }
+
+        // Toggle play/pause ONLY if the same question audio is still loaded
+        if (currentReadingAudio && currentReadingAudio._type === 'question' && currentReadingAudio._index === index) {
+            if (!currentReadingAudio.paused && !currentReadingAudio.ended) {
+                currentReadingAudio.pause();
+                updateReadingQuestionBtnState(index, 'idle');
+                activeQuestionBtnIndex = -1;
+                announce('Audio soal dihentikan sementara. Tekan M untuk melanjutkan.');
+                return;
+            } else if (currentReadingAudio.paused && !currentReadingAudio.ended) {
+                currentReadingAudio.play().catch(e => console.error(e));
+                activeQuestionBtnIndex = index;
+                updateReadingQuestionBtnState(index, 'playing');
+                announce('Melanjutkan pemutaran audio soal.');
+                return;
+            }
+        }
+
+        // Stop everything first (including passage audio + its icon)
+        stopReadingAudioFull();
+        stopCurrentAudio();
+
+        const audio = new Audio(audioSrc);
+        audio._type = 'question';
+        audio._index = index;
+        currentReadingAudio = audio;
+
+        activeQuestionBtnIndex = index;
+        updateReadingQuestionBtnState(index, 'playing');
+        announce('Memutar audio soal...');
+
+        audio.play().catch(e => {
+            console.error('Question audio play failed:', e);
+            updateReadingQuestionBtnState(index, 'idle');
+            activeQuestionBtnIndex = -1;
+            announce('Gagal memutar audio soal. Silakan coba lagi.');
+        });
+
+        audio.addEventListener('ended', () => {
+            updateReadingQuestionBtnState(index, 'idle');
+            activeQuestionBtnIndex = -1;
+            currentReadingAudio = null;
+            announce('Audio soal selesai diputar. Tekan M untuk mengulang.');
+        });
+
+        audio.addEventListener('error', () => {
+            updateReadingQuestionBtnState(index, 'idle');
+            activeQuestionBtnIndex = -1;
+            currentReadingAudio = null;
+            announce('Error memutar audio soal.');
+        });
+    }
+
+    // Helper: update passage speaker button state
+    function updateReadingPassageBtnState(index, state) {
+        const btn = document.getElementById(`passage-speaker-btn-${index}`);
+        const label = document.getElementById(`passage-speaker-label-${index}`);
+        if (!btn || !label) return;
+
+        btn.classList.remove('state-idle', 'state-playing', 'state-played');
+        label.classList.remove('state-idle', 'state-playing', 'state-played');
+        btn.classList.add(`state-${state}`);
+        label.classList.add(`state-${state}`);
+
+        if (state === 'playing') {
+            label.innerHTML = '📖 Memutar cerita... <kbd>R</kbd>';
+        } else {
+            label.innerHTML = '📖 Cerita <kbd>R</kbd>';
+        }
+    }
+
+    // Helper: update question speaker button state
+    function updateReadingQuestionBtnState(index, state) {
+        const btn = document.getElementById(`speaker-btn-${index}`);
+        const label = document.getElementById(`speaker-label-${index}`);
+        if (!btn || !label) return;
+
+        btn.classList.remove('state-idle', 'state-playing', 'state-played');
+        label.classList.remove('state-idle', 'state-playing', 'state-played');
+        btn.classList.add(`state-${state}`);
+        label.classList.add(`state-${state}`);
+
+        if (state === 'playing') {
+            label.innerHTML = '🎧 Memutar soal... <kbd>M</kbd>';
+        } else {
+            label.innerHTML = '🎧 Soal <kbd>M</kbd>';
+        }
+    }
+
     function stopCurrentAudio() {
         if (currentListeningAudio) {
             currentListeningAudio.pause();
             currentListeningAudio.currentTime = 0;
             currentListeningAudio = null;
         }
+        if (typeof stopReadingAudio === 'function') {
+            stopReadingAudio();
+        }
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
+        }
+
+        // Reset Structure question speaker icon if animating
+        if (typeof structureTTSCheckInterval !== 'undefined' && structureTTSCheckInterval) {
+            clearInterval(structureTTSCheckInterval);
+            structureTTSCheckInterval = null;
+            // Reset the current question's speaker btn
+            if (currentQuestionIndex >= 0) {
+                const sBtn = document.getElementById(`speaker-btn-${currentQuestionIndex}`);
+                const sLabel = document.getElementById(`speaker-label-${currentQuestionIndex}`);
+                if (sBtn && sLabel) {
+                    sBtn.classList.remove('state-playing');
+                    sBtn.classList.add('state-idle');
+                    sLabel.classList.remove('state-playing');
+                    sLabel.classList.add('state-idle');
+                    sLabel.innerHTML = 'Tekan <kbd>M</kbd> untuk memutar suara';
+                }
+            }
+        }
+
+        // Reset Directions speaker icon if animating
+        if (typeof directionsTTSCheckInterval !== 'undefined' && directionsTTSCheckInterval) {
+            clearInterval(directionsTTSCheckInterval);
+            directionsTTSCheckInterval = null;
+            // Reset all direction speaker buttons
+            document.querySelectorAll('.directions-block .listening-speaker-btn.state-playing').forEach(btn => {
+                btn.classList.remove('state-playing');
+                btn.classList.add('state-idle');
+            });
+            document.querySelectorAll('.directions-block .listening-speaker-label.state-playing').forEach(lbl => {
+                lbl.classList.remove('state-playing');
+                lbl.classList.add('state-idle');
+                lbl.innerHTML = 'Tekan <kbd>M</kbd> untuk memutar suara';
+            });
         }
     }
 
@@ -1054,10 +1469,111 @@
             timerEl.classList.add('warning');
         }
 
+        // Listening: play countdown "tit" beep in last 5 seconds
+        if (isListening && timeLeft <= 5 && timeLeft >= 1) {
+            playCountdownBeep(timeLeft);
+        }
+
         if (!isListening) {
-            if (timeLeft === 300) { speak('Five Minutes Left'); }
+            // Time warnings for Structure & Reading sections
+            // Alarm sound plays FIRST, then spoken warning follows after alarm finishes
+            if (timeLeft === 600) {
+                // 10 minutes left
+                playTimeWarningAlarm('normal', () => {
+                    speak('Ten Minutes Left.');
+                });
+                announce('Peringatan: Waktu tersisa 10 menit.');
+            }
+            if (timeLeft === 300) {
+                // 5 minutes left
+                playTimeWarningAlarm('warning', () => {
+                    speak('Five Minutes Left.');
+                });
+                announce('Peringatan: Waktu tersisa 5 menit.');
+            }
+            if (timeLeft === 60) {
+                // 1 minute left
+                playTimeWarningAlarm('danger', () => {
+                    speak('One Minute Left.');
+                });
+                announce('Peringatan: Waktu tersisa 1 menit!');
+            }
         }
     }, 1000);
+
+    // Play countdown "tit" beep for last 5 seconds (Listening section)
+    // Pitch rises as time runs out: 5s=800Hz, 4s=900Hz, 3s=1000Hz, 2s=1100Hz, 1s=1200Hz
+    function playCountdownBeep(secondsLeft) {
+        try {
+            const ac = window.audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+            if (ac.state === 'suspended') ac.resume();
+
+            const baseFreq = 800 + ((5 - secondsLeft) * 100); // Higher pitch as time runs out
+
+            // Play a short "tit" beep
+            const osc = ac.createOscillator();
+            const gain = ac.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(baseFreq, ac.currentTime);
+            gain.gain.setValueAtTime(0.25, ac.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ac.currentTime + 0.12);
+            osc.connect(gain);
+            gain.connect(ac.destination);
+            osc.start(ac.currentTime);
+            osc.stop(ac.currentTime + 0.12);
+
+            // For the last 2 seconds, play a double "tit-tit" for extra urgency
+            if (secondsLeft <= 2) {
+                const osc2 = ac.createOscillator();
+                const gain2 = ac.createGain();
+                osc2.type = 'sine';
+                osc2.frequency.setValueAtTime(baseFreq + 100, ac.currentTime + 0.18);
+                gain2.gain.setValueAtTime(0, ac.currentTime);
+                gain2.gain.setValueAtTime(0.25, ac.currentTime + 0.18);
+                gain2.gain.exponentialRampToValueAtTime(0.01, ac.currentTime + 0.30);
+                osc2.connect(gain2);
+                gain2.connect(ac.destination);
+                osc2.start(ac.currentTime + 0.18);
+                osc2.stop(ac.currentTime + 0.30);
+            }
+        } catch(e) {
+            console.warn('Countdown beep failed:', e);
+        }
+    }
+
+    // ============================================================
+    // TIME WARNING ALARM — Distinctive alarm before spoken warning
+    // Same alarm sound for all levels (10min, 5min, 1min) to avoid confusion
+    // Plays alarm FIRST, then calls onComplete callback (speak)
+    // ============================================================
+    function playTimeWarningAlarm(level, onComplete) {
+        try {
+            const ac = window.audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+            if (ac.state === 'suspended') ac.resume();
+            const t = ac.currentTime;
+
+            // Triple chime "ding-ding-ding" — same for all warning levels
+            const notes = [1320, 1056, 880]; // E6, C6, A5 — descending triad
+            notes.forEach((freq, i) => {
+                const osc = ac.createOscillator();
+                const gain = ac.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, t + (i * 0.3));
+                gain.gain.setValueAtTime(0, t);
+                gain.gain.setValueAtTime(0.2, t + (i * 0.3));
+                gain.gain.exponentialRampToValueAtTime(0.01, t + (i * 0.3) + 0.25);
+                osc.connect(gain);
+                gain.connect(ac.destination);
+                osc.start(t + (i * 0.3));
+                osc.stop(t + (i * 0.3) + 0.25);
+            });
+            // Speak after alarm finishes (~1s)
+            setTimeout(() => { if (onComplete) onComplete(); }, 1000);
+        } catch(e) {
+            console.warn('Warning alarm failed:', e);
+            if (onComplete) onComplete();
+        }
+    }
 
     // ============================================================
     // STEP-BASED NAVIGATION
@@ -1096,6 +1612,13 @@
             // Show directions block
             const dirBlock = document.getElementById(`directions-${step.directionId}`);
             if (dirBlock) dirBlock.classList.add('active');
+
+            // Hide all passages during directions
+            if (isReading) {
+                document.querySelectorAll('.passage-block').forEach(el => {
+                    el.style.display = 'none';
+                });
+            }
 
             // Update part indicator
             document.getElementById('part-indicator').textContent = step.label ? `— ${step.label}` : '';
@@ -1136,6 +1659,23 @@
             const qContainer = document.getElementById(`question-${currentQuestionIndex}`);
             if (qContainer) {
                 qContainer.classList.add('current-question');
+
+                // Switch passage for reading section
+                if (isReading) {
+                    const passageId = qContainer.dataset.passageId;
+                    // Hide all passage blocks
+                    document.querySelectorAll('.passage-block').forEach(el => {
+                        el.style.display = 'none';
+                    });
+                    // Show the correct passage for this question
+                    if (passageId) {
+                        const targetPassage = document.getElementById(`passage-area-${passageId}`);
+                        if (targetPassage) {
+                            targetPassage.style.display = '';
+                        }
+                    }
+                }
+
                 qContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
 
@@ -1173,8 +1713,9 @@
                 }
             }
 
-            // Read question if TTS enabled (non-listening)
-            if (!isListening) {
+            // Read question if TTS enabled (non-listening, non-reading)
+            // Reading section uses dedicated R/M audio controls
+            if (!isListening && !isReading) {
                 readCurrentQuestion();
             }
 
@@ -1247,7 +1788,7 @@
         answers[questionId] = key;
 
         const optText = el.querySelector('.option-text') ? el.querySelector('.option-text').textContent.trim() : '';
-        const textToSpeak = optText; // Only read the option text
+        const textToSpeak = key; // Only read the option letter (e.g. A, B, C, D)
         
         // Silently update screen reader live region without adding extra words if not needed
         // Or we can just let TTS handle the reading.
@@ -1290,14 +1831,18 @@
 
     let passageHasBeenRead = false;
 
+    let structureTTSCheckInterval = null; // Track TTS interval for Structure section
+
     // Helper to read specific question (e.g. from click)
     function readSpecificQuestion(index) {
         if (index < 0) return;
         let qText = document.getElementById(`q-text-${index}`)?.textContent || '';
         
         let passageText = '';
-        if (isReading && !passageHasBeenRead && index === 0) {
-            const passageArea = document.getElementById('passage-area');
+        if (isReading && !passageHasBeenRead) {
+            const qCont = document.getElementById(`question-${index}`);
+            const pId = qCont ? qCont.dataset.passageId : '';
+            const passageArea = pId ? document.getElementById(`passage-area-${pId}`) : null;
             if (passageArea) {
                 const title = passageArea.querySelector('h3')?.textContent || '';
                 let content = '';
@@ -1318,24 +1863,67 @@
             });
         }
 
-        if (isStructure || isReading) {
-            // Replace underscores (____) or dots (...) with "bla... bla... bla..."
-            qText = qText.replace(/(\([^)]*\)|_+|\.{3,})/g, 'bla... bla... bla...');
-        }
-
-        let fullSpeech = "";
+        let speechChunks = [];
         if (passageText) {
-            fullSpeech += passageText + ". ";
+            speechChunks.push({ text: passageText + ". ", rate: 0.9, pitch: 1 });
         }
+        
         if (qText) {
-            fullSpeech += `Question ${index + 1}. ${qText}. `;
+            speechChunks.push({ text: `Question ${index + 1}. `, rate: 0.9, pitch: 1 });
+            
             if (isStructure || isReading) {
-                fullSpeech += "The options are. " + optionsText.join(". ") + ".";
+                // Split qText by the blank pattern to apply different speech rates
+                // Match parentheses with anything inside, underscores, or 3+ dots
+                const parts = qText.split(/(\([^)]*\)|_+|\.{3,})/g);
+                
+                parts.forEach(part => {
+                    if (part.match(/(\([^)]*\)|_+|\.{3,})/)) {
+                        // This is a blank space, read it fast and distinct
+                        speechChunks.push({ text: "bla bla bla", rate: 1.6, pitch: 1.2 });
+                    } else if (part.trim() !== '') {
+                        speechChunks.push({ text: part, rate: 0.9, pitch: 1 });
+                    }
+                });
+                
+                speechChunks.push({ text: ". The options are. " + optionsText.join(". ") + ".", rate: 0.9, pitch: 1 });
+            } else {
+                speechChunks.push({ text: qText + ". ", rate: 0.9, pitch: 1 });
             }
         }
         
-        if (fullSpeech) {
-            speak(fullSpeech);
+        if (speechChunks.length > 0) {
+            speak(speechChunks);
+
+            // Animate speaker icon for Structure section while TTS is speaking
+            if (isStructure) {
+                // Clear any previous interval
+                if (structureTTSCheckInterval) {
+                    clearInterval(structureTTSCheckInterval);
+                    structureTTSCheckInterval = null;
+                }
+
+                const speakerBtn = document.getElementById(`speaker-btn-${index}`);
+                const speakerLabel = document.getElementById(`speaker-label-${index}`);
+                if (speakerBtn && speakerLabel) {
+                    speakerBtn.classList.remove('state-idle', 'state-playing', 'state-played');
+                    speakerLabel.classList.remove('state-idle', 'state-playing', 'state-played');
+                    speakerBtn.classList.add('state-playing');
+                    speakerLabel.classList.add('state-playing');
+                    speakerLabel.textContent = 'Audio sedang diputar...';
+
+                    structureTTSCheckInterval = setInterval(() => {
+                        if (!window.speechSynthesis.speaking) {
+                            clearInterval(structureTTSCheckInterval);
+                            structureTTSCheckInterval = null;
+                            speakerBtn.classList.remove('state-playing');
+                            speakerLabel.classList.remove('state-playing');
+                            speakerBtn.classList.add('state-idle');
+                            speakerLabel.classList.add('state-idle');
+                            speakerLabel.innerHTML = 'Tekan <kbd>M</kbd> untuk memutar suara';
+                        }
+                    }, 300);
+                }
+            }
         }
     }
 
@@ -1344,12 +1932,105 @@
         readSpecificQuestion(currentQuestionIndex);
     }
 
+    let directionsTTSCheckInterval = null; // Track TTS interval for Directions
+
     // Read current directions via TTS
     function readDirectionsTTS(directionId, label) {
         stopCurrentAudio();
+
+        // Clear any previous directions TTS interval
+        if (directionsTTSCheckInterval) {
+            clearInterval(directionsTTSCheckInterval);
+            directionsTTSCheckInterval = null;
+        }
+
         const dirDesc = document.querySelector(`#directions-${directionId} .directions-subtitle.prose`)?.textContent || '';
         if (dirDesc) {
             speak(`Directions ${label}. ${dirDesc.replace(/<[^>]*>?/gm, '')}`);
+
+            // Animate the direction speaker icon while TTS is playing
+            const dirBtn = document.getElementById(`dir-speaker-${directionId}`);
+            const dirLabel = document.getElementById(`dir-label-${directionId}`);
+            if (dirBtn && dirLabel) {
+                dirBtn.classList.remove('state-idle', 'state-playing', 'state-played');
+                dirLabel.classList.remove('state-idle', 'state-playing', 'state-played');
+                dirBtn.classList.add('state-playing');
+                dirLabel.classList.add('state-playing');
+                dirLabel.textContent = 'Audio sedang diputar...';
+
+                directionsTTSCheckInterval = setInterval(() => {
+                    if (!window.speechSynthesis.speaking) {
+                        clearInterval(directionsTTSCheckInterval);
+                        directionsTTSCheckInterval = null;
+                        dirBtn.classList.remove('state-playing');
+                        dirLabel.classList.remove('state-playing');
+                        dirBtn.classList.add('state-idle');
+                        dirLabel.classList.add('state-idle');
+                        dirLabel.innerHTML = 'Tekan <kbd>M</kbd> untuk memutar suara';
+                    }
+                }, 300);
+            }
+        }
+    }
+
+    // Sound Effects for Modals
+    function playModalSound(type) {
+        try {
+            const ac = window.audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+            if (ac.state === 'suspended') ac.resume();
+            const t = ac.currentTime;
+            
+            const osc = ac.createOscillator();
+            const gain = ac.createGain();
+            osc.connect(gain);
+            gain.connect(ac.destination);
+
+            if (type === 'open') {
+                // Neutral alert (two quick identical notes)
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, t);
+                gain.gain.setValueAtTime(0, t);
+                gain.gain.setValueAtTime(0.15, t);
+                gain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
+                
+                const osc2 = ac.createOscillator();
+                osc2.type = 'sine';
+                osc2.frequency.setValueAtTime(600, t + 0.2);
+                osc2.connect(gain);
+                osc2.start(t + 0.2);
+                osc2.stop(t + 0.35);
+                
+                gain.gain.setValueAtTime(0, t + 0.2);
+                gain.gain.setValueAtTime(0.15, t + 0.2);
+                gain.gain.exponentialRampToValueAtTime(0.01, t + 0.35);
+                
+                osc.start(t);
+                osc.stop(t + 0.15);
+                
+            } else if (type === 'yes') {
+                // Positive rising tone (low to high)
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, t);
+                osc.frequency.exponentialRampToValueAtTime(800, t + 0.3);
+                gain.gain.setValueAtTime(0, t);
+                gain.gain.linearRampToValueAtTime(0.2, t + 0.1);
+                gain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
+                osc.start(t);
+                osc.stop(t + 0.3);
+                
+            } else if (type === 'no') {
+                // Negative dropping tone (high to low)
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(500, t);
+                osc.frequency.exponentialRampToValueAtTime(250, t + 0.3);
+                gain.gain.setValueAtTime(0, t);
+                gain.gain.linearRampToValueAtTime(0.2, t + 0.1);
+                gain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
+                osc.start(t);
+                osc.stop(t + 0.3);
+            }
+        } catch (e) {
+            console.warn('Modal sound failed:', e);
         }
     }
 
@@ -1383,6 +2064,7 @@
 
         existingModal.classList.add('active');
         okBtn.focus();
+        playModalSound('open');
         announce(title + '. ' + message);
 
         return new Promise((resolve) => {
@@ -1393,8 +2075,8 @@
                 existingModal.classList.remove('active');
             };
 
-            const handleYes = () => { cleanup(); resolve(true); };
-            const handleNo = () => { cleanup(); resolve(false); };
+            const handleYes = () => { playModalSound('yes'); cleanup(); resolve(true); };
+            const handleNo = () => { playModalSound('no'); cleanup(); resolve(false); };
 
             cancelBtn.onclick = handleNo;
             okBtn.onclick = handleYes;
@@ -1481,6 +2163,9 @@
             } else if (step.type === 'question') {
                 if (isListening) {
                     playListeningAudio(step.questionIndex);
+                } else if (isReading) {
+                    // Reading section: M plays question audio
+                    playReadingQuestionAudio(step.questionIndex);
                 } else {
                     stopCurrentAudio();
                     passageHasBeenRead = false;
@@ -1533,7 +2218,6 @@
         }
 
 
-
         // T — Test Suara
         if (key === 'T') {
             e.preventDefault();
@@ -1558,16 +2242,20 @@
         }
 
 
-
-        // R — Play Audio Reading (Baca Ulang Soal)
+        // R — Play Audio Reading (Baca Ulang Soal / Passage Audio for Reading section)
         if (key === 'R') {
             e.preventDefault();
             const step = stepMap[currentStep];
-            if (step && step.type === 'question' && !isListening) {
-                stopCurrentAudio();
-                passageHasBeenRead = false; // allow reading passage again if needed
-                readCurrentQuestion();
-                announce('Membaca ulang soal.');
+            if (step && step.type === 'question') {
+                if (isReading) {
+                    // Reading section: R plays passage/story audio
+                    playReadingPassageAudio(step.questionIndex);
+                } else if (!isListening) {
+                    stopCurrentAudio();
+                    passageHasBeenRead = false;
+                    readCurrentQuestion();
+                    announce('Membaca ulang soal.');
+                }
             }
             return;
         }
@@ -1633,16 +2321,15 @@
             });
         });
 
-        // Add focus listener for passage area (Reading section)
-        const passageArea = document.getElementById('passage-area');
-        if (passageArea) {
-            passageArea.addEventListener('focus', () => {
-                const title = passageArea.querySelector('h3').textContent;
+        // Add focus listener for passage areas (Reading section — multiple passages)
+        document.querySelectorAll('.passage-block').forEach(passageEl => {
+            passageEl.addEventListener('focus', () => {
+                const title = passageEl.querySelector('h3')?.textContent || '';
                 let content = '';
-                passageArea.querySelectorAll('p').forEach(p => content += p.textContent + '. ');
+                passageEl.querySelectorAll('p').forEach(p => content += p.textContent + '. ');
                 speak(`${title}. ${content}`);
             });
-        }
+        });
     });
 </script>
 @endsection
