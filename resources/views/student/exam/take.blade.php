@@ -1,5 +1,5 @@
 @extends('layouts.student')
-@section('title', $currentSection->name . ' — Ujian TOEFL')
+@section('title', $currentSection->name . ' — TOEFL Exam')
 
 @section('styles')
 <style>
@@ -583,29 +583,29 @@
     <!-- Top Bar -->
     <div class="exam-topbar" role="banner">
         <div class="exam-topbar-section">
-            <span class="section-name" aria-label="Section saat ini">{{ $currentSection->name }}</span>
+            <span class="section-name" aria-label="Current section">{{ $currentSection->name }}</span>
             <span id="part-indicator" style="{{ $directions->isEmpty() ? 'display:none' : '' }}; font-size:0.8125rem; font-weight:700; color:var(--accent);"></span>
             <span class="question-counter" id="question-counter" aria-live="polite">
-                Soal <span id="current-num">1</span> dari {{ $questions->count() }}
+                Question <span id="current-num">1</span> of {{ $questions->count() }}
             </span>
         </div>
         <div class="exam-topbar-section">
-            <div class="timer-display" id="timer" role="timer" aria-label="Sisa waktu" aria-live="off">
+            <div class="timer-display" id="timer" role="timer" aria-label="Time remaining" aria-live="off">
                 <span aria-hidden="true">⏱️</span>
                 <span id="timer-text">{{ $currentSection->duration_minutes }}:00</span>
             </div>
-            <button class="btn btn-secondary btn-sm" onclick="openShortcutsModal()" aria-label="Bantuan keyboard shortcut">
+            <button class="btn btn-secondary btn-sm" onclick="openShortcutsModal()" aria-label="Keyboard shortcuts help">
                 <span aria-hidden="true">⌨️</span> Shortcuts <kbd>H</kbd>
             </button>
         </div>
     </div>
 
     <!-- Main Content -->
-    <div class="exam-main" id="exam-main" role="region" aria-label="Area soal ujian">
+    <div class="exam-main" id="exam-main" role="region" aria-label="Exam questions area">
         @if($passages->isNotEmpty())
         @foreach($passages as $psg)
         <div class="passage-area passage-block" id="passage-area-{{ $psg->id }}" tabindex="0" role="article"
-             aria-label="Bacaan: {{ $psg->title }}"
+             aria-label="Passage: {{ $psg->title }}"
              data-passage-id="{{ $psg->id }}"
              data-audio-src="{{ $psg->audio_path ? asset('storage/' . $psg->audio_path) : '' }}"
              style="display: none;">
@@ -617,7 +617,7 @@
         @endforeach
         @endif
 
-        <div id="question-area" role="region" aria-label="Pertanyaan dan pilihan jawaban">
+        <div id="question-area" role="region" aria-label="Questions and answer choices">
 
             {{-- ===== DIRECTIONS BLOCKS (Dynamic — all sections) ===== --}}
             @foreach($directions as $dirIndex => $direction)
@@ -632,7 +632,7 @@
                             id="dir-speaker-{{ $direction->id }}"
                             data-audio-src="{{ $direction->audio_path ? asset('storage/' . $direction->audio_path) : '' }}"
                             onclick="{{ $direction->audio_path ? "playDirectionsAudio('{$direction->id}')" : "readDirectionsTTS('{$direction->id}', '{$direction->label}')" }}"
-                            aria-label="Putar Directions {{ $direction->label }}. Tekan M untuk memutar ulang.">
+                            aria-label="Play Directions {{ $direction->label }}. Press M to replay.">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
                             <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
@@ -640,7 +640,7 @@
                         </svg>
                     </button>
                     <span class="listening-speaker-label state-idle" id="dir-label-{{ $direction->id }}">
-                        Tekan <kbd>M</kbd> untuk memutar suara
+                        Press <kbd>M</kbd> to play audio
                     </span>
                 </div>
 
@@ -650,7 +650,7 @@
                 </div>
                 @endif
 
-                <p class="directions-continue-hint">Tekan <strong>Next</strong> <kbd>N</kbd> untuk melanjutkan</p>
+                <p class="directions-continue-hint">Press <strong>Next</strong> <kbd>N</kbd> to continue</p>
             </div>
             @endforeach
 
@@ -662,7 +662,7 @@
                  data-passage-id="{{ $question->passage_id ?? '' }}"
                  
                  role="group"
-                 aria-label="Soal nomor {{ $index + 1 }}">
+                 aria-label="Question number {{ $index + 1 }}">
 
                 <div class="question-text">
                     <span class="question-number" aria-hidden="true">{{ $index + 1 }}</span>
@@ -677,14 +677,14 @@
                                 id="passage-speaker-btn-{{ $index }}"
                                 data-index="{{ $index }}"
                                 onclick="playReadingPassageAudio({{ $index }})"
-                                aria-label="Putar audio cerita/passage. Tekan R untuk memutar.">
+                                aria-label="Play passage audio. Press R to play.">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
                                 <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"></path>
                             </svg>
                         </button>
                         <span class="listening-speaker-label state-idle" id="passage-speaker-label-{{ $index }}">
-                            📖 Cerita <kbd>R</kbd>
+                            📖 Passage <kbd>R</kbd>
                         </span>
                     </div>
                     <div class="listening-speaker-wrap">
@@ -694,7 +694,7 @@
                                 data-audio-src="{{ $question->audio_path ? asset('storage/' . $question->audio_path) : '' }}"
                                 data-index="{{ $index }}"
                                 onclick="playReadingQuestionAudio({{ $index }})"
-                                aria-label="Putar audio soal {{ $index + 1 }}. Tekan M untuk memutar.">
+                                aria-label="Play question audio {{ $index + 1 }}. Press M to play.">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
                                 <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
@@ -702,7 +702,7 @@
                             </svg>
                         </button>
                         <span class="listening-speaker-label state-idle" id="speaker-label-{{ $index }}">
-                            🎧 Soal <kbd>M</kbd>
+                            🎧 Question <kbd>M</kbd>
                         </span>
                     </div>
                 </div>
@@ -714,7 +714,7 @@
                             data-audio-src="{{ $question->audio_path ? asset('storage/' . $question->audio_path) : '' }}"
                             data-index="{{ $index }}"
                             onclick="{{ $currentSection->slug === 'listening' ? "playListeningAudio({$index})" : "readSpecificQuestion({$index})" }}"
-                            aria-label="{{ $currentSection->slug === 'listening' ? "Putar audio soal " . ($index + 1) . ". Audio hanya bisa diputar 1 kali." : "Putar suara pembaca soal " . ($index + 1) . ". Tekan M untuk memutar ulang." }}">
+                            aria-label="{{ $currentSection->slug === 'listening' ? "Play question audio " . ($index + 1) . ". Audio can only be played once." : "Play question reader " . ($index + 1) . ". Press M to replay." }}">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
                             <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
@@ -722,12 +722,12 @@
                         </svg>
                     </button>
                     <span class="listening-speaker-label state-idle" id="speaker-label-{{ $index }}">
-                        Tekan <kbd>M</kbd> untuk memutar suara
+                        Press <kbd>M</kbd> to play audio
                     </span>
                 </div>
                 @endif
 
-                <ul class="options-list" role="radiogroup" aria-label="Pilihan jawaban untuk soal {{ $index + 1 }}">
+                <ul class="options-list" role="radiogroup" aria-label="Answer choices for question {{ $index + 1 }}">
                     @foreach(['A' => $question->option_a, 'B' => $question->option_b, 'C' => $question->option_c, 'D' => $question->option_d] as $key => $option)
                     <li class="option-item {{ ($existingAnswers[$question->id] ?? '') === $key ? 'selected' : '' }}"
                         role="radio"
@@ -737,7 +737,7 @@
                         data-question-id="{{ $question->id }}"
                         data-audio="{{ $question->{'option_'.strtolower($key).'_audio'} ? asset('storage/' . $question->{'option_'.strtolower($key).'_audio'}) : '' }}"
                         onclick="selectOption(this, '{{ $key }}', {{ $question->id }})"
-                        aria-label="Pilihan {{ $key }}: {{ $option }}. Tekan {{ $key }} pada keyboard untuk memilih.">
+                        aria-label="Option {{ $key }}: {{ $option }}. Press {{ $key }} on keyboard to select.">
                         <span class="option-key" aria-hidden="true">{{ $key }}</span>
                         <span class="option-text">{{ $option }}</span>
                     </li>
@@ -749,26 +749,26 @@
 
         <div class="exam-nav">
             @if($currentSection->slug !== 'listening')
-            <button class="btn btn-secondary" id="btn-prev" onclick="prevQuestion()" aria-label="Soal sebelumnya. Shortcut: tombol panah kiri atau P">
+            <button class="btn btn-secondary" id="btn-prev" onclick="prevQuestion()" aria-label="Previous question. Shortcut: left arrow key or P">
                 ← Prev <kbd>P</kbd>
             </button>
             @else
             <div></div> <!-- Spacer -->
             @endif
-            <span class="nav-hint" aria-hidden="true">Tekan A/B/C/D untuk jawab • ←→ untuk navigasi</span>
-            <button class="btn btn-primary" id="btn-next" onclick="nextQuestion()" aria-label="Soal berikutnya. Shortcut: tombol panah kanan atau N">
+            <span class="nav-hint" aria-hidden="true">Press A/B/C/D to answer • ←→ to navigate</span>
+            <button class="btn btn-primary" id="btn-next" onclick="nextQuestion()" aria-label="Next question. Shortcut: right arrow key or N">
                 Next → <kbd>N</kbd>
             </button>
         </div>
     </div>
 
     <!-- Sidebar -->
-    <div class="exam-sidebar" role="complementary" aria-label="Panel navigasi soal">
+    <div class="exam-sidebar" role="complementary" aria-label="Question navigation panel">
         <div class="sidebar-title">Sections</div>
         <div class="section-tabs">
             @foreach($sections as $section)
             <div class="section-tab {{ $section->slug === $currentSection->slug ? 'active' : '' }}"
-                 aria-label="Section {{ $section->name }}{{ $section->slug === $currentSection->slug ? ' - aktif' : '' }}"
+                 aria-label="Section {{ $section->name }}{{ $section->slug === $currentSection->slug ? ' - active' : '' }}"
                  aria-current="{{ $section->slug === $currentSection->slug ? 'step' : 'false' }}">
                 <span aria-hidden="true">{{ $section->slug === $currentSection->slug ? '▶' : '○' }}</span>
                 {{ $section->name }}
@@ -776,8 +776,8 @@
             @endforeach
         </div>
 
-        <div class="sidebar-title">Navigasi Soal</div>
-        <div class="question-grid" role="list" aria-label="Grid navigasi soal">
+        <div class="sidebar-title">Question Navigation</div>
+        <div class="question-grid" role="list" aria-label="Question navigation grid">
             @php $lastDirectionId = null; @endphp
             @foreach($questions as $index => $question)
                 @if($question->direction_id && $question->direction_id !== $lastDirectionId)
@@ -791,7 +791,7 @@
                     id="q-nav-{{ $index }}"
                     onclick="goToQuestion({{ $index }})"
                     role="listitem"
-                    aria-label="Soal {{ $index + 1 }}{{ isset($existingAnswers[$question->id]) ? ', sudah dijawab' : ', belum dijawab' }}">
+                    aria-label="Question {{ $index + 1 }}{{ isset($existingAnswers[$question->id]) ? ', answered' : ', not answered' }}">
                 {{ $index + 1 }}
             </button>
             @endforeach
@@ -808,8 +808,8 @@
                 @csrf
                 <button type="button" class="btn btn-primary" style="width:100%;justify-content:center;"
                         onclick="confirmNextSection()"
-                        aria-label="Lanjut ke section berikutnya. Shortcut: L">
-                    Lanjut Section → <kbd>L</kbd>
+                        aria-label="Proceed to next section. Shortcut: L">
+                    Next Section → <kbd>L</kbd>
                 </button>
             </form>
             @else
@@ -817,24 +817,24 @@
                class="btn btn-success" style="justify-content:center;"
                id="submit-btn"
                onclick="confirmSubmit(event)"
-               aria-label="Submit ujian. Shortcut: S">
-                ✅ Submit Ujian <kbd>S</kbd>
+               aria-label="Submit exam. Shortcut: S">
+                ✅ Submit Exam <kbd>S</kbd>
             </a>
             @endif
 
             @if($currentSection->slug === 'reading')
             <button class="btn btn-secondary btn-sm" onclick="playReadingPassageAudio(currentQuestionIndex)" style="width:100%;justify-content:center;margin-bottom:6px;"
-                    aria-label="Putar audio cerita. Shortcut: R">
-                📖 Audio Cerita <kbd>R</kbd>
+                    aria-label="Play passage audio. Shortcut: R">
+                📖 Passage Audio <kbd>R</kbd>
             </button>
             <button class="btn btn-secondary btn-sm" onclick="playReadingQuestionAudio(currentQuestionIndex)" style="width:100%;justify-content:center;"
-                    aria-label="Putar audio soal. Shortcut: M">
-                🎧 Audio Soal <kbd>M</kbd>
+                    aria-label="Play question audio. Shortcut: M">
+                🎧 Question Audio <kbd>M</kbd>
             </button>
             @else
             <button class="btn btn-secondary btn-sm" onclick="readCurrentQuestion()" style="width:100%;justify-content:center;"
-                    aria-label="Baca ulang soal saat ini. Shortcut: R">
-                🔊 Baca Soal <kbd>R</kbd>
+                    aria-label="Re-read current question. Shortcut: R">
+                🔊 Read Question <kbd>R</kbd>
             </button>
             @endif
         </div>
@@ -965,7 +965,7 @@
         const passageId = qContainer ? qContainer.dataset.passageId : '';
         const passageArea = passageId ? document.getElementById(`passage-area-${passageId}`) : null;
         if (!passageArea) {
-            announce('Tidak ada passage/cerita pada halaman ini.');
+            announce('No passage available on this page.');
             return;
         }
 
@@ -980,7 +980,7 @@
             let content = '';
             passageArea.querySelectorAll('p').forEach(p => content += p.textContent + '. ');
             speak(`Passage: ${title}. ${content}`);
-            announce('Membacakan cerita dengan TTS.');
+            announce('Reading passage with text-to-speech.');
 
             // Mark passage button as playing
             activePassageBtnIndex = index;
@@ -1005,13 +1005,13 @@
                 currentReadingAudio.pause();
                 updateReadingPassageBtnState(index, 'idle');
                 activePassageBtnIndex = -1;
-                announce('Audio cerita dihentikan sementara. Tekan R untuk melanjutkan.');
+                announce('Passage audio paused. Press R to resume.');
                 return;
             } else if (currentReadingAudio.paused && !currentReadingAudio.ended) {
                 currentReadingAudio.play().catch(e => console.error(e));
                 activePassageBtnIndex = index;
                 updateReadingPassageBtnState(index, 'playing');
-                announce('Melanjutkan pemutaran audio cerita.');
+                announce('Resuming passage audio.');
                 return;
             }
         }
@@ -1027,27 +1027,27 @@
 
         activePassageBtnIndex = index;
         updateReadingPassageBtnState(index, 'playing');
-        announce('Memutar audio cerita...');
+        announce('Playing passage audio...');
 
         audio.play().catch(e => {
             console.error('Passage audio play failed:', e);
             updateReadingPassageBtnState(index, 'idle');
             activePassageBtnIndex = -1;
-            announce('Gagal memutar audio cerita. Silakan coba lagi.');
+            announce('Failed to play passage audio. Please try again.');
         });
 
         audio.addEventListener('ended', () => {
             updateReadingPassageBtnState(index, 'idle');
             activePassageBtnIndex = -1;
             currentReadingAudio = null;
-            announce('Audio cerita selesai diputar. Tekan R untuk mengulang.');
+            announce('Passage audio finished. Press R to replay.');
         });
 
         audio.addEventListener('error', () => {
             updateReadingPassageBtnState(index, 'idle');
             activePassageBtnIndex = -1;
             currentReadingAudio = null;
-            announce('Error memutar audio cerita.');
+            announce('Error playing passage audio.');
         });
     }
 
@@ -1068,7 +1068,7 @@
 
             passageHasBeenRead = true; // Don't re-read passage
             readSpecificQuestion(index);
-            announce('Membacakan soal dengan TTS.');
+            announce('Reading question with text-to-speech.');
 
             // Mark question button as playing
             activeQuestionBtnIndex = index;
@@ -1093,13 +1093,13 @@
                 currentReadingAudio.pause();
                 updateReadingQuestionBtnState(index, 'idle');
                 activeQuestionBtnIndex = -1;
-                announce('Audio soal dihentikan sementara. Tekan M untuk melanjutkan.');
+                announce('Question audio paused. Press M to resume.');
                 return;
             } else if (currentReadingAudio.paused && !currentReadingAudio.ended) {
                 currentReadingAudio.play().catch(e => console.error(e));
                 activeQuestionBtnIndex = index;
                 updateReadingQuestionBtnState(index, 'playing');
-                announce('Melanjutkan pemutaran audio soal.');
+                announce('Resuming question audio.');
                 return;
             }
         }
@@ -1115,27 +1115,27 @@
 
         activeQuestionBtnIndex = index;
         updateReadingQuestionBtnState(index, 'playing');
-        announce('Memutar audio soal...');
+        announce('Playing question audio...');
 
         audio.play().catch(e => {
             console.error('Question audio play failed:', e);
             updateReadingQuestionBtnState(index, 'idle');
             activeQuestionBtnIndex = -1;
-            announce('Gagal memutar audio soal. Silakan coba lagi.');
+            announce('Failed to play question audio. Please try again.');
         });
 
         audio.addEventListener('ended', () => {
             updateReadingQuestionBtnState(index, 'idle');
             activeQuestionBtnIndex = -1;
             currentReadingAudio = null;
-            announce('Audio soal selesai diputar. Tekan M untuk mengulang.');
+            announce('Question audio finished. Press M to replay.');
         });
 
         audio.addEventListener('error', () => {
             updateReadingQuestionBtnState(index, 'idle');
             activeQuestionBtnIndex = -1;
             currentReadingAudio = null;
-            announce('Error memutar audio soal.');
+            announce('Error playing question audio.');
         });
     }
 
@@ -1151,9 +1151,9 @@
         label.classList.add(`state-${state}`);
 
         if (state === 'playing') {
-            label.innerHTML = '📖 Memutar cerita... <kbd>R</kbd>';
+            label.innerHTML = '📖 Playing passage... <kbd>R</kbd>';
         } else {
-            label.innerHTML = '📖 Cerita <kbd>R</kbd>';
+            label.innerHTML = '📖 Passage <kbd>R</kbd>';
         }
     }
 
@@ -1169,9 +1169,9 @@
         label.classList.add(`state-${state}`);
 
         if (state === 'playing') {
-            label.innerHTML = '🎧 Memutar soal... <kbd>M</kbd>';
+            label.innerHTML = '🎧 Playing question... <kbd>M</kbd>';
         } else {
-            label.innerHTML = '🎧 Soal <kbd>M</kbd>';
+            label.innerHTML = '🎧 Question <kbd>M</kbd>';
         }
     }
 
@@ -1201,7 +1201,7 @@
                     sBtn.classList.add('state-idle');
                     sLabel.classList.remove('state-playing');
                     sLabel.classList.add('state-idle');
-                    sLabel.innerHTML = 'Tekan <kbd>M</kbd> untuk memutar suara';
+                    sLabel.innerHTML = 'Press <kbd>M</kbd> to play audio';
                 }
             }
         }
@@ -1218,7 +1218,7 @@
             document.querySelectorAll('.directions-block .listening-speaker-label.state-playing').forEach(lbl => {
                 lbl.classList.remove('state-playing');
                 lbl.classList.add('state-idle');
-                lbl.innerHTML = 'Tekan <kbd>M</kbd> untuk memutar suara';
+                lbl.innerHTML = 'Press <kbd>M</kbd> to play audio';
             });
         }
     }
@@ -1227,7 +1227,7 @@
     function playListeningAudio(index) {
         if (audioStates[index] === 'played' || audioStates[index] === 'playing') {
             if (audioStates[index] === 'played') {
-                announce('Audio sudah pernah diputar. Tidak bisa diputar ulang.');
+                announce('Audio has already been played. Replay is not allowed.');
             }
             return;
         }
@@ -1242,21 +1242,21 @@
         const audio = new Audio(audioSrc);
         currentListeningAudio = audio;
         audioStates[index] = 'playing';
-        updateSpeakerIcon(`speaker-btn-${index}`, `speaker-label-${index}`, 'playing', `audio soal ${index + 1}`);
+        updateSpeakerIcon(`speaker-btn-${index}`, `speaker-label-${index}`, 'playing', `question audio ${index + 1}`);
 
         audio.play().catch(e => {
             console.error('Audio play failed:', e);
             audioStates[index] = 'idle';
-            updateSpeakerIcon(`speaker-btn-${index}`, `speaker-label-${index}`, 'idle', `audio soal ${index + 1}`);
-            announce('Gagal memutar audio. Silakan coba lagi.');
+            updateSpeakerIcon(`speaker-btn-${index}`, `speaker-label-${index}`, 'idle', `question audio ${index + 1}`);
+            announce('Failed to play audio. Please try again.');
         });
 
         audio.addEventListener('ended', () => {
             audioStates[index] = 'played';
-            updateSpeakerIcon(`speaker-btn-${index}`, `speaker-label-${index}`, 'played', `audio soal ${index + 1}`);
+            updateSpeakerIcon(`speaker-btn-${index}`, `speaker-label-${index}`, 'played', `question audio ${index + 1}`);
             currentListeningAudio = null;
             
-            announce('Audio selesai diputar. Membacakan pilihan jawaban...');
+            announce('Audio finished. Reading answer choices...');
 
             // Gather options text
             const qContainer = document.getElementById(`question-${index}`);
@@ -1275,7 +1275,7 @@
                 const utterance = new SpeechSynthesisUtterance(optionsText);
                 utterance.lang = 'en-US';
                 utterance.onend = () => {
-                    announce('Waktu menjawab dimulai.');
+                    announce('Answering time has started.');
                     if (isListening) {
                         timerPaused = false;
                         timeLeft = 15;
@@ -1285,7 +1285,7 @@
                 };
                 window.speechSynthesis.speak(utterance);
             } else {
-                announce('Waktu menjawab dimulai.');
+                announce('Answering time has started.');
                 if (typeof speak === 'function') speak('Audio finished. Timer started. Select your answer.');
                 if (isListening) {
                     timerPaused = false;
@@ -1298,9 +1298,9 @@
 
         audio.addEventListener('error', () => {
             audioStates[index] = 'idle';
-            updateSpeakerIcon(`speaker-btn-${index}`, `speaker-label-${index}`, 'idle', `audio soal ${index + 1}`);
+            updateSpeakerIcon(`speaker-btn-${index}`, `speaker-label-${index}`, 'idle', `question audio ${index + 1}`);
             currentListeningAudio = null;
-            announce('Error memutar audio.');
+            announce('Error playing audio.');
         });
     }
 
@@ -1318,14 +1318,14 @@
                 currentListeningAudio.pause();
                 directionsAudioStates[part] = 'paused';
                 updateSpeakerIcon(`dir-speaker-${part}`, `dir-label-${part}`, 'idle', `Directions Part ${part}`);
-                announce('Audio dihentikan sementara. Tekan M untuk melanjutkan.');
+                announce('Audio paused. Press M to resume.');
                 return;
             } else if (currentListeningAudio.paused && !currentListeningAudio.ended) {
                 // Resume it
                 currentListeningAudio.play().catch(e => console.error(e));
                 directionsAudioStates[part] = 'playing';
                 updateSpeakerIcon(`dir-speaker-${part}`, `dir-label-${part}`, 'playing', `Directions Part ${part}`);
-                announce('Melanjutkan pemutaran audio Directions.');
+                announce('Resuming Directions audio.');
                 return;
             } else if (currentListeningAudio.ended) {
                 // Restart it
@@ -1333,7 +1333,7 @@
                 currentListeningAudio.play().catch(e => console.error(e));
                 directionsAudioStates[part] = 'playing';
                 updateSpeakerIcon(`dir-speaker-${part}`, `dir-label-${part}`, 'playing', `Directions Part ${part}`);
-                announce('Mengulang pemutaran audio Directions.');
+                announce('Replaying Directions audio.');
                 return;
             }
         }
@@ -1349,7 +1349,7 @@
             console.error('Directions audio play failed:', e);
             directionsAudioStates[part] = 'idle';
             updateSpeakerIcon(`dir-speaker-${part}`, `dir-label-${part}`, 'idle', `Directions Part ${part}`);
-            announce('Gagal memutar audio. Silakan coba lagi.');
+            announce('Failed to play audio. Please try again.');
         });
 
         audio.addEventListener('ended', () => {
@@ -1363,7 +1363,7 @@
                 if (nextBtn) nextBtn.disabled = false;
             }
 
-            announce('Audio Directions selesai diputar. Tekan M jika ingin mengulang, atau N untuk melanjutkan.');
+            announce('Directions audio finished. Press M to replay, or N to continue.');
             if (typeof speak === 'function') speak('Audio finished. Press M to replay, or N to continue.');
         });
 
@@ -1371,7 +1371,7 @@
             directionsAudioStates[part] = 'idle';
             updateSpeakerIcon(`dir-speaker-${part}`, `dir-label-${part}`, 'idle', `Directions Part ${part}`);
             if (currentListeningAudio === audio) currentListeningAudio = null;
-            announce('Error memutar audio.');
+            announce('Error playing audio.');
         });
     }
 
@@ -1387,9 +1387,9 @@
         label.classList.add(`state-${state}`);
 
         const labels = {
-            idle:    { text: 'Klik untuk memutar audio', aria: `Putar ${contextName}. Audio hanya bisa diputar 1 kali.` },
-            playing: { text: 'Audio sedang diputar...', aria: `${contextName} sedang diputar.` },
-            played:  { text: 'Audio telah diputar', aria: `${contextName} sudah selesai. Tidak bisa diputar ulang.` },
+            idle:    { text: 'Click to play audio', aria: `Play ${contextName}. Audio can only be played once.` },
+            playing: { text: 'Audio is playing...', aria: `${contextName} is playing.` },
+            played:  { text: 'Audio has been played', aria: `${contextName} is finished. Replay is not allowed.` },
         };
 
         label.textContent = labels[state].text;
@@ -1441,7 +1441,7 @@
             if (isReading) sectionAudioName = 'Section 3 Reading';
 
             speak(`${sectionAudioName}, Complete.`);
-            announce(`Waktu habis untuk ${sectionAudioName}.`);
+            announce(`Time is up for ${sectionAudioName}.`);
 
             setTimeout(() => {
                 @if(!$isLastSection)
@@ -1482,21 +1482,21 @@
                 playTimeWarningAlarm('normal', () => {
                     speak('Ten Minutes Left.');
                 });
-                announce('Peringatan: Waktu tersisa 10 menit.');
+                announce('Warning: 10 minutes remaining.');
             }
             if (timeLeft === 300) {
                 // 5 minutes left
                 playTimeWarningAlarm('warning', () => {
                     speak('Five Minutes Left.');
                 });
-                announce('Peringatan: Waktu tersisa 5 menit.');
+                announce('Warning: 5 minutes remaining.');
             }
             if (timeLeft === 60) {
                 // 1 minute left
                 playTimeWarningAlarm('danger', () => {
                     speak('One Minute Left.');
                 });
-                announce('Peringatan: Waktu tersisa 1 menit!');
+                announce('Warning: 1 minute remaining!');
             }
         }
     }, 1000);
@@ -1591,7 +1591,7 @@
 
         // Listening: cannot go back
         if (isListening && stepIndex < currentStep) {
-            announce('Tidak bisa kembali ke soal sebelumnya pada section Listening.');
+            announce('Cannot return to previous question in Listening section.');
             return;
         }
 
@@ -1642,13 +1642,13 @@
             if (speakerBtn) {
                 if (isListening) {
                     if (directionsAudioStates[step.directionId] !== 'played') {
-                        announce(`Directions ${step.label}. Tekan tombol M untuk memutar petunjuk audio, atau tekan N untuk langsung melanjutkan.`);
+                        announce(`Directions ${step.label}. Press M to play audio instructions, or N to skip.`);
                         if (typeof speak === 'function') speak(`Directions ${step.label}. Press M to play audio, or N to skip.`);
                     } else {
-                        announce(`Directions ${step.label}. Dengarkan petunjuk, lalu klik Berikutnya.`);
+                        announce(`Directions ${step.label}. Listen to instructions, then click Next.`);
                     }
                 } else {
-                    announce(`Directions ${step.label}. Tekan tombol M untuk memutar petunjuk, atau tekan N untuk langsung melanjutkan.`);
+                    announce(`Directions ${step.label}. Press M to play instructions, or N to skip.`);
                     readDirectionsTTS(step.directionId, step.label);
                 }
             }
@@ -1729,7 +1729,7 @@
         // Update next button text
         const nextBtn = document.getElementById('btn-next');
         if (currentStep === totalSteps - 1) {
-            nextBtn.innerHTML = 'Terakhir';
+            nextBtn.innerHTML = 'Finish';
         } else {
             nextBtn.innerHTML = 'Next → <kbd>N</kbd>';
         }
@@ -1746,7 +1746,7 @@
 
     function nextQuestion() {
         if (!canProceed) {
-            announce('Silakan dengarkan instruksi audio hingga selesai sebelum menekan Next.');
+            announce('Please listen to the audio instruction until finished before pressing Next.');
             if (typeof speak === 'function') speak('Please listen to the audio until finished.');
             return;
         }
@@ -1909,7 +1909,7 @@
                     speakerLabel.classList.remove('state-idle', 'state-playing', 'state-played');
                     speakerBtn.classList.add('state-playing');
                     speakerLabel.classList.add('state-playing');
-                    speakerLabel.textContent = 'Audio sedang diputar...';
+                    speakerLabel.textContent = 'Audio is playing...';
 
                     structureTTSCheckInterval = setInterval(() => {
                         if (!window.speechSynthesis.speaking) {
@@ -1919,7 +1919,7 @@
                             speakerLabel.classList.remove('state-playing');
                             speakerBtn.classList.add('state-idle');
                             speakerLabel.classList.add('state-idle');
-                            speakerLabel.innerHTML = 'Tekan <kbd>M</kbd> untuk memutar suara';
+                            speakerLabel.innerHTML = 'Press <kbd>M</kbd> to play audio';
                         }
                     }, 300);
                 }
@@ -1956,7 +1956,7 @@
                 dirLabel.classList.remove('state-idle', 'state-playing', 'state-played');
                 dirBtn.classList.add('state-playing');
                 dirLabel.classList.add('state-playing');
-                dirLabel.textContent = 'Audio sedang diputar...';
+                dirLabel.textContent = 'Audio is playing...';
 
                 directionsTTSCheckInterval = setInterval(() => {
                     if (!window.speechSynthesis.speaking) {
@@ -1966,7 +1966,7 @@
                         dirLabel.classList.remove('state-playing');
                         dirBtn.classList.add('state-idle');
                         dirLabel.classList.add('state-idle');
-                        dirLabel.innerHTML = 'Tekan <kbd>M</kbd> untuk memutar suara';
+                        dirLabel.innerHTML = 'Press <kbd>M</kbd> to play audio';
                     }
                 }, 300);
             }
@@ -2048,8 +2048,8 @@
                     <h2 id="confirm-title" style="margin-bottom: 12px;"></h2>
                     <p id="confirm-msg" style="margin-bottom: 24px; color: var(--text-muted);"></p>
                     <div style="display: flex; gap: 12px; justify-content: flex-end;">
-                        <button class="btn btn-secondary" id="confirm-cancel" aria-label="Batal">Batal (P / Esc)</button>
-                        <button class="btn btn-primary" id="confirm-ok" aria-label="Ya, Lanjutkan">Lanjutkan (Y / Enter)</button>
+                        <button class="btn btn-secondary" id="confirm-cancel" aria-label="Cancel">Cancel (P / Esc)</button>
+                        <button class="btn btn-primary" id="confirm-ok" aria-label="Yes, Continue">Continue (Y / Enter)</button>
                     </div>
                 </div>
             `;
@@ -2095,7 +2095,7 @@
         const answered = document.querySelectorAll('.q-btn.answered').length;
         const msg = `You have answered ${answered} of ${totalQuestions} questions in this section. Move to the next section?`;
 
-        const confirmed = await showConfirmModal('Pindah Section', msg);
+        const confirmed = await showConfirmModal('Change Section', msg);
         if (confirmed) {
             document.getElementById('next-section-form').submit();
         }
@@ -2107,7 +2107,7 @@
         const answered = document.querySelectorAll('.q-btn.answered').length;
         const msg = `You have answered ${answered} of ${totalQuestions} questions. Submit your exam?`;
 
-        const confirmed = await showConfirmModal('Submit Ujian', msg);
+        const confirmed = await showConfirmModal('Submit Exam', msg);
         if (confirmed) {
             speak('Exam, Complete.');
             setTimeout(() => {
@@ -2210,7 +2210,7 @@
         if (e.key === 'ArrowLeft' || key === 'P') {
             e.preventDefault();
             if (isListening) {
-                announce('Tidak bisa kembali ke soal sebelumnya.');
+                announce('Cannot return to previous question.');
             } else {
                 prevQuestion();
             }
@@ -2233,10 +2233,10 @@
                 gain.connect(ac.destination);
                 osc.start();
                 osc.stop(ac.currentTime + 0.5);
-                announce('Test suara berhasil diputar.');
+                announce('Sound test played successfully.');
             } catch(e) {
                 if (typeof speak === 'function') speak('Sound test.');
-                announce('Test suara diputar.');
+                announce('Sound test playing.');
             }
             return;
         }
@@ -2254,7 +2254,7 @@
                     stopCurrentAudio();
                     passageHasBeenRead = false;
                     readCurrentQuestion();
-                    announce('Membaca ulang soal.');
+                    announce('Re-reading question.');
                 }
             }
             return;

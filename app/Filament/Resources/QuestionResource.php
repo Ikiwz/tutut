@@ -52,12 +52,12 @@ class QuestionResource extends Resource
                     ->nullable()
                     ->rows(3)
                     ->columnSpanFull()
-                    ->helperText('Untuk section Listening, teks soal bersifat opsional karena soal diwakili oleh audio.'),
+                    ->helperText('For Listening section, question text is optional as questions are represented by audio.'),
             ])->columns(2),
-            Schemas\Components\Section::make('Audio Soal (Listening)')
+            Schemas\Components\Section::make('Question Audio (Listening)')
                 ->schema([
                     Forms\Components\FileUpload::make('audio_path')
-                        ->label('Audio Soal')
+                        ->label('Question Audio')
                         ->disk('public')
                         ->directory('question-audio')
                         ->visibility('public')
@@ -66,9 +66,9 @@ class QuestionResource extends Resource
                         ->openable()
                         ->downloadable()
                         ->nullable()
-                        ->helperText('Upload file audio untuk soal listening. Audio ini akan ditampilkan sebagai ikon speaker di halaman ujian siswa.'),
+                        ->helperText('Upload audio file for listening questions. This audio will appear as a speaker icon on the exam page.'),
                 ])
-                ->description('Upload audio soal untuk section Listening. Siswa akan melihat ikon speaker yang hanya bisa diputar 1 kali.'),
+                ->description('Upload question audio for Listening section.'),
             Schemas\Components\Section::make('Answer Options')->schema([
                 Forms\Components\Textarea::make('option_a')->required()->label('Option A')->rows(2),
                 Forms\Components\FileUpload::make('option_a_audio')

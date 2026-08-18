@@ -1,5 +1,5 @@
 @extends('layouts.student')
-@section('title', 'Hasil Ujian — TOEFL')
+@section('title', 'Exam Results — TOEFL')
 
 @section('styles')
 <style>
@@ -149,37 +149,37 @@
 <div class="container result-page">
     <div class="result-header">
         <div class="result-icon" aria-hidden="true">🎓</div>
-        <h1>Hasil Ujian TOEFL</h1>
+        <h1>TOEFL Exam Results</h1>
         <p>{{ $examAttempt->testSession->title ?? 'Test' }}</p>
     </div>
 
-    <div class="meta-info" aria-label="Informasi ujian">
+    <div class="meta-info" aria-label="Exam information">
         <span>📅 {{ $examAttempt->started_at?->format('d M Y') }}</span>
         <span>⏱️ {{ $examAttempt->started_at?->diffForHumans($examAttempt->completed_at, true) }}</span>
-        <span>✅ Selesai: {{ $examAttempt->completed_at?->format('H:i') }}</span>
+        <span>✅ Completed: {{ $examAttempt->completed_at?->format('H:i') }}</span>
     </div>
 
-    <div class="total-score-card" role="region" aria-label="Total skor TOEFL">
-        <div class="score-big" aria-label="Total skor: {{ $examAttempt->total_score }}">{{ $examAttempt->total_score }}</div>
+    <div class="total-score-card" role="region" aria-label="Total TOEFL score">
+        <div class="score-big" aria-label="Total score: {{ $examAttempt->total_score }}">{{ $examAttempt->total_score }}</div>
         <div class="score-label">Total TOEFL Score (max 677)</div>
     </div>
 
-    <div class="scores-grid" role="list" aria-label="Skor per section">
+    <div class="scores-grid" role="list" aria-label="Scores per section">
         @php
             $icons = ['listening' => '🎧', 'structure' => '📝', 'reading' => '📖'];
         @endphp
         @foreach($sectionResults as $slug => $result)
-        <div class="card score-card" role="listitem" aria-label="{{ $result['name'] }}: skor {{ $examAttempt->{'score_' . $slug} ?? 0 }}">
+        <div class="card score-card" role="listitem" aria-label="{{ $result['name'] }}: score {{ $examAttempt->{'score_' . $slug} ?? 0 }}">
             <div class="section-icon" aria-hidden="true">{{ $icons[$slug] ?? '📋' }}</div>
             <h3>{{ $result['name'] }}</h3>
             <div class="score-val">{{ $examAttempt->{'score_' . $slug} ?? 0 }}</div>
             <div class="score-detail">
-                {{ $result['correct'] }} benar dari {{ $result['total'] }} soal
+                {{ $result['correct'] }} correct out of {{ $result['total'] }} questions
                 ({{ $result['total'] > 0 ? round(($result['correct'] / $result['total']) * 100) : 0 }}%)
             </div>
             <div class="progress-bar" role="progressbar"
                  aria-valuenow="{{ $result['correct'] }}" aria-valuemin="0" aria-valuemax="{{ $result['total'] }}"
-                 aria-label="Progress: {{ $result['correct'] }} dari {{ $result['total'] }}">
+                 aria-label="Progress: {{ $result['correct'] }} of {{ $result['total'] }}">
                 <div class="progress-fill" style="width: {{ $result['total'] > 0 ? ($result['correct'] / $result['total']) * 100 : 0 }}%"></div>
             </div>
         </div>
@@ -187,8 +187,8 @@
     </div>
 
     <div class="result-actions">
-        <a href="{{ route('student.dashboard') }}" class="btn btn-primary btn-lg" aria-label="Kembali ke dashboard">
-            ← Kembali ke Dashboard
+        <a href="{{ route('student.dashboard') }}" class="btn btn-primary btn-lg" aria-label="Back to dashboard">
+            ← Back to Dashboard
         </a>
     </div>
 </div>

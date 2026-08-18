@@ -38,18 +38,18 @@ class ExamController extends Controller
     {
         if (!$testSession->is_active) {
             return redirect()->route('student.dashboard')
-                ->with('error', 'Ujian ini tidak aktif.');
+                ->with('error', 'This test is not active.');
         }
 
         if ($testSession->isLocked()) {
             $formattedTime = $testSession->starts_at->translatedFormat('d F Y, H:i');
             return redirect()->route('student.dashboard')
-                ->with('error', "Ujian belum dibuka. Ujian akan dibuka pada {$formattedTime} WIB.");
+                ->with('error', "The test is locked. It will open on {$formattedTime} WIB.");
         }
 
         if ($testSession->isEnded()) {
             return redirect()->route('student.dashboard')
-                ->with('error', 'Waktu pelaksanaan ujian ini telah berakhir.');
+                ->with('error', 'The test schedule has ended.');
         }
 
         $user = auth()->user();
@@ -91,7 +91,7 @@ class ExamController extends Controller
         if ($examAttempt->testSession && $examAttempt->testSession->isLocked()) {
             $formattedTime = $examAttempt->testSession->starts_at->translatedFormat('d F Y, H:i');
             return redirect()->route('student.dashboard')
-                ->with('error', "Ujian belum dibuka. Ujian akan dibuka pada {$formattedTime} WIB.");
+                ->with('error', "The test is locked. It will open on {$formattedTime} WIB.");
         }
 
         $testSession = $examAttempt->testSession->load('sections.directions.questions', 'sections.questions');

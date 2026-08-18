@@ -32,29 +32,29 @@ class DirectionResource extends Resource
                     ->required()
                     ->maxLength(50)
                     ->placeholder('e.g. Part A, Part B, Directions')
-                    ->helperText('Label singkat untuk direction ini (misal: Part A, Part B).'),
+                    ->helperText('Short label for this direction (e.g. Part A, Part B).'),
                 Forms\Components\TextInput::make('title')
                     ->required()
                     ->maxLength(255)
                     ->placeholder('e.g. Short Conversations, Longer Conversations')
-                    ->helperText('Judul deskriptif yang ditampilkan di halaman ujian.'),
+                    ->helperText('Descriptive title displayed on the exam page.'),
                 Forms\Components\RichEditor::make('description')
-                    ->label('Teks / Isi Direction')
+                    ->label('Direction Content / Text')
                     ->nullable()
                     ->columnSpanFull()
-                    ->placeholder('Ketikkan teks instruksi atau contoh soal di sini...')
-                    ->helperText('Instruksi lengkap yang ditampilkan sebelum soal dimulai (mendukung format teks).'),
+                    ->placeholder('Type instructions or example questions here...')
+                    ->helperText('Complete instructions displayed before questions start.'),
                 Forms\Components\TextInput::make('order')
                     ->numeric()
                     ->default(0)
                     ->required()
-                    ->helperText('Urutan direction dalam section.'),
+                    ->helperText('Display order within the section.'),
             ])->columns(2),
             Schemas\Components\Section::make('Direction Audio')
-                ->description('Upload audio untuk Directions ini. Audio akan diputar di halaman ujian sebelum siswa mengerjakan soal.')
+                ->description('Upload audio for this direction. Audio will be playable on the exam page.')
                 ->schema([
                     Forms\Components\FileUpload::make('audio_path')
-                        ->label('Audio Directions')
+                        ->label('Directions Audio')
                         ->disk('public')
                         ->directory('directions-audio')
                         ->visibility('public')
@@ -67,7 +67,7 @@ class DirectionResource extends Resource
                         ->openable()
                         ->downloadable()
                         ->nullable()
-                        ->helperText('Upload audio directions. Audio akan diputar otomatis sebelum soal dimulai.'),
+                        ->helperText('Upload audio directions file.'),
                 ]),
         ]);
     }

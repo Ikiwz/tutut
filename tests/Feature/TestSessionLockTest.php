@@ -94,8 +94,8 @@ class TestSessionLockTest extends TestCase
         $response->assertOk();
         $response->assertSee('Future Exam 2026');
         $response->assertSee('Ready Exam 2026');
-        $response->assertSee('Terkunci');
-        $response->assertSee('Dibuka');
+        $response->assertSee('Locked');
+        $response->assertSee('Open');
     }
 
     public function test_student_cannot_start_expired_exam(): void

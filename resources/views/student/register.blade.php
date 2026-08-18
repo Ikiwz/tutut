@@ -1,5 +1,5 @@
 @extends('layouts.student')
-@section('title', 'Daftar Akun')
+@section('title', 'Register')
 
 @section('styles')
 <style>
@@ -75,9 +75,9 @@
     <div class="login-card">
         <div class="card">
             <div class="login-header">
-                <img src="{{ asset('images/logo.png') }}" alt="Logo TUTUT" class="login-icon-img" style="height: 64px; width: auto; margin: 0 auto 20px; display: block;" aria-hidden="true">
-                <h1>Daftar Akun Baru</h1>
-                <p>Platform ujian TOEFL untuk tunanetra</p>
+                <img src="{{ asset('images/logo.png') }}" alt="TUTUT Logo" class="login-icon-img" style="height: 64px; width: auto; margin: 0 auto 20px; display: block;" aria-hidden="true">
+                <h1>Register New Account</h1>
+                <p>Accessible TOEFL exam platform for visually impaired students</p>
             </div>
 
             @if ($errors->any())
@@ -87,42 +87,42 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('student.register.submit') }}" aria-label="Form pendaftaran peserta">
+            <form method="POST" action="{{ route('student.register.submit') }}" aria-label="Student registration form">
                 @csrf
                 <div class="form-group">
-                    <label for="name" class="form-label">Nama Lengkap</label>
+                    <label for="name" class="form-label">Full Name</label>
                     <input type="text" id="name" name="name" class="form-input"
                            value="{{ old('name') }}" required autofocus
-                           placeholder="Masukkan nama lengkap Anda">
+                           placeholder="Enter your full name">
                 </div>
 
                 <div class="form-group">
                     <label for="email" class="form-label">Email</label>
                     <input type="email" id="email" name="email" class="form-input"
                            value="{{ old('email') }}" required
-                           placeholder="Masukkan email Anda">
+                           placeholder="Enter your email">
                 </div>
 
                 <div class="form-group">
                     <label for="password" class="form-label">Password</label>
                     <input type="password" id="password" name="password" class="form-input"
-                           required placeholder="Minimal 8 karakter">
+                           required placeholder="Minimum 8 characters">
                 </div>
 
                 <div class="form-group">
-                    <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
+                    <label for="password_confirmation" class="form-label">Confirm Password</label>
                     <input type="password" id="password_confirmation" name="password_confirmation" class="form-input"
-                           required placeholder="Ketik ulang password">
+                           required placeholder="Re-enter your password">
                 </div>
 
                 <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; justify-content: center;">
-                    Daftar Sekarang
+                    Register Now
                 </button>
             </form>
         </div>
 
         <div class="login-footer">
-            Sudah punya akun? <a href="{{ route('student.login') }}">Masuk di sini</a>
+            Already have an account? <a href="{{ route('student.login') }}">Log in here</a>
         </div>
     </div>
 </div>

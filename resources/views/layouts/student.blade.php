@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" class="scroll-smooth">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -484,8 +484,8 @@
             </div>
             @guest
                 <div style="display: flex; gap: 8px; margin-left: 12px;">
-                    <a href="{{ route('student.login') }}" class="btn btn-primary btn-sm" aria-label="Login Peserta">Login Peserta</a>
-                    <a href="{{ url('/admin') }}" class="btn btn-secondary btn-sm" aria-label="Login Admin">Login Admin</a>
+                    <a href="{{ route('student.login') }}" class="btn btn-primary btn-sm" aria-label="Student Login">Student Login</a>
+                    <a href="{{ url('/admin') }}" class="btn btn-secondary btn-sm" aria-label="Admin Login">Admin Login</a>
                 </div>
             @endguest
             @auth
@@ -508,23 +508,23 @@
         <div class="modal">
             <h2>⌨️ Keyboard Shortcuts</h2>
             <ul class="shortcut-list" role="list">
-                <li><span>Pilih jawaban A, B, C, atau D</span> <span><kbd>A</kbd> <kbd>B</kbd> <kbd>C</kbd> <kbd>D</kbd></span></li>
-                <li><span>Soal selanjutnya</span> <span><kbd>→</kbd> / <kbd>N</kbd></span></li>
-                <li><span>Soal sebelumnya</span> <span><kbd>←</kbd> / <kbd>P</kbd></span></li>
-                <li><span>Putar audio cerita (Khusus Reading)</span> <kbd>R</kbd></li>
-                <li><span>Putar audio soal / Baca ulang soal</span> <kbd>M</kbd></li>
-                <li><span>Aktifkan/Matikan suara asisten (TTS)</span> <kbd>V</kbd></li>
-                <li><span>Tes suara / Audio perangkat</span> <kbd>T</kbd></li>
-                <li><span>Kumpulkan bagian saat ini (Submit)</span> <kbd>S</kbd></li>
-                <li><span>Lanjut ke section berikutnya</span> <kbd>L</kbd></li>
-                <li><span>Konfirmasi "Ya" (Pilih Ya di Popup)</span> <span><kbd>Y</kbd> / <kbd>Enter</kbd></span></li>
-                <li><span>Konfirmasi "Tidak" / Tutup popup</span> <span><kbd>P</kbd> / <kbd>Esc</kbd></span></li>
-                <li><span>Lompat ke nomor soal tertentu</span> <span><kbd>1</kbd>-<kbd>9</kbd></span></li>
-                <li><span>Buka menu bantuan ini</span> <kbd>H</kbd></li>
-                <li><span>Perbesar teks & layar (Zoom In)</span> <span><kbd>Ctrl</kbd> + <kbd>+</kbd></span></li>
-                <li><span>Perkecil teks & layar (Zoom Out)</span> <span><kbd>Ctrl</kbd> + <kbd>-</kbd></span></li>
-                <li><span>Reset ukuran layar normal (100%)</span> <span><kbd>Ctrl</kbd> + <kbd>0</kbd></span></li>
-                <li><span>Mode kontras tinggi (Layar Gelap)</span> <span><kbd>Ctrl</kbd> + <kbd>U</kbd></span></li>
+                <li><span>Select answer A, B, C, or D</span> <span><kbd>A</kbd> <kbd>B</kbd> <kbd>C</kbd> <kbd>D</kbd></span></li>
+                <li><span>Next question</span> <span><kbd>→</kbd> / <kbd>N</kbd></span></li>
+                <li><span>Previous question</span> <span><kbd>←</kbd> / <kbd>P</kbd></span></li>
+                <li><span>Play passage audio (Reading only)</span> <kbd>R</kbd></li>
+                <li><span>Play question audio / Replay question</span> <kbd>M</kbd></li>
+                <li><span>Toggle voice assistant (TTS)</span> <kbd>V</kbd></li>
+                <li><span>Test audio / Device audio</span> <kbd>T</kbd></li>
+                <li><span>Submit current section</span> <kbd>S</kbd></li>
+                <li><span>Proceed to next section</span> <kbd>L</kbd></li>
+                <li><span>Confirm "Yes" (Select Yes in dialog)</span> <span><kbd>Y</kbd> / <kbd>Enter</kbd></span></li>
+                <li><span>Confirm "No" / Close dialog</span> <span><kbd>P</kbd> / <kbd>Esc</kbd></span></li>
+                <li><span>Jump to specific question number</span> <span><kbd>1</kbd>-<kbd>9</kbd></span></li>
+                <li><span>Open this help menu</span> <kbd>H</kbd></li>
+                <li><span>Zoom in text & screen</span> <span><kbd>Ctrl</kbd> + <kbd>+</kbd></span></li>
+                <li><span>Zoom out text & screen</span> <span><kbd>Ctrl</kbd> + <kbd>-</kbd></span></li>
+                <li><span>Reset screen zoom (100%)</span> <span><kbd>Ctrl</kbd> + <kbd>0</kbd></span></li>
+                <li><span>High contrast mode (Dark screen)</span> <span><kbd>Ctrl</kbd> + <kbd>U</kbd></span></li>
             </ul>
             <div style="margin-top: 20px; text-align: right;">
                 <button class="btn btn-primary" onclick="closeShortcutsModal()" aria-label="Close shortcut help">
