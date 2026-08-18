@@ -14,12 +14,11 @@ class ExamController extends Controller
         $user = auth()->user();
         $activeTests = TestSession::where('is_active', true)
             ->where(function ($q) {
-                $q->whereNull('starts_at')->orWhere('starts_at', '<=', now());
-            })
-            ->where(function ($q) {
                 $q->whereNull('ends_at')->orWhere('ends_at', '>=', now());
             })
             ->with('sections')
+            ->orderByRaw('CASE WHEN starts_at IS NULL THEN 0 WHEN starts_at <= ? THEN 1 ELSE 2 END', [now()])
+            ->orderBy('starts_at', 'asc')
             ->get();
 
         $completedAttempts = ExamAttempt::where('user_id', $user->id)
@@ -37,6 +36,22 @@ class ExamController extends Controller
 
     public function startExam(TestSession $testSession)
     {
+        if (!$testSession->is_active) {
+            return redirect()->route('student.dashboard')
+                ->with('error', 'Ujian ini tidak aktif.');
+        }
+
+        if ($testSession->isLocked()) {
+            $formattedTime = $testSession->starts_at->translatedFormat('d F Y, H:i');
+            return redirect()->route('student.dashboard')
+                ->with('error', "Ujian belum dibuka. Ujian akan dibuka pada {$formattedTime} WIB.");
+        }
+
+        if ($testSession->isEnded()) {
+            return redirect()->route('student.dashboard')
+                ->with('error', 'Waktu pelaksanaan ujian ini telah berakhir.');
+        }
+
         $user = auth()->user();
 
         // Check if already in progress
@@ -71,6 +86,12 @@ class ExamController extends Controller
 
         if ($examAttempt->status === 'completed') {
             return redirect()->route('exam.result', $examAttempt);
+        }
+
+        if ($examAttempt->testSession && $examAttempt->testSession->isLocked()) {
+            $formattedTime = $examAttempt->testSession->starts_at->translatedFormat('d F Y, H:i');
+            return redirect()->route('student.dashboard')
+                ->with('error', "Ujian belum dibuka. Ujian akan dibuka pada {$formattedTime} WIB.");
         }
 
         $testSession = $examAttempt->testSession->load('sections.directions.questions', 'sections.questions');

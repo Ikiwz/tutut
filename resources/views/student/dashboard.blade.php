@@ -127,6 +127,20 @@
         </div>
     </div>
 
+    @if(session('error'))
+    <div class="alert alert-error" role="alert" style="margin-bottom: 24px;">
+        <span aria-hidden="true">⚠️</span>
+        <div>{{ session('error') }}</div>
+    </div>
+    @endif
+
+    @if(session('success'))
+    <div class="alert alert-success" role="status" style="margin-bottom: 24px;">
+        <span aria-hidden="true">✅</span>
+        <div>{{ session('success') }}</div>
+    </div>
+    @endif
+
     @if($inProgressAttempt)
     <div class="resume-bar" role="alert">
         <div>
@@ -150,21 +164,56 @@
         @foreach($activeTests as $test)
         <div class="card test-card" role="article" aria-label="Ujian: {{ $test->title }}">
             <div class="test-info">
-                <h3>{{ $test->title }}</h3>
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px; gap:8px;">
+                    <h3 style="margin-bottom:0;">{{ $test->title }}</h3>
+                    @if($test->isLocked())
+                        <span class="badge badge-warning" id="status-badge-{{ $test->id }}" aria-label="Status: Terkunci">🔒 Terkunci</span>
+                    @else
+                        <span class="badge badge-success" id="status-badge-{{ $test->id }}" aria-label="Status: Dibuka">🟢 Dibuka</span>
+                    @endif
+                </div>
                 <p>{{ $test->description }}</p>
+
+                @if($test->starts_at || $test->ends_at)
+                <div style="font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 12px; display: flex; flex-direction: column; gap: 4px; background: var(--bg); padding: 10px 12px; border-radius: var(--radius); border: 1px solid var(--border);">
+                    @if($test->starts_at)
+                    <div>📅 <strong>Jadwal Mulai:</strong> {{ $test->starts_at->format('d M Y, H:i') }} WIB</div>
+                    @endif
+                    @if($test->ends_at)
+                    <div>⏰ <strong>Batas Selesai:</strong> {{ $test->ends_at->format('d M Y, H:i') }} WIB</div>
+                    @endif
+                    @if($test->isLocked())
+                    <div id="countdown-wrap-{{ $test->id }}" class="badge badge-warning" style="align-self: flex-start; margin-top: 4px; padding: 4px 10px; font-size: 0.8125rem;">
+                        ⏳ Dibuka dalam: <span id="countdown-{{ $test->id }}" data-starts-at="{{ $test->starts_at->toISOString() }}" style="font-weight: 700; margin-left: 4px;">Menghitung...</span>
+                    </div>
+                    @endif
+                </div>
+                @endif
+
                 <div class="test-sections" aria-label="Sections dalam ujian ini">
                     @foreach($test->sections as $section)
                         <span class="badge badge-primary">{{ $section->name }} ({{ $section->duration_minutes }} min)</span>
                     @endforeach
                 </div>
             </div>
-            <form method="POST" action="{{ route('exam.start', $test) }}">
+
+            @if($test->isLocked())
+            <form method="POST" action="{{ route('exam.start', $test) }}" id="form-exam-{{ $test->id }}">
                 @csrf
-                <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;"
+                <button type="submit" disabled id="btn-exam-{{ $test->id }}" class="btn btn-secondary" style="width:100%;justify-content:center;opacity:0.65;cursor:not-allowed;"
+                        aria-label="Ujian {{ $test->title }} masih terkunci. Dibuka pada {{ $test->starts_at->format('d M Y, H:i') }}">
+                    🔒 Ujian Terkunci (Belum Waktunya)
+                </button>
+            </form>
+            @else
+            <form method="POST" action="{{ route('exam.start', $test) }}" id="form-exam-{{ $test->id }}">
+                @csrf
+                <button type="submit" id="btn-exam-{{ $test->id }}" class="btn btn-primary" style="width:100%;justify-content:center;"
                         aria-label="Mulai ujian {{ $test->title }}. Shortcut: M">
                     🚀 Mulai Ujian <kbd>M</kbd>
                 </button>
             </form>
+            @endif
         </div>
         @endforeach
     </div>
@@ -313,6 +362,73 @@
         }
     }
 
+    // Real-time Countdown and Auto-unlock for Scheduled Tests
+    function updateCountdowns() {
+        const countdownElements = document.querySelectorAll('[id^="countdown-"]');
+        const now = new Date().getTime();
+
+        countdownElements.forEach(el => {
+            const startsAtISO = el.getAttribute('data-starts-at');
+            if (!startsAtISO) return;
+
+            const targetTime = new Date(startsAtISO).getTime();
+            const diff = targetTime - now;
+
+            const testId = el.id.replace('countdown-', '');
+            const badge = document.getElementById(`status-badge-${testId}`);
+            const btn = document.getElementById(`btn-exam-${testId}`);
+            const countdownWrap = document.getElementById(`countdown-wrap-${testId}`);
+
+            if (diff <= 0) {
+                // Time has arrived! Unlock exam automatically
+                if (countdownWrap) countdownWrap.style.display = 'none';
+                if (badge) {
+                    badge.className = 'badge badge-success';
+                    badge.textContent = '🟢 Dibuka';
+                    badge.setAttribute('aria-label', 'Status: Dibuka');
+                }
+                if (btn && btn.hasAttribute('disabled')) {
+                    btn.removeAttribute('disabled');
+                    btn.className = 'btn btn-primary';
+                    btn.style.opacity = '1';
+                    btn.style.cursor = 'pointer';
+                    btn.innerHTML = '🚀 Mulai Ujian <kbd>M</kbd>';
+                    btn.setAttribute('aria-label', 'Mulai ujian. Shortcut: M');
+
+                    announce('Waktu ujian telah tiba. Ujian sekarang sudah dibuka.');
+                    if (typeof speak === 'function') speak('Exam is now unlocked and ready to start.');
+                }
+            } else {
+                const totalSeconds = Math.floor(diff / 1000);
+                const days = Math.floor(totalSeconds / 86400);
+                const hours = Math.floor((totalSeconds % 86400) / 3600);
+                const minutes = Math.floor((totalSeconds % 3600) / 60);
+                const seconds = totalSeconds % 60;
+
+                let formatted = '';
+                if (days > 0) {
+                    formatted = `${days} hari ${hours} jam ${minutes} mnt`;
+                } else if (hours > 0) {
+                    formatted = `${hours} jam ${minutes} mnt ${seconds} dtk`;
+                } else if (minutes > 0) {
+                    formatted = `${minutes} mnt ${seconds} dtk`;
+                } else {
+                    formatted = `${seconds} detik`;
+                }
+                el.textContent = formatted;
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        @if(session('error'))
+            announce("{{ session('error') }}");
+        @endif
+
+        updateCountdowns();
+        setInterval(updateCountdowns, 1000);
+    });
+
     // Keyboard Shortcuts for Dashboard
     document.addEventListener('keydown', (e) => {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
@@ -326,10 +442,18 @@
             testAudio();
         } else if (key === 'M') {
             e.preventDefault();
-            const startBtn = document.querySelector('form[action*="exam/start"] button');
-            if (startBtn) {
+            const activeStartBtn = document.querySelector('form[action*="exam/start"] button:not([disabled])');
+            if (activeStartBtn) {
                 announce('Memulai ujian');
-                startBtn.click();
+                activeStartBtn.click();
+            } else {
+                const lockedBtn = document.querySelector('form[action*="exam/start"] button[disabled]');
+                if (lockedBtn) {
+                    announce('Ujian masih terkunci sebelum waktunya tiba.');
+                    if (typeof speak === 'function') speak('Exam is currently locked.');
+                } else {
+                    announce('Tidak ada ujian yang dapat dimulai.');
+                }
             }
         }
     });

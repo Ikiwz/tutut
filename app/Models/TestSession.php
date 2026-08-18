@@ -19,6 +19,33 @@ class TestSession extends Model
         ];
     }
 
+    public function isLocked(): bool
+    {
+        return $this->starts_at !== null && $this->starts_at->isFuture();
+    }
+
+    public function isEnded(): bool
+    {
+        return $this->ends_at !== null && $this->ends_at->isPast();
+    }
+
+    public function isOpen(): bool
+    {
+        if (!$this->is_active) {
+            return false;
+        }
+
+        if ($this->isLocked()) {
+            return false;
+        }
+
+        if ($this->isEnded()) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function sections(): BelongsToMany
     {
         return $this->belongsToMany(Section::class, 'test_session_sections')->orderBy('sections.order');
