@@ -7,6 +7,8 @@
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <title>{{ $title ?? 'Admin Dashboard' }} — TUTUT</title>
     <meta name="description" content="TUTUT Examination Management and Proctoring Portal.">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#18181b">
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800&display=swap" rel="stylesheet" />
@@ -143,6 +145,18 @@
         {{ $slot ?? '' }}
         @yield('content')
     </flux:main>
+
+    {{-- Floating Toast Notifications --}}
+    @persist('toast')
+        <flux:toast position="top end" />
+    @endpersist
+
+    @if (session('success'))
+        <div x-data x-init="$nextTick(() => $flux.toast({ text: {{ Js::from(session('success')) }}, variant: 'success', heading: 'Success' }))"></div>
+    @endif
+    @if (session('error'))
+        <div x-data x-init="$nextTick(() => $flux.toast({ text: {{ Js::from(session('error')) }}, variant: 'danger', heading: 'Error' }))"></div>
+    @endif
 
     @livewireScripts
     @fluxScripts

@@ -7,6 +7,18 @@
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <title>{{ $title ?? 'Log In' }} — TUTUT</title>
 
+    {{-- SEO & Security Metadata --}}
+    <meta name="description" content="{{ $description ?? 'TUTUT Online TOEFL Examination Portal — Candidate and Administrator Authentication.' }}">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#18181b">
+
+    {{-- Open Graph Metadata --}}
+    <meta property="og:site_name" content="TUTUT">
+    <meta property="og:title" content="{{ $title ?? 'Log In' }} — TUTUT">
+    <meta property="og:description" content="TUTUT Online TOEFL Examination Portal.">
+    <meta property="og:image" content="{{ asset('images/logo.png') }}">
+    <meta property="og:type" content="website">
+
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800&display=swap" rel="stylesheet" />
 
@@ -102,6 +114,18 @@
             <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/60 via-transparent to-transparent"></div>
         </div>
     </aside>
+
+    {{-- Floating Toast Notifications --}}
+    @persist('toast')
+        <flux:toast position="top end" />
+    @endpersist
+
+    @if (session('success'))
+        <div x-data x-init="$nextTick(() => $flux.toast({ text: {{ Js::from(session('success')) }}, variant: 'success', heading: 'Success' }))"></div>
+    @endif
+    @if (session('error'))
+        <div x-data x-init="$nextTick(() => $flux.toast({ text: {{ Js::from(session('error')) }}, variant: 'danger', heading: 'Error' }))"></div>
+    @endif
 
     @livewireScripts
     @fluxScripts
