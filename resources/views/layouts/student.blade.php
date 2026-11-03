@@ -108,8 +108,8 @@
         </flux:dropdown>
     </flux:header>
 
-    <!-- Main Content (Official Inset Frame) -->
-    <flux:main inset id="student-main-content" role="main" class="p-6 lg:p-8 max-w-7xl mx-auto w-full">
+    <!-- Main Content (Official Flux Inset Layout) -->
+    <flux:main container inset id="student-main-content">
         @if (session('success'))
             <flux:callout variant="success" icon="check-circle" role="status" class="mb-6">
                 {{ session('success') }}

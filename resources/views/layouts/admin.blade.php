@@ -126,8 +126,8 @@
         </flux:dropdown>
     </flux:header>
 
-    <!-- Main Content Region (Official Inset Frame) -->
-    <flux:main inset id="admin-main-content" role="main" class="p-6 lg:p-8 max-w-7xl mx-auto w-full">
+    <!-- Main Content Region (Official Flux Inset Layout) -->
+    <flux:main container inset id="admin-main-content">
         @if (session('success'))
             <flux:callout variant="success" icon="check-circle" role="status" class="mb-6">
                 {{ session('success') }}
