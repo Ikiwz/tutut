@@ -1,6 +1,6 @@
 @extends('layouts.auth', [
     'title' => 'Register',
-    'heading' => 'Create an Account',
+    'heading' => 'Welcome',
     'subheading' => 'Enter your details to get started.',
 ])
 
