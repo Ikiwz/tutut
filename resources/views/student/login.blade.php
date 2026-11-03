@@ -16,7 +16,7 @@
         @csrf
 
         <flux:input
-            label="Email"
+            label="Email Address"
             type="email"
             name="email"
             value="{{ old('email') }}"

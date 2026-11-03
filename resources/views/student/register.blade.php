@@ -16,7 +16,7 @@
         @csrf
 
         <flux:input
-            label="Name"
+            label="Full Legal Name"
             name="name"
             value="{{ old('name') }}"
             placeholder="John Doe"
@@ -27,7 +27,7 @@
         />
 
         <flux:input
-            label="Email"
+            label="Email Address"
             type="email"
             name="email"
             value="{{ old('email') }}"
