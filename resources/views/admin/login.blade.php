@@ -38,12 +38,13 @@
             Sign In
         </flux:button>
     </form>
-
-    <flux:separator />
-
-    <div class="flex items-center justify-between text-xs">
-        <flux:text size="xs" class="text-zinc-500 dark:text-zinc-400">Authorized Personnel Only</flux:text>
-        <flux:link href="{{ route('student.login') }}" wire:navigate.hover class="font-medium">&larr; Candidate Portal</flux:link>
-    </div>
 </div>
+@endsection
+
+@section('footer')
+<flux:text size="xs" class="text-zinc-500 dark:text-zinc-400">Authorized Personnel Only</flux:text>
+
+<flux:card.actions>
+    <flux:link href="{{ route('student.login') }}" wire:navigate.hover class="font-medium text-xs">&larr; Candidate Portal</flux:link>
+</flux:card.actions>
 @endsection

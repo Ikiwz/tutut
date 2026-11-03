@@ -66,15 +66,15 @@
             Create Account
         </flux:button>
     </form>
-
-    <flux:separator />
-
-    <div class="flex items-center justify-between text-xs">
-        <flux:text size="xs">
-            Already registered? <flux:link href="{{ route('student.login') }}" wire:navigate.hover class="font-medium">Sign In</flux:link>
-        </flux:text>
-
-        <flux:link href="{{ route('admin.login') }}" wire:navigate.hover class="font-medium">Admin Portal &rarr;</flux:link>
-    </div>
 </div>
+@endsection
+
+@section('footer')
+<flux:text size="xs">
+    Already registered? <flux:link href="{{ route('student.login') }}" wire:navigate.hover class="font-medium">Sign In</flux:link>
+</flux:text>
+
+<flux:card.actions>
+    <flux:link href="{{ route('admin.login') }}" wire:navigate.hover class="font-medium text-xs">Admin Portal &rarr;</flux:link>
+</flux:card.actions>
 @endsection
