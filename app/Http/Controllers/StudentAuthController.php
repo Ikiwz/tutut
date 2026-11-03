@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -146,9 +147,11 @@ class StudentAuthController extends Controller
 
         RateLimiter::hit($registerThrottleKey, 900);
 
+        event(new Registered($user));
+
         Auth::login($user);
         $request->session()->flash('login_success', true);
 
-        return redirect()->route('student.dashboard')->with('success', 'Welcome to TUTUT! Your account has been created.');
+        return redirect()->route('verification.notice');
     }
 }

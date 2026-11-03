@@ -118,6 +118,7 @@ test('exam answer evaluation compares against exam_keys vault securely', functio
         'email' => 'bob@university.edu',
         'password' => 'secret123',
         'role' => 'student',
+        'email_verified_at' => now(),
     ]);
 
     $testSession = TestSession::create([

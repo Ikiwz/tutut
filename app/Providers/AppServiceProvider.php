@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\User;
 use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\DB;
@@ -66,6 +67,17 @@ class AppServiceProvider extends ServiceProvider
                 ->action('Reset Password', $url)
                 ->line('This password reset link will expire in 60 minutes.')
                 ->line('If you did not request a password reset, you can safely ignore this email.');
+        });
+
+        // Human-friendly verification email
+        VerifyEmail::toMailUsing(function (User $user, string $url) {
+            return (new MailMessage)
+                ->subject('Verify Your Email Address — TUTUT')
+                ->greeting("Hello {$user->name},")
+                ->line('Welcome to TUTUT! Please click the button below to verify your email address and activate your examination account.')
+                ->action('Verify Email Address', $url)
+                ->line('This verification link will expire in 60 minutes.')
+                ->line('If you did not create an account on TUTUT, you can safely ignore this email.');
         });
     }
 }

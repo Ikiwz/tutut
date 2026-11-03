@@ -30,6 +30,7 @@ test('authenticated student cannot access auth pages and is redirected to studen
         'email' => 'student@university.edu',
         'password' => 'secret123',
         'role' => 'student',
+        'email_verified_at' => now(),
     ]);
 
     // Student Login Page
@@ -100,6 +101,7 @@ test('authenticated student private pages include strict back forward cache prev
         'email' => 'candidate@university.edu',
         'password' => 'secret123',
         'role' => 'student',
+        'email_verified_at' => now(),
     ]);
 
     $response = $this->actingAs($student)->get(route('student.dashboard'));
@@ -198,7 +200,7 @@ test('candidate email is trimmed and normalized to lowercase on registration and
         'password_confirmation' => 'secret1234',
     ]);
 
-    $response->assertRedirect(route('student.dashboard'));
+    $response->assertRedirect(route('verification.notice'));
 
     $user = User::where('email', 'john.doe@university.edu')->first();
     expect($user)->not->toBeNull()

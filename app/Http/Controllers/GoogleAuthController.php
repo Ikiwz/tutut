@@ -75,6 +75,10 @@ class GoogleAuthController extends Controller
                 $user->avatar = $googleUser->getAvatar();
                 $updated = true;
             }
+            if (empty($user->email_verified_at)) {
+                $user->email_verified_at = now();
+                $updated = true;
+            }
             if ($updated) {
                 $user->save();
             }

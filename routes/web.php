@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\TestSessionController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\LegalController;
@@ -57,8 +58,19 @@ Route::middleware(['guest', PreventBackForwardCache::class])->group(function () 
 // Student Logout
 Route::post('/logout', [StudentAuthController::class, 'logout'])->middleware('auth')->name('student.logout');
 
+// Email Verification Routes
+Route::middleware(['auth', PreventBackForwardCache::class])->group(function () {
+    Route::get('/email/verify', [EmailVerificationController::class, 'notice'])->name('verification.notice');
+    Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])
+        ->middleware(['signed', 'throttle:6,1'])
+        ->name('verification.verify');
+    Route::post('/email/verification-notification', [EmailVerificationController::class, 'send'])
+        ->middleware('throttle:6,1')
+        ->name('verification.send');
+});
+
 // Student Protected Routes
-Route::middleware(['auth', EnsureUserIsStudent::class, PreventBackForwardCache::class])->group(function () {
+Route::middleware(['auth', EnsureUserIsStudent::class, 'verified', PreventBackForwardCache::class])->group(function () {
     Route::get('/dashboard', [ExamController::class, 'dashboard'])->name('student.dashboard');
     Route::post('/exam/start/{testSession}', [ExamController::class, 'startExam'])->name('exam.start');
     Route::get('/exam/{examAttempt}', [ExamController::class, 'takeExam'])->name('exam.take');
