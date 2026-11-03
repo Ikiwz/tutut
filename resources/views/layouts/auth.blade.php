@@ -69,24 +69,6 @@
 
                 {{-- Inner Container: Recessed Inset Body --}}
                 <flux:card.body class="space-y-6">
-                    @if (session('error'))
-                        <flux:callout variant="danger" icon="exclamation-triangle" role="alert" aria-live="assertive">
-                            {{ session('error') }}
-                        </flux:callout>
-                    @endif
-
-                    @if (session('success'))
-                        <flux:callout variant="success" icon="check-circle" role="status" aria-live="polite">
-                            {{ session('success') }}
-                        </flux:callout>
-                    @endif
-
-                    @if ($errors->any())
-                        <flux:callout variant="danger" icon="exclamation-triangle" role="alert" aria-live="assertive">
-                            {{ $errors->first() }}
-                        </flux:callout>
-                    @endif
-
                     @yield('content')
                 </flux:card.body>
 
@@ -125,13 +107,51 @@
         <flux:toast position="top end" />
     @endpersist
 
+    @livewireScripts
+    @fluxScripts
+
     @if (session('success'))
-        <div x-data x-init="$nextTick(() => $flux.toast({ text: {{ Js::from(session('success')) }}, variant: 'success', heading: 'Success' }))"></div>
+        <script>
+            (function() {
+                const fire = () => {
+                    if (typeof window.Flux?.toast === 'function' && document.querySelector('ui-toast')?._x_dataStack) {
+                        window.Flux.toast({ text: {{ Js::from(session('success')) }}, variant: 'success', heading: 'Success', duration: 8000 });
+                    } else {
+                        setTimeout(fire, 50);
+                    }
+                };
+                fire();
+            })();
+        </script>
     @endif
     @if (session('error'))
-        <div x-data x-init="$nextTick(() => $flux.toast({ text: {{ Js::from(session('error')) }}, variant: 'danger', heading: 'Error' }))"></div>
+        <script>
+            (function() {
+                const fire = () => {
+                    if (typeof window.Flux?.toast === 'function' && document.querySelector('ui-toast')?._x_dataStack) {
+                        window.Flux.toast({ text: {{ Js::from(session('error')) }}, variant: 'danger', heading: 'Error', duration: 8000 });
+                    } else {
+                        setTimeout(fire, 50);
+                    }
+                };
+                fire();
+            })();
+        </script>
     @endif
-
+    @if (session('status'))
+        <script>
+            (function() {
+                const fire = () => {
+                    if (typeof window.Flux?.toast === 'function' && document.querySelector('ui-toast')?._x_dataStack) {
+                        window.Flux.toast({ text: {{ Js::from(session('status')) }}, variant: 'info', heading: 'Notice', duration: 8000 });
+                    } else {
+                        setTimeout(fire, 50);
+                    }
+                };
+                fire();
+            })();
+        </script>
+    @endif
     {{-- Prevent stale session display via Back/Forward Cache (BFCache) or navigation gestures --}}
     <script>
         window.addEventListener('pageshow', function (event) {
@@ -140,8 +160,5 @@
             }
         });
     </script>
-
-    @livewireScripts
-    @fluxScripts
 </body>
 </html>
