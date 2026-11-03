@@ -94,7 +94,10 @@
             <flux:error name="password" />
         </flux:field>
 
-        <flux:checkbox name="remember" label="Remember me" />
+        <div class="flex items-center justify-between">
+            <flux:checkbox name="remember" label="Remember me" />
+            <flux:link href="{{ route('password.request') }}" wire:navigate.hover class="text-xs font-medium">Forgot password?</flux:link>
+        </div>
 
         <flux:button variant="primary" type="submit" class="w-full font-semibold" ::disabled="submitting">
             <span x-show="!submitting">Log In</span>

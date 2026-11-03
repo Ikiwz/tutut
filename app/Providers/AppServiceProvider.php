@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\User;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
@@ -39,6 +42,25 @@ class AppServiceProvider extends ServiceProvider
             return Password::min(8)
                 ->letters()
                 ->numbers();
+        });
+
+        // Password reset URL generation
+        ResetPassword::createUrlUsing(function (User $user, string $token) {
+            return route('password.reset', [
+                'token' => $token,
+                'email' => $user->getEmailForPasswordReset(),
+            ]);
+        });
+
+        // Non-technical human-friendly password reset email
+        ResetPassword::toMailUsing(function (User $user, string $url) {
+            return (new MailMessage)
+                ->subject('Reset Your Password — TUTUT')
+                ->greeting("Hello {$user->name},")
+                ->line('You are receiving this email because we received a password reset request for your account.')
+                ->action('Reset Password', $url)
+                ->line('This password reset link will expire in 60 minutes.')
+                ->line('If you did not request a password reset, you can safely ignore this email.');
         });
     }
 }
