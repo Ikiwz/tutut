@@ -1,7 +1,7 @@
 @extends('layouts.auth', [
     'title' => 'Register',
     'heading' => 'Welcome',
-    'subheading' => 'Enter your details to get started.',
+    'subheading' => 'Enter your account details.',
 ])
 
 @section('content')
@@ -31,7 +31,7 @@
             type="email"
             name="email"
             value="{{ old('email') }}"
-            placeholder="name@example.com"
+            placeholder="john.doe@example.com"
             icon="envelope"
             required
             autocomplete="email"

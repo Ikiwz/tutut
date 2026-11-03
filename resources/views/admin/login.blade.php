@@ -21,7 +21,7 @@
             type="email"
             name="email"
             value="{{ old('email') }}"
-            placeholder="name@example.com"
+            placeholder="john.doe@example.com"
             icon="envelope"
             required
             autofocus
