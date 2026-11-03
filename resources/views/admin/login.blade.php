@@ -1,7 +1,7 @@
 @extends('layouts.auth', [
     'title' => 'Admin Sign In',
     'heading' => 'TUTUT Admin Portal',
-    'subheading' => 'Restricted access for proctors, examiners, and system administrators.',
+    'subheading' => 'Restricted access for proctors and staff.',
 ])
 
 @section('content')
@@ -10,7 +10,7 @@
         @csrf
 
         <flux:input
-            label="Staff Email Address"
+            label="Email"
             type="email"
             name="email"
             value="{{ old('email') }}"
@@ -22,7 +22,7 @@
         />
 
         <flux:input
-            label="Security Password"
+            label="Password"
             type="password"
             name="password"
             placeholder="••••••••"
@@ -32,10 +32,10 @@
             autocomplete="current-password"
         />
 
-        <flux:checkbox name="remember" label="Remember credentials" />
+        <flux:checkbox name="remember" label="Remember me" />
 
         <flux:button variant="primary" type="submit" class="w-full font-semibold">
-            Access Admin Console
+            Sign In
         </flux:button>
     </form>
 

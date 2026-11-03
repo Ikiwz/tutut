@@ -1,7 +1,7 @@
 @extends('layouts.auth', [
     'title' => 'Candidate Registration',
-    'heading' => 'Candidate Registration',
-    'subheading' => 'Register your official details to participate in TOEFL examinations.',
+    'heading' => 'Create Account',
+    'subheading' => 'Register your details to participate in examinations.',
 ])
 
 @section('content')
@@ -10,14 +10,14 @@
         Sign up with Google
     </flux:button>
 
-    <flux:separator text="or fill out registration details" />
+    <flux:separator text="or" />
 
     <form method="POST" action="{{ route('student.register.submit') }}" class="space-y-6">
         @csrf
 
         <flux:input
             label="Full Legal Name"
-            description:trailing="As printed on your Student ID / Passport for official score certificates."
+            description:trailing="Printed on your official score certificate."
             name="name"
             value="{{ old('name') }}"
             placeholder="e.g. Alexander Pierce"
@@ -28,8 +28,8 @@
         />
 
         <flux:input
-            label="Active Email Address"
-            description:trailing="Your exam confirmation and test score results will be sent here."
+            label="Email Address"
+            description:trailing="Exam links and score results will be delivered here."
             type="email"
             name="email"
             value="{{ old('email') }}"
@@ -63,7 +63,7 @@
         />
 
         <flux:button variant="primary" type="submit" class="w-full font-semibold">
-            Create Candidate Account
+            Create Account
         </flux:button>
     </form>
 
@@ -74,7 +74,7 @@
             Already registered? <flux:link href="{{ route('student.login') }}" wire:navigate.hover class="font-medium">Sign In</flux:link>
         </flux:text>
 
-        <flux:link href="{{ route('admin.login') }}" wire:navigate.hover class="font-medium">Administrator Portal &rarr;</flux:link>
+        <flux:link href="{{ route('admin.login') }}" wire:navigate.hover class="font-medium">Admin Portal &rarr;</flux:link>
     </div>
 </div>
 @endsection

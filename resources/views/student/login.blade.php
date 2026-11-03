@@ -1,7 +1,7 @@
 @extends('layouts.auth', [
     'title' => 'Candidate Sign In',
     'heading' => 'Candidate Sign In',
-    'subheading' => 'Access your scheduled TOEFL examination session with your registered account.',
+    'subheading' => 'Access your scheduled examination session.',
 ])
 
 @section('content')
@@ -10,13 +10,13 @@
         Continue with Google
     </flux:button>
 
-    <flux:separator text="or with registered email" />
+    <flux:separator text="or" />
 
     <form method="POST" action="{{ route('student.login.submit') }}" class="space-y-6">
         @csrf
 
         <flux:input
-            label="Email Address"
+            label="Email"
             type="email"
             name="email"
             value="{{ old('email') }}"
@@ -52,7 +52,7 @@
             Don't have an account? <flux:link href="{{ route('student.register') }}" wire:navigate.hover class="font-medium">Register</flux:link>
         </flux:text>
 
-        <flux:link href="{{ route('admin.login') }}" wire:navigate.hover class="font-medium">Administrator Portal &rarr;</flux:link>
+        <flux:link href="{{ route('admin.login') }}" wire:navigate.hover class="font-medium">Admin Portal &rarr;</flux:link>
     </div>
 </div>
 @endsection
