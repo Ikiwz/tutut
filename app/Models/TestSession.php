@@ -5,10 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class TestSession extends Model
 {
-    protected $fillable = ['title', 'description', 'is_active', 'starts_at', 'ends_at'];
+    use SoftDeletes;
+
+    protected $fillable = ['title', 'description', 'access_code', 'is_active', 'starts_at', 'ends_at'];
 
     protected function casts(): array
     {
@@ -31,7 +34,7 @@ class TestSession extends Model
 
     public function isOpen(): bool
     {
-        if (!$this->is_active) {
+        if (! $this->is_active) {
             return false;
         }
 

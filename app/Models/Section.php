@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Section extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'name', 'slug', 'description',
         'directions_audio_a', 'directions_audio_b', 'directions_audio_c',

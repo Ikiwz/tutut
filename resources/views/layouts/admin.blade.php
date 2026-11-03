@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
+    <title>{{ $title ?? 'Admin Dashboard' }} — TUTUT</title>
+
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet" />
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @fluxAppearance
+</head>
+<body class="min-h-screen bg-white dark:bg-zinc-800 antialiased">
+    <flux:sidebar sticky collapsible="mobile" class="bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-700">
+        <flux:sidebar.header>
+            <flux:sidebar.brand
+                href="{{ route('admin.dashboard') }}"
+                logo="{{ asset('images/logo.png') }}"
+                name="TUTUT Admin"
+            />
+            <flux:sidebar.collapse class="lg:hidden" />
+        </flux:sidebar.header>
+
+        <flux:sidebar.nav>
+            <flux:sidebar.item icon="home" href="{{ route('admin.dashboard') }}" :current="request()->routeIs('admin.dashboard')">Dashboard</flux:sidebar.item>
+
+            <flux:sidebar.group heading="Test Management" class="grid">
+                <flux:sidebar.item icon="clipboard-document-list" href="{{ route('admin.test-sessions.index') }}" :current="request()->routeIs('admin.test-sessions.*')">Test Sessions</flux:sidebar.item>
+                <flux:sidebar.item icon="academic-cap" href="{{ route('admin.sections.index') }}" :current="request()->routeIs('admin.sections.*')">Sections</flux:sidebar.item>
+                <flux:sidebar.item icon="question-mark-circle" href="{{ route('admin.questions.index') }}" :current="request()->routeIs('admin.questions.*')">Questions</flux:sidebar.item>
+                <flux:sidebar.item icon="document-text" href="{{ route('admin.passages.index') }}" :current="request()->routeIs('admin.passages.*')">Passages</flux:sidebar.item>
+                <flux:sidebar.item icon="bookmark" href="{{ route('admin.directions.index') }}" :current="request()->routeIs('admin.directions.*')">Directions</flux:sidebar.item>
+            </flux:sidebar.group>
+
+            <flux:sidebar.group heading="Reports & Students" class="grid">
+                <flux:sidebar.item icon="chart-bar" href="{{ route('admin.attempts.index') }}" :current="request()->routeIs('admin.attempts.*')">Exam Results</flux:sidebar.item>
+                <flux:sidebar.item icon="users" href="{{ route('admin.students.index') }}" :current="request()->routeIs('admin.students.*')">Students</flux:sidebar.item>
+            </flux:sidebar.group>
+        </flux:sidebar.nav>
+
+        <flux:sidebar.spacer />
+
+        <flux:dropdown position="top" align="start" class="max-lg:hidden">
+            <flux:sidebar.profile avatar="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()?->name ?? 'Admin') }}&background=2563eb&color=fff" name="{{ auth()->user()?->name ?? 'Admin' }}" />
+
+            <flux:menu>
+                <form method="POST" action="{{ route('admin.logout') }}" class="w-full">
+                    @csrf
+                    <flux:menu.item icon="arrow-right-start-on-rectangle" type="submit" class="w-full text-left">Logout</flux:menu.item>
+                </form>
+            </flux:menu>
+        </flux:dropdown>
+    </flux:sidebar>
+
+    <flux:header class="lg:hidden bg-zinc-50 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-700">
+        <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
+
+        <flux:brand href="{{ route('admin.dashboard') }}" logo="{{ asset('images/logo.png') }}" name="TUTUT" class="max-sm:hidden" />
+
+        <flux:spacer />
+
+        <flux:dropdown position="top" align="start">
+            <flux:profile avatar="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()?->name ?? 'Admin') }}&background=2563eb&color=fff" />
+
+            <flux:menu>
+                <form method="POST" action="{{ route('admin.logout') }}" class="w-full">
+                    @csrf
+                    <flux:menu.item icon="arrow-right-start-on-rectangle" type="submit" class="w-full text-left">Logout</flux:menu.item>
+                </form>
+            </flux:menu>
+        </flux:dropdown>
+    </flux:header>
+
+    <flux:main class="p-6 lg:p-8 max-w-7xl">
+        @if (session('success'))
+            <flux:callout variant="success" class="mb-6">
+                {{ session('success') }}
+            </flux:callout>
+        @endif
+
+        @if (session('error'))
+            <flux:callout variant="danger" class="mb-6">
+                {{ session('error') }}
+            </flux:callout>
+        @endif
+
+        {{ $slot ?? '' }}
+        @yield('content')
+    </flux:main>
+
+    @fluxScripts
+</body>
+</html>
+

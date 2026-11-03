@@ -21,7 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->redirectGuestsTo(function (Request $request) {
             if ($request->is('admin*')) {
-                return route('filament.admin.auth.login');
+                return route('admin.login');
             }
 
             return route('student.login');

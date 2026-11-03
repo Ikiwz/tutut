@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ExamAnswer;
 use App\Models\ExamAttempt;
+use App\Models\Question;
 use App\Models\TestSession;
 use Illuminate\Http\Request;
 
@@ -36,13 +37,14 @@ class ExamController extends Controller
 
     public function startExam(TestSession $testSession)
     {
-        if (!$testSession->is_active) {
+        if (! $testSession->is_active) {
             return redirect()->route('student.dashboard')
                 ->with('error', 'This test is not active.');
         }
 
         if ($testSession->isLocked()) {
             $formattedTime = $testSession->starts_at->translatedFormat('d F Y, H:i');
+
             return redirect()->route('student.dashboard')
                 ->with('error', "The test is locked. It will open on {$formattedTime} WIB.");
         }
@@ -90,6 +92,7 @@ class ExamController extends Controller
 
         if ($examAttempt->testSession && $examAttempt->testSession->isLocked()) {
             $formattedTime = $examAttempt->testSession->starts_at->translatedFormat('d F Y, H:i');
+
             return redirect()->route('student.dashboard')
                 ->with('error', "The test is locked. It will open on {$formattedTime} WIB.");
         }
@@ -134,7 +137,9 @@ class ExamController extends Controller
             'selected_answer' => 'required|in:A,B,C,D',
         ]);
 
-        $question = \App\Models\Question::findOrFail($validated['question_id']);
+        $question = Question::with('examKey')->findOrFail($validated['question_id']);
+
+        $correctAnswer = $question->examKey?->correct_key ?? $question->correct_answer;
 
         ExamAnswer::updateOrCreate(
             [
@@ -143,7 +148,7 @@ class ExamController extends Controller
             ],
             [
                 'selected_answer' => $validated['selected_answer'],
-                'is_correct' => $validated['selected_answer'] === $question->correct_answer,
+                'is_correct' => $validated['selected_answer'] === $correctAnswer,
             ]
         );
 
@@ -165,6 +170,7 @@ class ExamController extends Controller
                 'current_section_slug' => $nextSection->slug,
                 'current_question_index' => 0,
             ]);
+
             return redirect()->route('exam.take', $examAttempt);
         }
 
