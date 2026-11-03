@@ -1,195 +1,73 @@
-@extends('layouts.student')
-@section('title', 'Exam Results — TOEFL')
-
-@section('styles')
-<style>
-    .result-page {
-        padding: 40px 0;
-    }
-
-    .result-header {
-        text-align: center;
-        margin-bottom: 40px;
-    }
-
-    .result-header h1 {
-        font-size: 2rem;
-        font-weight: 800;
-        margin-bottom: 8px;
-    }
-
-    .result-header p {
-        color: var(--text-muted);
-        font-size: 1rem;
-    }
-
-    .result-icon {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        background: var(--success-bg);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2.5rem;
-        margin: 0 auto 20px;
-    }
-
-    .total-score-card {
-        text-align: center;
-        padding: 40px;
-        background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-        color: #fff;
-        border-radius: var(--radius-lg);
-        margin-bottom: 32px;
-    }
-
-    .total-score-card .score-big {
-        font-size: 4rem;
-        font-weight: 800;
-        line-height: 1;
-        margin-bottom: 8px;
-    }
-
-    .total-score-card .score-label {
-        font-size: 1rem;
-        opacity: 0.9;
-    }
-
-    .scores-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 16px;
-        margin-bottom: 32px;
-    }
-
-    .score-card {
-        text-align: center;
-        padding: 24px;
-    }
-
-    .score-card .section-icon {
-        width: 48px;
-        height: 48px;
-        border-radius: 12px;
-        background: rgba(37, 99, 235, 0.1);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 16px;
-        font-size: 1.5rem;
-    }
-
-    .score-card h3 {
-        font-size: 0.875rem;
-        font-weight: 700;
-        color: var(--text-muted);
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        margin-bottom: 8px;
-    }
-
-    .score-card .score-val {
-        font-size: 2rem;
-        font-weight: 800;
-        color: var(--primary);
-    }
-
-    .score-card .score-detail {
-        font-size: 0.8125rem;
-        color: var(--text-muted);
-        margin-top: 8px;
-    }
-
-    .progress-bar {
-        height: 8px;
-        background: var(--border);
-        border-radius: 999px;
-        overflow: hidden;
-        margin-top: 12px;
-    }
-
-    .progress-fill {
-        height: 100%;
-        border-radius: 999px;
-        background: var(--primary);
-        transition: width 1s ease;
-    }
-
-    .result-actions {
-        display: flex;
-        justify-content: center;
-        gap: 12px;
-        margin-top: 32px;
-    }
-
-    .meta-info {
-        display: flex;
-        justify-content: center;
-        gap: 32px;
-        margin-bottom: 32px;
-        color: var(--text-muted);
-        font-size: 0.875rem;
-    }
-
-    .meta-info span {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-    }
-
-    @media (max-width: 640px) {
-        .scores-grid { grid-template-columns: 1fr; }
-        .total-score-card .score-big { font-size: 3rem; }
-    }
-</style>
-@endsection
+@extends('layouts.student', ['title' => 'TOEFL Exam Results'])
 
 @section('content')
-<div class="container result-page">
-    <div class="result-header">
-        <div class="result-icon" aria-hidden="true">🎓</div>
-        <h1>TOEFL Exam Results</h1>
-        <p>{{ $examAttempt->testSession->title ?? 'Test' }}</p>
+<div class="max-w-4xl mx-auto space-y-8 py-4">
+    <!-- Header -->
+    <div class="text-center space-y-2">
+        <div class="inline-flex p-3 rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 mb-2">
+            <flux:icon icon="academic-cap" class="size-10" />
+        </div>
+        <flux:heading size="xl" level="1" class="text-3xl font-extrabold tracking-tight">
+            Official TOEFL Examination Results
+        </flux:heading>
+        <flux:text class="text-sm">
+            {{ $examAttempt->testSession->title ?? 'TOEFL Exam Session' }} &bull;
+            Serial: <span class="font-mono font-bold text-zinc-800 dark:text-zinc-200">{{ $examAttempt->serial_number ?? ('#' . $examAttempt->id) }}</span>
+        </flux:text>
     </div>
 
-    <div class="meta-info" aria-label="Exam information">
-        <span>📅 {{ $examAttempt->started_at?->format('d M Y') }}</span>
-        <span>⏱️ {{ $examAttempt->started_at?->diffForHumans($examAttempt->completed_at, true) }}</span>
-        <span>✅ Completed: {{ $examAttempt->completed_at?->format('H:i') }}</span>
-    </div>
+    <!-- Scaled Total Score Banner Card -->
+    <flux:card class="bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-700 text-white text-center p-8 sm:p-12 rounded-3xl shadow-xl border-0 space-y-3">
+        <div class="text-6xl sm:text-7xl font-black font-mono tracking-tight drop-shadow-sm">
+            {{ $examAttempt->total_score ?? 0 }}
+        </div>
+        <div class="text-base font-semibold text-blue-100 uppercase tracking-widest text-xs">
+            Official Scaled TOEFL Score (Max 677)
+        </div>
+        <div class="flex items-center justify-center gap-6 pt-4 text-xs text-blue-100 border-t border-white/20">
+            <span>📅 {{ $examAttempt->started_at?->format('d M Y') }}</span>
+            <span>⏱️ {{ $examAttempt->started_at?->diffForHumans($examAttempt->completed_at, true) }}</span>
+            <span>✅ Completed: {{ $examAttempt->completed_at?->format('H:i') }} WIB</span>
+        </div>
+    </flux:card>
 
-    <div class="total-score-card" role="region" aria-label="Total TOEFL score">
-        <div class="score-big" aria-label="Total score: {{ $examAttempt->total_score }}">{{ $examAttempt->total_score }}</div>
-        <div class="score-label">Total TOEFL Score (max 677)</div>
-    </div>
-
-    <div class="scores-grid" role="list" aria-label="Scores per section">
+    <!-- Sub-scores Section Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
         @php
-            $icons = ['listening' => '🎧', 'structure' => '📝', 'reading' => '📖'];
+            $icons = ['listening' => 'speaker-wave', 'structure' => 'pencil-square', 'reading' => 'book-open'];
         @endphp
         @foreach($sectionResults as $slug => $result)
-        <div class="card score-card" role="listitem" aria-label="{{ $result['name'] }}: score {{ $examAttempt->{'score_' . $slug} ?? 0 }}">
-            <div class="section-icon" aria-hidden="true">{{ $icons[$slug] ?? '📋' }}</div>
-            <h3>{{ $result['name'] }}</h3>
-            <div class="score-val">{{ $examAttempt->{'score_' . $slug} ?? 0 }}</div>
-            <div class="score-detail">
-                {{ $result['correct'] }} correct out of {{ $result['total'] }} questions
-                ({{ $result['total'] > 0 ? round(($result['correct'] / $result['total']) * 100) : 0 }}%)
-            </div>
-            <div class="progress-bar" role="progressbar"
-                 aria-valuenow="{{ $result['correct'] }}" aria-valuemin="0" aria-valuemax="{{ $result['total'] }}"
-                 aria-label="Progress: {{ $result['correct'] }} of {{ $result['total'] }}">
-                <div class="progress-fill" style="width: {{ $result['total'] > 0 ? ($result['correct'] / $result['total']) * 100 : 0 }}%"></div>
-            </div>
-        </div>
+            <flux:card class="text-center space-y-3 border border-zinc-200 dark:border-zinc-800 shadow-sm p-6">
+                <div class="inline-flex p-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 mx-auto">
+                    <flux:icon icon="{{ $icons[$slug] ?? 'document-text' }}" class="size-6" />
+                </div>
+                <div>
+                    <flux:heading size="md" class="font-bold uppercase tracking-wider text-xs text-zinc-500">
+                        {{ $result['name'] }}
+                    </flux:heading>
+                    <div class="text-3xl font-extrabold font-mono text-zinc-900 dark:text-white mt-1">
+                        {{ $examAttempt->{'score_' . $slug} ?? 0 }}
+                    </div>
+                </div>
+
+                <div class="text-xs text-zinc-500">
+                    {{ $result['correct'] }} of {{ $result['total'] }} questions correct
+                </div>
+
+                <!-- Custom Progress -->
+                @php $pct = $result['total'] > 0 ? round(($result['correct'] / $result['total']) * 100) : 0; @endphp
+                <div class="w-full bg-zinc-200 dark:bg-zinc-700 h-2 rounded-full overflow-hidden">
+                    <div class="bg-blue-600 dark:bg-blue-400 h-full rounded-full transition-all duration-1000" style="width: {{ $pct }}%"></div>
+                </div>
+            </flux:card>
         @endforeach
     </div>
 
-    <div class="result-actions">
-        <a href="{{ route('student.dashboard') }}" class="btn btn-primary btn-lg" aria-label="Back to dashboard">
-            ← Back to Dashboard
-        </a>
+    <!-- Actions -->
+    <div class="flex items-center justify-center gap-4 pt-4">
+        <flux:button href="{{ route('student.dashboard') }}" variant="primary" icon="arrow-left" size="lg" class="font-bold">
+            Back to Candidate Dashboard
+        </flux:button>
     </div>
 </div>
 @endsection
@@ -197,15 +75,7 @@
 @section('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // Animate progress bars
-        setTimeout(() => {
-            document.querySelectorAll('.progress-fill').forEach(bar => {
-                bar.style.width = bar.style.width;
-            });
-        }, 100);
-
-        // Announce result
-        speak('Your TOEFL score is {{ $examAttempt->total_score }}. Press H for keyboard shortcuts.');
+        speak('Congratulations! Your official TOEFL scaled score is {{ $examAttempt->total_score }}. Press H for keyboard shortcuts.');
     });
 </script>
 @endsection
