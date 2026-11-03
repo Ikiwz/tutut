@@ -14,26 +14,37 @@ use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\StudentAuthController;
 use App\Http\Middleware\EnsureUserIsAdmin;
 use App\Http\Middleware\EnsureUserIsStudent;
+use App\Http\Middleware\PreventBackForwardCache;
 use Illuminate\Support\Facades\Route;
 
-// Redirect root to student login
+// Redirect root to role-based dashboard or student login
 Route::get('/', function () {
+    if (auth()->check()) {
+        return auth()->user()->isAdmin()
+            ? redirect()->route('admin.dashboard')
+            : redirect()->route('student.dashboard');
+    }
+
     return redirect()->route('student.login');
 });
 
-// Student Auth Routes
-Route::get('/login', [StudentAuthController::class, 'showLogin'])->name('student.login');
-Route::post('/login', [StudentAuthController::class, 'login'])->middleware('throttle:6,1')->name('student.login.submit');
-Route::get('/register', [StudentAuthController::class, 'showRegister'])->name('student.register');
-Route::post('/register', [StudentAuthController::class, 'register'])->middleware('throttle:5,1')->name('student.register.submit');
-Route::post('/logout', [StudentAuthController::class, 'logout'])->name('student.logout');
+// Student Guest Auth Routes
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [StudentAuthController::class, 'showLogin'])->name('student.login');
+    Route::post('/login', [StudentAuthController::class, 'login'])->middleware('throttle:6,1')->name('student.login.submit');
+    Route::get('/register', [StudentAuthController::class, 'showRegister'])->name('student.register');
+    Route::post('/register', [StudentAuthController::class, 'register'])->middleware('throttle:5,1')->name('student.register.submit');
 
-// Google OAuth Routes
-Route::get('/auth/google', [GoogleAuthController::class, 'redirect'])->name('auth.google');
-Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->name('auth.google.callback');
+    // Google OAuth Routes
+    Route::get('/auth/google', [GoogleAuthController::class, 'redirect'])->name('auth.google');
+    Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->name('auth.google.callback');
+});
+
+// Student Logout
+Route::post('/logout', [StudentAuthController::class, 'logout'])->middleware('auth')->name('student.logout');
 
 // Student Protected Routes
-Route::middleware(['auth', EnsureUserIsStudent::class])->group(function () {
+Route::middleware(['auth', EnsureUserIsStudent::class, PreventBackForwardCache::class])->group(function () {
     Route::get('/dashboard', [ExamController::class, 'dashboard'])->name('student.dashboard');
     Route::post('/exam/start/{testSession}', [ExamController::class, 'startExam'])->name('exam.start');
     Route::get('/exam/{examAttempt}', [ExamController::class, 'takeExam'])->name('exam.take');
@@ -43,14 +54,19 @@ Route::middleware(['auth', EnsureUserIsStudent::class])->group(function () {
     Route::get('/exam/{examAttempt}/result', [ExamController::class, 'result'])->name('exam.result');
 });
 
-// Admin Auth Routes
+// Admin Routes
 Route::prefix('admin')->group(function () {
-    Route::get('/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');
-    Route::post('/login', [AdminAuthController::class, 'login'])->middleware('throttle:5,15')->name('admin.login.submit');
-    Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+    // Admin Guest Auth Routes
+    Route::middleware('guest')->group(function () {
+        Route::get('/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');
+        Route::post('/login', [AdminAuthController::class, 'login'])->middleware('throttle:5,15')->name('admin.login.submit');
+    });
+
+    // Admin Logout
+    Route::post('/logout', [AdminAuthController::class, 'logout'])->middleware('auth')->name('admin.logout');
 
     // Admin Protected Routes (Flux UI Dashboard)
-    Route::middleware(['auth', EnsureUserIsAdmin::class])->group(function () {
+    Route::middleware(['auth', EnsureUserIsAdmin::class, PreventBackForwardCache::class])->group(function () {
         Route::get('/', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 
         // Test Management

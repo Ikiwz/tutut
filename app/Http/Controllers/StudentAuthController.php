@@ -11,8 +11,10 @@ class StudentAuthController extends Controller
 {
     public function showLogin()
     {
-        if (auth()->check() && auth()->user()->isStudent()) {
-            return redirect()->route('student.dashboard');
+        if (auth()->check()) {
+            return auth()->user()->isAdmin()
+                ? redirect()->route('admin.dashboard')
+                : redirect()->route('student.dashboard');
         }
 
         return view('student.login');
@@ -56,8 +58,10 @@ class StudentAuthController extends Controller
 
     public function showRegister()
     {
-        if (auth()->check() && auth()->user()->isStudent()) {
-            return redirect()->route('student.dashboard');
+        if (auth()->check()) {
+            return auth()->user()->isAdmin()
+                ? redirect()->route('admin.dashboard')
+                : redirect()->route('student.dashboard');
         }
 
         return view('student.register');

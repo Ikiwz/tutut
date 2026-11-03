@@ -18,6 +18,12 @@ class GoogleAuthController extends Controller
      */
     public function redirect(): RedirectResponse
     {
+        if (auth()->check()) {
+            return auth()->user()->isAdmin()
+                ? redirect()->route('admin.dashboard')
+                : redirect()->route('student.dashboard');
+        }
+
         if (empty(config('services.google.client_id')) || empty(config('services.google.client_secret'))) {
             return redirect()->route('student.login')->with('error', 'Google authentication is currently unavailable.');
         }
@@ -34,6 +40,12 @@ class GoogleAuthController extends Controller
      */
     public function callback(Request $request): RedirectResponse
     {
+        if (auth()->check()) {
+            return auth()->user()->isAdmin()
+                ? redirect()->route('admin.dashboard')
+                : redirect()->route('student.dashboard');
+        }
+
         try {
             /** @var \Laravel\Socialite\Two\User $googleUser */
             $googleUser = Socialite::driver('google')->user();

@@ -229,6 +229,15 @@
         <div x-data x-init="$nextTick(() => $flux.toast({ text: {{ Js::from(session('error')) }}, variant: 'danger', heading: 'Error' }))"></div>
     @endif
 
+    {{-- Prevent stale session display via Back/Forward Cache (BFCache) or navigation gestures --}}
+    <script>
+        window.addEventListener('pageshow', function (event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        });
+    </script>
+
     @livewireScripts
     @fluxScripts
 </body>
