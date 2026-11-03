@@ -37,10 +37,11 @@
         Sign in
     </flux:button>
 </form>
+@endsection
 
-<flux:separator />
-
-<flux:text size="xs" class="text-center">
+@section('footer')
+<div class="flex items-center justify-between w-full text-xs">
+    <flux:text size="xs" class="text-zinc-500">Authorized Personnel Only</flux:text>
     <flux:link href="{{ route('student.login') }}" wire:navigate.hover>&larr; Candidate Portal</flux:link>
-</flux:text>
+</div>
 @endsection

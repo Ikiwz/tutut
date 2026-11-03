@@ -36,37 +36,48 @@
         </flux:dropdown>
     </div>
 
-    <!-- Centered Auth Card (Seamless Flux Default) -->
-    <main id="auth-card" class="w-full max-w-sm space-y-6">
-        <flux:card class="space-y-6">
-            <div class="text-center space-y-2">
-                <flux:brand href="/" logo="{{ asset('images/logo.png') }}" name="TUTUT" class="justify-center" />
-                <flux:heading size="xl">{{ $heading ?? 'Sign In' }}</flux:heading>
-                <flux:subheading>{{ $subheading ?? 'Enter your credentials to continue.' }}</flux:subheading>
-            </div>
+    <!-- Centered Auth Card with Official Flux Inset Pattern -->
+    <main id="auth-card" class="w-full max-w-md space-y-6">
+        <flux:card body="inset" variant="soft" size="lg">
+            <flux:card.header>
+                <div class="flex items-center gap-3">
+                    <a href="/" wire:navigate.hover class="shrink-0" aria-label="TUTUT Homepage">
+                        <img src="{{ asset('images/logo.png') }}" alt="TUTUT Logo" class="size-9 rounded-lg" width="36" height="36" />
+                    </a>
+                    <div>
+                        <flux:card.heading size="lg">{{ $heading ?? 'Sign In' }}</flux:card.heading>
+                        <flux:card.subheading>{{ $subheading ?? 'Enter your credentials to continue.' }}</flux:card.subheading>
+                    </div>
+                </div>
+            </flux:card.header>
 
-            @if (session('error'))
-                <flux:callout variant="danger" icon="exclamation-triangle">
-                    {{ session('error') }}
-                </flux:callout>
-            @endif
+            <flux:card.body class="space-y-6">
+                @if (session('error'))
+                    <flux:callout variant="danger" icon="exclamation-triangle">
+                        {{ session('error') }}
+                    </flux:callout>
+                @endif
 
-            @if (session('success'))
-                <flux:callout variant="success" icon="check-circle">
-                    {{ session('success') }}
-                </flux:callout>
-            @endif
+                @if (session('success'))
+                    <flux:callout variant="success" icon="check-circle">
+                        {{ session('success') }}
+                    </flux:callout>
+                @endif
 
-            @if ($errors->any())
-                <flux:callout variant="danger" icon="exclamation-triangle">
-                    {{ $errors->first() }}
-                </flux:callout>
-            @endif
+                @if ($errors->any())
+                    <flux:callout variant="danger" icon="exclamation-triangle">
+                        {{ $errors->first() }}
+                    </flux:callout>
+                @endif
 
-            @yield('content')
+                @yield('content')
+            </flux:card.body>
+
+            <flux:card.footer>
+                @yield('footer')
+            </flux:card.footer>
         </flux:card>
 
-        <!-- Footer -->
         <flux:text size="xs" class="text-center">
             &copy; {{ date('Y') }} TUTUT. All rights reserved.
         </flux:text>

@@ -68,10 +68,14 @@
         Register
     </flux:button>
 </form>
+@endsection
 
-<flux:separator />
+@section('footer')
+<div class="flex items-center justify-between w-full text-xs">
+    <flux:text size="sm">
+        Already registered? <flux:link href="{{ route('student.login') }}" wire:navigate.hover>Sign in</flux:link>
+    </flux:text>
 
-<flux:text size="sm" class="text-center">
-    Already registered? <flux:link href="{{ route('student.login') }}" wire:navigate.hover>Sign in</flux:link>
-</flux:text>
+    <flux:link href="{{ route('admin.login') }}" wire:navigate.hover>Admin Portal &rarr;</flux:link>
+</div>
 @endsection
