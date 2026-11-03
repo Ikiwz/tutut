@@ -258,10 +258,18 @@
     {{-- Prevent stale session display via Back/Forward Cache (BFCache) or navigation gestures --}}
     <script>
         window.addEventListener('pageshow', function (event) {
-            if (event.persisted) {
+            const perfNav = window.performance?.getEntriesByType?.('navigation')?.[0];
+            if (event.persisted || perfNav?.type === 'back_forward' || window.performance?.navigation?.type === 2) {
                 window.location.reload();
             }
         });
+
+        if (window.history && window.history.pushState) {
+            window.history.pushState(null, '', window.location.href);
+            window.addEventListener('popstate', function () {
+                window.history.pushState(null, '', window.location.href);
+            });
+        }
     </script>
 </body>
 </html>

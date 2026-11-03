@@ -29,7 +29,7 @@ Route::get('/', function () {
 });
 
 // Student Guest Auth Routes
-Route::middleware('guest')->group(function () {
+Route::middleware(['guest', PreventBackForwardCache::class])->group(function () {
     Route::get('/login', [StudentAuthController::class, 'showLogin'])->name('student.login');
     Route::post('/login', [StudentAuthController::class, 'login'])->middleware('throttle:6,1')->name('student.login.submit');
     Route::get('/register', [StudentAuthController::class, 'showRegister'])->name('student.register');
@@ -57,7 +57,7 @@ Route::middleware(['auth', EnsureUserIsStudent::class, PreventBackForwardCache::
 // Admin Routes
 Route::prefix('admin')->group(function () {
     // Admin Guest Auth Routes
-    Route::middleware('guest')->group(function () {
+    Route::middleware(['guest', PreventBackForwardCache::class])->group(function () {
         Route::get('/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');
         Route::post('/login', [AdminAuthController::class, 'login'])->middleware('throttle:5,15')->name('admin.login.submit');
     });
