@@ -1,5 +1,5 @@
 @extends('layouts.auth', [
-    'title' => 'TUTUT Admin Portal',
+    'title' => 'Admin Log In',
     'heading' => 'Welcome Back',
     'subheading' => 'Enter your account credentials.',
 ])

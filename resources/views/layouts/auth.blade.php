@@ -14,9 +14,24 @@
     @livewireStyles
     @fluxAppearance
 </head>
-<body class="min-h-dvh bg-zinc-50 dark:bg-zinc-900 antialiased selection:bg-blue-600 selection:text-white">
+<body class="min-h-dvh bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 antialiased selection:bg-blue-600 selection:text-white transition-colors duration-200">
     {{-- Form Column: Accessible HTML5 Main Landmark --}}
     <main class="w-full lg:w-1/2 min-h-dvh flex flex-col items-center justify-center p-6 sm:p-8 lg:p-10 relative z-10">
+        {{-- Theme Mode Switcher (Light / Dark / System) --}}
+        <div class="absolute top-4 right-4 sm:top-6 sm:right-6 z-20">
+            <flux:dropdown x-data align="end">
+                <flux:button variant="subtle" size="sm" square aria-label="Toggle color scheme">
+                    <flux:icon.sun x-show="! $flux.dark" variant="mini" class="size-4 text-zinc-700 dark:text-zinc-200" />
+                    <flux:icon.moon x-show="$flux.dark" variant="mini" class="size-4 text-zinc-700 dark:text-zinc-200" />
+                </flux:button>
+                <flux:menu>
+                    <flux:menu.item icon="sun" x-on:click="$flux.appearance = 'light'">Light Mode</flux:menu.item>
+                    <flux:menu.item icon="moon" x-on:click="$flux.appearance = 'dark'">Dark Mode</flux:menu.item>
+                    <flux:menu.item icon="computer-desktop" x-on:click="$flux.appearance = 'system'">System Preference</flux:menu.item>
+                </flux:menu>
+            </flux:dropdown>
+        </div>
+
         <div class="w-full max-w-md space-y-5 my-auto py-6">
             <div class="text-center">
                 <flux:brand href="/" logo="{{ asset('images/logo.png') }}" name="TUTUT" class="justify-center font-bold text-lg" />
