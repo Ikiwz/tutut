@@ -37,7 +37,7 @@ class AdminAuthController extends Controller
             Auth::logout();
 
             return back()->withErrors([
-                'email' => 'Access denied. This portal is strictly for administrators.',
+                'email' => 'The provided credentials do not match our records.',
             ])->onlyInput('email');
         }
 

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
 
 class StudentAuthController extends Controller
 {
@@ -14,6 +14,7 @@ class StudentAuthController extends Controller
         if (auth()->check() && auth()->user()->isStudent()) {
             return redirect()->route('student.dashboard');
         }
+
         return view('student.login');
     }
 
@@ -29,11 +30,13 @@ class StudentAuthController extends Controller
             if ($user->isStudent()) {
                 $request->session()->regenerate();
                 $request->session()->flash('login_success', true);
+
                 return redirect()->intended(route('student.dashboard'));
             }
             Auth::logout();
+
             return back()->withErrors([
-                'email' => 'This account is not registered as a student.',
+                'email' => 'The provided credentials do not match our records.',
             ]);
         }
 
@@ -47,6 +50,7 @@ class StudentAuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
         return redirect()->route('student.login');
     }
 
@@ -55,6 +59,7 @@ class StudentAuthController extends Controller
         if (auth()->check() && auth()->user()->isStudent()) {
             return redirect()->route('student.dashboard');
         }
+
         return view('student.register');
     }
 
@@ -75,6 +80,7 @@ class StudentAuthController extends Controller
 
         Auth::login($user);
         $request->session()->flash('login_success', true);
+
         return redirect()->route('student.dashboard');
     }
 }

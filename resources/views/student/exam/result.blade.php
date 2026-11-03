@@ -64,7 +64,7 @@
     <!-- Actions -->
     <div class="flex items-center justify-center gap-4 pt-4">
         <flux:button href="{{ route('student.dashboard') }}" variant="primary" icon="arrow-left" size="lg" class="font-bold">
-            Back to Candidate Dashboard
+            Back to Dashboard
         </flux:button>
     </div>
 </div>

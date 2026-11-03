@@ -41,7 +41,7 @@ Route::middleware(['auth', EnsureUserIsStudent::class])->group(function () {
 // Admin Auth Routes
 Route::prefix('admin')->group(function () {
     Route::get('/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');
-    Route::post('/login', [AdminAuthController::class, 'login'])->middleware('throttle:6,1')->name('admin.login.submit');
+    Route::post('/login', [AdminAuthController::class, 'login'])->middleware('throttle:5,15')->name('admin.login.submit');
     Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
     // Admin Protected Routes (Flux UI Dashboard)
