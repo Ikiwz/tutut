@@ -1,44 +1,38 @@
 @extends('layouts.auth', [
     'title' => 'Candidate Login',
     'heading' => 'Candidate Login',
-    'subheading' => 'Sign in to access your scheduled TOEFL exam session',
+    'subheading' => 'Sign in to access your scheduled TOEFL examination session',
 ])
 
 @section('content')
-<form method="POST" action="{{ route('student.login.submit') }}" class="space-y-4" aria-label="Student login form">
+<h2 id="form-heading" class="sr-only">Candidate Login Form</h2>
+
+<form method="POST" action="{{ route('student.login.submit') }}" class="space-y-5" aria-label="Candidate login form">
     @csrf
 
     <flux:field>
-        <flux:label>Student Email Address</flux:label>
-        <flux:input type="email" name="email" value="{{ old('email') }}" required autofocus placeholder="student@toefl.com" icon="envelope" />
+        <flux:label id="label-email">Registered Email Address</flux:label>
+        <flux:input type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="email" placeholder="name@university.edu" icon="envelope" aria-labelledby="label-email" />
         <flux:error name="email" />
     </flux:field>
 
     <flux:field>
-        <flux:label>Password</flux:label>
-        <flux:input type="password" name="password" required placeholder="••••••••" icon="key" />
+        <flux:label id="label-password">Password</flux:label>
+        <flux:input type="password" name="password" required autocomplete="current-password" placeholder="••••••••" icon="key" aria-labelledby="label-password" />
         <flux:error name="password" />
     </flux:field>
 
     <div class="flex items-center justify-between text-xs">
-        <flux:checkbox name="remember" label="Remember me" />
-        <span class="text-zinc-500">Shortcut: <kbd class="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 font-mono text-[10px]">Enter</kbd></span>
+        <flux:checkbox name="remember" label="Remember this device" />
+        <span class="text-zinc-500 dark:text-zinc-400">Shortcut: <kbd class="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 font-mono text-[11px] border border-zinc-200 dark:border-zinc-700">Enter</kbd></span>
     </div>
 
-    <flux:button type="submit" variant="primary" class="w-full font-bold">
-        Sign In to Exam Portal
+    <flux:button type="submit" variant="primary" class="w-full font-bold shadow-md">
+        Sign In to Exam Session
     </flux:button>
 
-    <div class="p-3 rounded-xl bg-blue-50/80 dark:bg-blue-950/40 border border-blue-200/60 dark:border-blue-900/40 text-xs text-blue-900 dark:text-blue-200 space-y-1">
-        <div class="font-bold flex items-center gap-1.5">
-            <flux:icon icon="information-circle" class="size-4 text-blue-600 dark:text-blue-400" />
-            <span>Demo Candidate Credentials:</span>
-        </div>
-        <div class="font-mono text-[11px]">Email: <strong>student@toefl.com</strong> | Password: <strong>password</strong></div>
-    </div>
-
-    <div class="text-center text-xs text-zinc-600 dark:text-zinc-400 pt-1">
-        Don't have an account? <a href="{{ route('student.register') }}" class="font-bold text-blue-600 dark:text-blue-400 hover:underline">Register here</a>
+    <div class="text-center text-xs text-zinc-600 dark:text-zinc-400 pt-2 border-t border-zinc-100 dark:border-zinc-800">
+        New candidate? <a href="{{ route('student.register') }}" class="font-bold text-blue-600 dark:text-blue-400 hover:underline">Register your account</a>
     </div>
 </form>
 @endsection
