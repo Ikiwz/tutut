@@ -1,7 +1,7 @@
 @extends('layouts.auth', [
     'title' => 'Forgot Password',
-    'heading' => 'Reset Password',
-    'subheading' => 'Enter your email address and we will send you a reset link.',
+    'heading' => 'Forgot Password',
+    'subheading' => 'Enter your email to receive a password reset link.',
 ])
 
 @section('content')

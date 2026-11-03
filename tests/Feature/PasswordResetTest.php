@@ -13,7 +13,7 @@ test('guest can view the forgot password request form', function () {
     $response = $this->get(route('password.request'));
 
     $response->assertOk()
-        ->assertSee('Reset Password')
+        ->assertSee('Forgot Password')
         ->assertSee('Send Reset Link')
         ->assertSee('Email Address');
 });

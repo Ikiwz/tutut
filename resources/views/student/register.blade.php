@@ -1,7 +1,7 @@
 @extends('layouts.auth', [
     'title' => 'Student Register',
-    'heading' => 'Create Account',
-    'subheading' => 'Fill in your details to get started.',
+    'heading' => 'Welcome',
+    'subheading' => 'Enter your details to register.',
 ])
 
 @section('content')
@@ -157,10 +157,10 @@
         </flux:field>
 
         <flux:button variant="primary" type="submit" class="w-full font-semibold" ::disabled="submitting">
-            <span x-show="!submitting">Create Account</span>
+            <span x-show="!submitting">Register</span>
             <span x-show="submitting" x-cloak class="inline-flex items-center gap-2">
                 <flux:icon.loading class="size-4" />
-                <span>Creating Account...</span>
+                <span>Registering...</span>
             </span>
         </flux:button>
     </form>
