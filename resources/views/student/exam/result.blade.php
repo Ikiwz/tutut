@@ -25,9 +25,9 @@
             Official Scaled TOEFL Score (Max 677)
         </div>
         <div class="flex items-center justify-center gap-6 pt-4 text-xs text-blue-100 border-t border-white/20">
-            <span>📅 {{ $examAttempt->started_at?->format('d M Y') }}</span>
-            <span>⏱️ {{ $examAttempt->started_at?->diffForHumans($examAttempt->completed_at, true) }}</span>
-            <span>✅ Completed: {{ $examAttempt->completed_at?->format('H:i') }} WIB</span>
+            <span>Date: {{ $examAttempt->started_at?->format('d M Y') }}</span>
+            <span>Duration: {{ $examAttempt->started_at?->diffForHumans($examAttempt->completed_at, true) }}</span>
+            <span>Completed: {{ $examAttempt->completed_at?->format('H:i') }} WIB</span>
         </div>
     </flux:card>
 

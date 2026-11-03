@@ -7,7 +7,7 @@
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div class="space-y-2">
                 <flux:heading size="xl" class="text-white font-extrabold text-2xl">
-                    Welcome back, {{ auth()->user()->name }}! 👋
+                    Welcome, {{ auth()->user()->name }}
                 </flux:heading>
                 <flux:text class="text-blue-100 text-sm max-w-xl">
                     Online TOEFL examination session.
@@ -98,14 +98,14 @@
                         <!-- Action Button -->
                         <div class="pt-2 border-t border-zinc-100 dark:border-zinc-800">
                             @if ($test->isLocked())
-                                <flux:button disabled variant="filled" class="w-full opacity-60 cursor-not-allowed">
-                                    🔒 Test Locked (Starts {{ $test->starts_at->format('d M, H:i') }})
+                                <flux:button disabled variant="filled" icon="lock-closed" class="w-full opacity-60 cursor-not-allowed">
+                                    Locked (Starts {{ $test->starts_at->format('d M, H:i') }})
                                 </flux:button>
                             @else
                                 <form method="POST" action="{{ route('exam.start', $test) }}">
                                     @csrf
-                                    <flux:button type="submit" variant="primary" class="w-full font-bold">
-                                        🚀 Start Exam Now
+                                    <flux:button type="submit" variant="primary" icon="play" class="w-full font-bold">
+                                        Start Exam
                                     </flux:button>
                                 </form>
                             @endif
@@ -126,8 +126,8 @@
     <div class="space-y-4">
         <div class="flex items-center justify-between">
             <div>
-                <flux:heading size="lg" level="2">Exam History &amp; Converted Scores</flux:heading>
-                <flux:text class="text-xs">Your completed test attempts and official TOEFL converted results.</flux:text>
+                <flux:heading size="lg" level="2">Exam History</flux:heading>
+                <flux:text class="text-xs">Completed examination sessions and converted scores.</flux:text>
             </div>
         </div>
 
@@ -177,14 +177,14 @@
                             </flux:table.cell>
                             <flux:table.cell class="text-right">
                                 <flux:button href="{{ route('exam.result', $attempt) }}" size="sm" variant="ghost" icon="eye">
-                                    Certificate / Details
+                                    View Result
                                 </flux:button>
                             </flux:table.cell>
                         </flux:table.row>
                     @empty
                         <flux:table.row>
                             <flux:table.cell colspan="8" class="text-center py-8 text-zinc-500 text-xs">
-                                No completed exam records found. Once you submit a test, your scores will appear here.
+                                No completed examinations found.
                             </flux:table.cell>
                         </flux:table.row>
                     @endforelse
