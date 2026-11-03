@@ -37,4 +37,10 @@
         Sign in
     </flux:button>
 </form>
+
+<flux:separator />
+
+<flux:text size="xs" class="text-center">
+    <flux:link href="{{ route('student.login') }}" wire:navigate.hover>&larr; Candidate Portal</flux:link>
+</flux:text>
 @endsection

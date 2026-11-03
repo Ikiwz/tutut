@@ -15,7 +15,7 @@
     @livewireStyles
     @fluxAppearance
 </head>
-<body class="min-h-dvh bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 flex flex-col items-center justify-center p-4 sm:p-6 antialiased selection:bg-blue-600 selection:text-white transition-colors duration-200">
+<body class="min-h-dvh bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 flex flex-col items-center justify-center p-4 antialiased">
     <!-- Accessibility Skip Link -->
     <a href="#auth-card" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-zinc-900 focus:text-white focus:rounded-lg focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-zinc-500 font-semibold text-sm">
         Skip to form
@@ -36,27 +36,15 @@
         </flux:dropdown>
     </div>
 
-    <!-- Centered Auth Container -->
+    <!-- Centered Auth Card (Seamless Flux Default) -->
     <main id="auth-card" class="w-full max-w-sm space-y-6">
-        <!-- Brand & Heading -->
-        <div class="text-center space-y-2">
-            <flux:brand href="/" logo="{{ asset('images/logo.png') }}" name="TUTUT" class="justify-center" />
-            <flux:heading size="xl">{{ $heading ?? 'Sign In' }}</flux:heading>
-            <flux:subheading>{{ $subheading ?? 'Enter your credentials to continue.' }}</flux:subheading>
-        </div>
-
-        <!-- Role Navigation -->
-        <flux:navbar class="justify-center border-b border-zinc-200 dark:border-zinc-800">
-            <flux:navbar.item icon="academic-cap" href="{{ route('student.login') }}" wire:navigate.hover :current="request()->routeIs('student.*')">
-                Candidate
-            </flux:navbar.item>
-            <flux:navbar.item icon="shield-check" href="{{ route('admin.login') }}" wire:navigate.hover :current="request()->routeIs('admin.*')">
-                Administrator
-            </flux:navbar.item>
-        </flux:navbar>
-
-        <!-- Official Flux Card -->
         <flux:card class="space-y-6">
+            <div class="text-center space-y-2">
+                <flux:brand href="/" logo="{{ asset('images/logo.png') }}" name="TUTUT" class="justify-center" />
+                <flux:heading size="xl">{{ $heading ?? 'Sign In' }}</flux:heading>
+                <flux:subheading>{{ $subheading ?? 'Enter your credentials to continue.' }}</flux:subheading>
+            </div>
+
             @if (session('error'))
                 <flux:callout variant="danger" icon="exclamation-triangle">
                     {{ session('error') }}
@@ -75,7 +63,6 @@
                 </flux:callout>
             @endif
 
-            {{ $slot ?? '' }}
             @yield('content')
         </flux:card>
 
