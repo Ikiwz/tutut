@@ -132,3 +132,25 @@ test('authenticated admin private pages include strict back forward cache preven
         ->and($response->headers->get('Pragma'))->toBe('no-cache')
         ->and($response->headers->get('Expires'))->toBe('Sun, 02 Jan 1990 00:00:00 GMT');
 });
+
+test('invalid student credentials flash toast error and do not attach validation error to email field', function () {
+    $response = $this->from(route('student.login'))->post(route('student.login.submit'), [
+        'email' => 'nonexistent@student.com',
+        'password' => 'wrongpassword',
+    ]);
+
+    $response->assertRedirect(route('student.login'));
+    $response->assertSessionHas('error', 'The provided credentials do not match our records.');
+    $response->assertSessionMissing('errors');
+});
+
+test('invalid admin credentials flash toast error and do not attach validation error to email field', function () {
+    $response = $this->from(route('admin.login'))->post(route('admin.login.submit'), [
+        'email' => 'nonexistent@admin.com',
+        'password' => 'wrongpassword',
+    ]);
+
+    $response->assertRedirect(route('admin.login'));
+    $response->assertSessionHas('error', 'The provided credentials do not match our records.');
+    $response->assertSessionMissing('errors');
+});
