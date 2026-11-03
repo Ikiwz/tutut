@@ -1,14 +1,21 @@
 {
-    "cloud": true,
+    "agents": [
+        "antigravity",
+        "cursor",
+        "claude_code"
+    ],
+    "cloud": false,
     "guidelines": true,
     "mcp": true,
     "nightwatch": false,
     "sail": false,
     "skills": [
         "infer-conventions",
-        "deploying-to-cloud",
+        "folio-routing",
         "laravel-best-practices",
         "testing-best-practices",
+        "fluxui-development",
+        "volt-development",
         "tailwindcss-development"
     ]
 }
