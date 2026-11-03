@@ -1,7 +1,7 @@
 @extends('layouts.auth', [
     'title' => 'Student Log In',
     'heading' => 'Welcome Back',
-    'subheading' => 'Enter your account credentials.',
+    'subheading' => 'Enter your email and password to continue.',
 ])
 
 @section('content')

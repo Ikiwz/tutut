@@ -25,13 +25,13 @@ class GoogleAuthController extends Controller
         }
 
         if (empty(config('services.google.client_id')) || empty(config('services.google.client_secret'))) {
-            return redirect()->route('student.login')->with('error', 'Google authentication is currently unavailable.');
+            return redirect()->route('student.login')->with('error', 'Google sign-in is temporarily unavailable. Please use your email and password.');
         }
 
         try {
             return Socialite::driver('google')->redirect();
         } catch (Exception $e) {
-            return redirect()->route('student.login')->with('error', 'Unable to connect to Google authentication.');
+            return redirect()->route('student.login')->with('error', 'Could not connect to Google sign-in. Please try again.');
         }
     }
 
@@ -50,12 +50,12 @@ class GoogleAuthController extends Controller
             /** @var \Laravel\Socialite\Two\User $googleUser */
             $googleUser = Socialite::driver('google')->user();
         } catch (Exception $e) {
-            return redirect()->route('student.login')->with('error', 'Google authentication failed or was cancelled.');
+            return redirect()->route('student.login')->with('error', 'Google sign-in was cancelled or interrupted. Please try again.');
         }
 
         $email = $googleUser->getEmail();
         if (empty($email)) {
-            return redirect()->route('student.login')->with('error', 'No email address was provided by Google.');
+            return redirect()->route('student.login')->with('error', 'Your Google account did not share an email address. Please check your permissions.');
         }
 
         // Locate existing candidate by google_id or email

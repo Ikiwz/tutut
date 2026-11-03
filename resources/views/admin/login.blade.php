@@ -1,7 +1,7 @@
 @extends('layouts.auth', [
     'title' => 'Admin Log In',
-    'heading' => 'Welcome Back',
-    'subheading' => 'Enter your account credentials.',
+    'heading' => 'Admin Portal',
+    'subheading' => 'Enter your email and password to continue.',
 ])
 
 @section('content')
@@ -100,7 +100,7 @@
             <span x-show="!submitting">Log In</span>
             <span x-show="submitting" x-cloak class="inline-flex items-center gap-2">
                 <flux:icon.loading class="size-4" />
-                <span>Authenticating...</span>
+                <span>Logging In...</span>
             </span>
         </flux:button>
     </form>

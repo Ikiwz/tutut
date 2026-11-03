@@ -1,7 +1,7 @@
 @extends('layouts.auth', [
     'title' => 'Student Register',
-    'heading' => 'Welcome',
-    'subheading' => 'Enter your account details.',
+    'heading' => 'Create Account',
+    'subheading' => 'Fill in your details to get started.',
 ])
 
 @section('content')
@@ -35,7 +35,7 @@
             },
             validateName() {
                 if (!this.name.trim()) {
-                    this.errors.name = 'Full legal name is required.';
+                    this.errors.name = 'Full name is required.';
                 } else if (this.name.trim().length < 3) {
                     this.errors.name = 'Name must be at least 3 characters.';
                 } else {
@@ -92,7 +92,7 @@
         @csrf
 
         <flux:field>
-            <flux:label>Full Legal Name</flux:label>
+            <flux:label>Full Name</flux:label>
             <flux:input
                 name="name"
                 x-model="name"
@@ -125,7 +125,7 @@
 
         <flux:field>
             <flux:label>Password</flux:label>
-            <flux:description>Minimum 8 characters with letters and numbers.</flux:description>
+            <flux:description>Must be at least 8 characters long.</flux:description>
             <flux:input
                 type="password"
                 name="password"
@@ -157,7 +157,7 @@
         </flux:field>
 
         <flux:button variant="primary" type="submit" class="w-full font-semibold" ::disabled="submitting">
-            <span x-show="!submitting">Register</span>
+            <span x-show="!submitting">Create Account</span>
             <span x-show="submitting" x-cloak class="inline-flex items-center gap-2">
                 <flux:icon.loading class="size-4" />
                 <span>Creating Account...</span>
@@ -168,9 +168,12 @@
 @endsection
 
 @section('footer')
-<div class="w-full text-center">
+<div class="w-full text-center space-y-2">
     <flux:text size="xs">
         Already have an account? <flux:link href="{{ route('student.login') }}" wire:navigate.hover class="font-medium">Log In</flux:link>
+    </flux:text>
+    <flux:text size="xs" class="text-zinc-500 dark:text-zinc-400 block">
+        By creating an account, you agree to our <flux:link href="#" class="underline">Terms of Service</flux:link> and <flux:link href="#" class="underline">Privacy Policy</flux:link>.
     </flux:text>
 </div>
 @endsection

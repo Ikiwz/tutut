@@ -140,7 +140,7 @@ test('invalid student credentials flash toast error and do not attach validation
     ]);
 
     $response->assertRedirect(route('student.login'));
-    $response->assertSessionHas('error', 'The provided credentials do not match our records.');
+    $response->assertSessionHas('error', 'Incorrect email or password. Please check your details and try again.');
     $response->assertSessionMissing('errors');
 });
 
@@ -151,6 +151,6 @@ test('invalid admin credentials flash toast error and do not attach validation e
     ]);
 
     $response->assertRedirect(route('admin.login'));
-    $response->assertSessionHas('error', 'The provided credentials do not match our records.');
+    $response->assertSessionHas('error', 'Incorrect email or password. Please check your details and try again.');
     $response->assertSessionMissing('errors');
 });

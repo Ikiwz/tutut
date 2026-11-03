@@ -38,10 +38,10 @@ class AdminAuthController extends Controller
 
             Auth::logout();
 
-            return back()->with('error', 'The provided credentials do not match our records.')->onlyInput('email');
+            return back()->with('error', 'Incorrect email or password. Please check your details and try again.')->onlyInput('email');
         }
 
-        return back()->with('error', 'The provided credentials do not match our records.')->onlyInput('email');
+        return back()->with('error', 'Incorrect email or password. Please check your details and try again.')->onlyInput('email');
     }
 
     public function logout(Request $request): RedirectResponse
@@ -50,6 +50,6 @@ class AdminAuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('admin.login');
+        return redirect()->route('admin.login')->with('success', 'You have been signed out safely.');
     }
 }

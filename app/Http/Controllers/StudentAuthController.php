@@ -37,10 +37,10 @@ class StudentAuthController extends Controller
             }
             Auth::logout();
 
-            return back()->with('error', 'The provided credentials do not match our records.')->onlyInput('email');
+            return back()->with('error', 'Incorrect email or password. Please check your details and try again.')->onlyInput('email');
         }
 
-        return back()->with('error', 'The provided credentials do not match our records.')->onlyInput('email');
+        return back()->with('error', 'Incorrect email or password. Please check your details and try again.')->onlyInput('email');
     }
 
     public function logout(Request $request)
@@ -49,7 +49,7 @@ class StudentAuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('student.login');
+        return redirect()->route('student.login')->with('success', 'You have been signed out safely.');
     }
 
     public function showRegister()
@@ -69,6 +69,15 @@ class StudentAuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
+        ], [
+            'name.required' => 'Please enter your full name.',
+            'name.max' => 'Your name cannot be longer than 255 characters.',
+            'email.required' => 'Please enter your email address.',
+            'email.email' => 'Please enter a valid email address.',
+            'email.unique' => 'This email is already registered. Please log in instead.',
+            'password.required' => 'Please create a password.',
+            'password.min' => 'Password must be at least 8 characters long.',
+            'password.confirmed' => 'Passwords do not match. Please try again.',
         ]);
 
         $user = User::create([
@@ -81,6 +90,6 @@ class StudentAuthController extends Controller
         Auth::login($user);
         $request->session()->flash('login_success', true);
 
-        return redirect()->route('student.dashboard');
+        return redirect()->route('student.dashboard')->with('success', 'Welcome to TUTUT! Your account has been created.');
     }
 }
