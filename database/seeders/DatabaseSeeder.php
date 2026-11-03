@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\ExamAnswer;
-use App\Models\ExamAttempt;
 use App\Models\Passage;
 use App\Models\Question;
 use App\Models\Section;

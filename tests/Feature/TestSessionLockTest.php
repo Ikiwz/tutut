@@ -4,13 +4,13 @@ namespace Tests\Feature;
 
 use App\Models\TestSession;
 use App\Models\User;
-use App\Models\Section;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class TestSessionLockTest extends TestCase
 {
     use RefreshDatabase;
+
     public function test_locked_test_session_model_methods(): void
     {
         $futureSession = new TestSession([

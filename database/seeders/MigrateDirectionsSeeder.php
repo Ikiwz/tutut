@@ -93,7 +93,7 @@ class MigrateDirectionsSeeder extends Seeder
         }
 
         $this->command->info('✅ Migrated existing data to directions successfully.');
-        $this->command->info('   Directions created: ' . Direction::count());
-        $this->command->info('   Questions linked: ' . Question::whereNotNull('direction_id')->count() . '/' . Question::count());
+        $this->command->info('   Directions created: '.Direction::count());
+        $this->command->info('   Questions linked: '.Question::whereNotNull('direction_id')->count().'/'.Question::count());
     }
 }

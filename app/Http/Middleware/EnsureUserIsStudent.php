@@ -9,10 +9,11 @@ class EnsureUserIsStudent
 {
     public function handle(Request $request, Closure $next)
     {
-        if (!auth()->check() || !auth()->user()->isStudent()) {
+        if (! auth()->check() || ! auth()->user()->isStudent()) {
             if ($request->expectsJson()) {
                 return response()->json(['message' => 'Unauthorized'], 403);
             }
+
             return redirect()->route('student.login');
         }
 
