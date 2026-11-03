@@ -161,5 +161,85 @@
             }
         });
     </script>
+
+    {{-- Client-Side Security Hardening: Disable Right-Click Context Menu & Developer Tools Shortcuts --}}
+    <script>
+        (function () {
+            'use strict';
+
+            // 1. Disable Right-Click Context Menu
+            document.addEventListener('contextmenu', function (e) {
+                e.preventDefault();
+                return false;
+            }, { capture: true });
+
+            // 2. Disable DevTools & Page Inspection Shortcuts
+            document.addEventListener('keydown', function (e) {
+                const isMac = navigator.platform && navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+                const modifier = isMac ? e.metaKey : e.ctrlKey;
+                const key = e.key ? e.key.toUpperCase() : '';
+                const keyCode = e.keyCode || e.which;
+
+                // F12 key
+                if (key === 'F12' || keyCode === 123) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+
+                // Ctrl+Shift+I / Cmd+Option+I (Inspect Element)
+                // Ctrl+Shift+J / Cmd+Option+J (Developer Console)
+                // Ctrl+Shift+C / Cmd+Option+C (Inspect Element Selector)
+                // Ctrl+Shift+K / Cmd+Option+K (Firefox Console)
+                // Ctrl+Shift+E / Cmd+Option+E (Firefox Network Tab)
+                if (modifier && e.shiftKey && ['I', 'J', 'C', 'K', 'E'].includes(key)) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+
+                // Ctrl+U / Cmd+U (View Page Source)
+                if (modifier && (key === 'U' || keyCode === 85)) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+
+                // Ctrl+S / Cmd+S (Save Page to Disk)
+                if (modifier && (key === 'S' || keyCode === 83)) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+
+                // ContextMenu key or Shift+F10 (Context Menu via Keyboard)
+                if (key === 'CONTEXTMENU' || (e.shiftKey && (key === 'F10' || keyCode === 121))) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+            }, { capture: true });
+
+            // 3. Disable Dragging of Images and Decorative Assets
+            document.addEventListener('dragstart', function (e) {
+                if (e.target && e.target.tagName === 'IMG') {
+                    e.preventDefault();
+                    return false;
+                }
+            }, { capture: true });
+
+            // 4. Security Console Notice
+            try {
+                if (window.console && typeof window.console.log === 'function') {
+                    console.clear();
+                    console.log(
+                        '%cSecurity Warning%c: Developer mode, element inspection, and script modification are disabled on this portal for academic examination integrity.',
+                        'color: #ef4444; font-size: 16px; font-weight: bold;',
+                        'color: inherit; font-size: 13px;'
+                    );
+                }
+            } catch (_) {}
+        })();
+    </script>
 </body>
 </html>
