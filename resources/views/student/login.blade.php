@@ -98,10 +98,10 @@
             <flux:link href="{{ route('password.request') }}" wire:navigate.hover class="text-xs font-medium">Forgot password?</flux:link>
         </div>
 
-        <flux:button variant="primary" type="submit" class="w-full font-semibold" ::disabled="submitting">
+        <flux:button variant="primary" type="submit" :loading="false" class="w-full font-semibold" ::disabled="submitting">
             <span x-show="!submitting">Log In</span>
-            <span x-show="submitting" x-cloak class="inline-flex items-center gap-2">
-                <flux:icon.loading class="size-4" />
+            <span x-show="submitting" x-cloak class="inline-flex items-center justify-center gap-2">
+                <flux:icon.loading variant="micro" class="size-4" />
                 <span>Logging In...</span>
             </span>
         </flux:button>

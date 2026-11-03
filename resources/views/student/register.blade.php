@@ -157,10 +157,10 @@
             <flux:error name="password_confirmation" />
         </flux:field>
 
-        <flux:button variant="primary" type="submit" class="w-full font-semibold" ::disabled="submitting">
+        <flux:button variant="primary" type="submit" :loading="false" class="w-full font-semibold" ::disabled="submitting">
             <span x-show="!submitting">Register</span>
-            <span x-show="submitting" x-cloak class="inline-flex items-center gap-2">
-                <flux:icon.loading class="size-4" />
+            <span x-show="submitting" x-cloak class="inline-flex items-center justify-center gap-2">
+                <flux:icon.loading variant="micro" class="size-4" />
                 <span>Registering...</span>
             </span>
         </flux:button>
