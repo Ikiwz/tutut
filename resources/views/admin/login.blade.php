@@ -1,7 +1,7 @@
 @extends('layouts.auth', [
     'title' => 'Admin Log In',
-    'heading' => 'TUTUT Admin Portal',
-    'subheading' => 'Restricted access for proctors and staff.',
+    'heading' => 'Welcome Back',
+    'subheading' => 'TUTUT Admin Portal — Restricted access for proctors and staff.',
 ])
 
 @section('content')

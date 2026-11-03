@@ -1,7 +1,7 @@
 @extends('layouts.auth', [
-    'title' => 'Candidate Log In',
-    'heading' => 'Candidate Log In',
-    'subheading' => 'Access your scheduled examination session.',
+    'title' => 'Log In',
+    'heading' => 'Welcome Back',
+    'subheading' => 'Log in to access your examination session.',
 ])
 
 @section('content')

@@ -30,11 +30,11 @@
 
             {{-- Main Inset Card --}}
             <flux:card body="inset" variant="soft" size="lg">
-                {{-- Outer Container: Header --}}
-                <flux:card.header>
-                    <flux:card.heading>{{ $heading ?? 'Log In' }}</flux:card.heading>
+                {{-- Outer Container: Centered Greeting Header --}}
+                <flux:card.header class="flex flex-col items-center text-center">
+                    <flux:card.heading size="lg" class="text-center">{{ $heading ?? 'Welcome Back' }}</flux:card.heading>
                     @if (isset($subheading))
-                        <flux:card.subheading>{{ $subheading }}</flux:card.subheading>
+                        <flux:card.subheading class="text-center mt-1">{{ $subheading }}</flux:card.subheading>
                     @endif
                 </flux:card.header>
 
