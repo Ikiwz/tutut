@@ -15,21 +15,21 @@
     @livewireStyles
     @fluxAppearance
 </head>
-<body class="min-h-dvh bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 antialiased selection:bg-blue-600 selection:text-white transition-colors duration-200">
+<body class="min-h-dvh bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 antialiased selection:bg-blue-600 selection:text-white transition-colors duration-200">
     <!-- Skip to Content Link for Accessibility -->
     <a href="#admin-main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-lg focus:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 font-bold text-sm">
         Skip to content
     </a>
 
     <!-- Desktop Sidebar (Official Flux Layout) -->
-    <flux:sidebar sticky collapsible="mobile" class="bg-zinc-50 dark:bg-zinc-950 border-r border-zinc-200 dark:border-zinc-800">
+    <flux:sidebar sticky collapsible class="bg-zinc-50 dark:bg-zinc-900">
         <flux:sidebar.header>
             <flux:sidebar.brand
                 href="{{ route('admin.dashboard') }}"
                 logo="{{ asset('images/logo.png') }}"
                 name="TUTUT Admin"
             />
-            <flux:sidebar.collapse class="lg:hidden" />
+            <flux:sidebar.collapse class="in-data-flux-sidebar-on-desktop:not-in-data-flux-sidebar-collapsed-desktop:-mr-2" />
         </flux:sidebar.header>
 
         <flux:sidebar.nav role="navigation" aria-label="Main Administration Menu">
@@ -102,7 +102,7 @@
     </flux:sidebar>
 
     <!-- Mobile Header -->
-    <flux:header class="lg:hidden bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800">
+    <flux:header class="lg:hidden bg-white dark:bg-zinc-800">
         <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
 
         <flux:brand href="{{ route('admin.dashboard') }}" logo="{{ asset('images/logo.png') }}" name="TUTUT Admin" class="max-sm:hidden" />
@@ -127,7 +127,7 @@
     </flux:header>
 
     <!-- Main Content Region (Official Flux Inset Layout) -->
-    <flux:main container inset id="admin-main-content">
+    <flux:main container inset class="lg:ms-0" id="admin-main-content">
         @if (session('success'))
             <flux:callout variant="success" icon="check-circle" role="status" class="mb-6">
                 {{ session('success') }}
