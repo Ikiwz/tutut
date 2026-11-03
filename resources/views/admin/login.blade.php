@@ -1,6 +1,6 @@
 @extends('layouts.auth', [
     'title' => 'Admin Log In',
-    'heading' => 'Admin Portal',
+    'heading' => 'Welcome Back',
     'subheading' => 'Enter your email and password to continue.',
 ])
 

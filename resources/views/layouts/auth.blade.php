@@ -52,12 +52,6 @@
                 <flux:brand href="/" logo="{{ asset('images/logo.png') }}" name="TUTUT" class="justify-center font-bold text-lg" />
             </div>
 
-            @if (request()->routeIs('admin.*'))
-                <div class="flex justify-center">
-                    <flux:badge color="zinc" size="sm" icon="shield-check">Administrator Access Portal</flux:badge>
-                </div>
-            @endif
-
             {{-- Main Inset Card --}}
             <flux:card body="inset" variant="soft" size="lg">
                 {{-- Outer Container: Centered Greeting Header (Semantic H1) --}}
