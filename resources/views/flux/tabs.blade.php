@@ -16,3 +16,4 @@ $classes = Flux::classes()
 <div {{ $attributes->class($classes) }} data-flux-tabs data-flux-tabs-variant="{{ $variant }}">
     {{ $slot }}
 </div>
+

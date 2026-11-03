@@ -1,5 +1,5 @@
 @extends('layouts.auth', [
-    'title' => 'Admin Sign In',
+    'title' => 'Admin Log In',
     'heading' => 'TUTUT Admin Portal',
     'subheading' => 'Restricted access for proctors and staff.',
 ])
@@ -35,7 +35,7 @@
         <flux:checkbox name="remember" label="Remember me" />
 
         <flux:button variant="primary" type="submit" class="w-full font-semibold">
-            Sign In
+            Log In
         </flux:button>
     </form>
 </div>

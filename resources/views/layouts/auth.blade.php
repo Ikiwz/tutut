@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
-    <title>{{ $title ?? 'Sign In' }} — TUTUT</title>
+    <title>{{ $title ?? 'Log In' }} — TUTUT</title>
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800&display=swap" rel="stylesheet" />
@@ -16,8 +16,8 @@
 </head>
 <body class="min-h-dvh bg-zinc-50 dark:bg-zinc-900 grid lg:grid-cols-2 antialiased selection:bg-blue-600 selection:text-white">
     {{-- Form Column --}}
-    <div class="flex flex-col items-center justify-center p-6 sm:p-10 lg:p-12 overflow-y-auto min-h-dvh">
-        <div class="w-full max-w-md space-y-6 my-auto">
+    <div class="flex flex-col items-center justify-center p-6 sm:p-8 lg:p-10 overflow-y-auto">
+        <div class="w-full max-w-md space-y-5 my-auto py-6">
             <div class="text-center">
                 <flux:brand href="/" logo="{{ asset('images/logo.png') }}" name="TUTUT" class="justify-center font-bold text-lg" />
             </div>
@@ -32,7 +32,7 @@
             <flux:card body="inset" variant="soft" size="lg">
                 {{-- Outer Container: Header --}}
                 <flux:card.header>
-                    <flux:card.heading>{{ $heading ?? 'Sign In' }}</flux:card.heading>
+                    <flux:card.heading>{{ $heading ?? 'Log In' }}</flux:card.heading>
                     @if (isset($subheading))
                         <flux:card.subheading>{{ $subheading }}</flux:card.subheading>
                     @endif
@@ -75,15 +75,17 @@
         </div>
     </div>
 
-    {{-- Image Column (Large Screens Only) --}}
-    <div class="hidden lg:relative lg:block h-full w-full bg-zinc-900 overflow-hidden">
-        <img
-            src="https://images.unsplash.com/photo-1606326608726-07a8ee903449?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D"
-            alt="TUTUT Examination Campus"
-            class="absolute inset-0 h-full w-full object-cover object-center"
-            loading="eager"
-        />
-        <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/60 via-transparent to-transparent"></div>
+    {{-- Inset Framed Image Column (Large Screens Only) --}}
+    <div class="hidden lg:flex lg:p-3 lg:h-dvh lg:w-full">
+        <div class="relative w-full h-full rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 shadow-xs bg-zinc-900">
+            <img
+                src="https://images.unsplash.com/photo-1606326608726-07a8ee903449?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D"
+                alt="TUTUT Examination Campus"
+                class="absolute inset-0 h-full w-full object-cover object-center"
+                loading="eager"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/60 via-transparent to-transparent"></div>
+        </div>
     </div>
 
     @livewireScripts

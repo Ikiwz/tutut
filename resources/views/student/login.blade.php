@@ -1,6 +1,6 @@
 @extends('layouts.auth', [
-    'title' => 'Candidate Sign In',
-    'heading' => 'Candidate Sign In',
+    'title' => 'Candidate Log In',
+    'heading' => 'Candidate Log In',
     'subheading' => 'Access your scheduled examination session.',
 ])
 
@@ -41,7 +41,7 @@
         <flux:checkbox name="remember" label="Remember this device" />
 
         <flux:button variant="primary" type="submit" class="w-full font-semibold">
-            Sign In to Exam
+            Log In to Exam
         </flux:button>
     </form>
 </div>

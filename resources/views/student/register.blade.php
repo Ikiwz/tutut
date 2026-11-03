@@ -1,6 +1,6 @@
 @extends('layouts.auth', [
     'title' => 'Candidate Registration',
-    'heading' => 'Create Account',
+    'heading' => 'Candidate Registration',
     'subheading' => 'Register your details to participate in examinations.',
 ])
 
@@ -63,7 +63,7 @@
         />
 
         <flux:button variant="primary" type="submit" class="w-full font-semibold">
-            Create Account
+            Register Account
         </flux:button>
     </form>
 </div>
@@ -72,7 +72,7 @@
 @section('footer')
 <div class="w-full text-center">
     <flux:text size="xs">
-        Already registered? <flux:link href="{{ route('student.login') }}" wire:navigate.hover class="font-medium">Sign In</flux:link>
+        Already registered? <flux:link href="{{ route('student.login') }}" wire:navigate.hover class="font-medium">Log In</flux:link>
     </flux:text>
 </div>
 @endsection

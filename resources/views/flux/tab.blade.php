@@ -32,3 +32,4 @@ $classes = Flux::classes('flex whitespace-nowrap flex-1 justify-center items-cen
         {{ $slot }}
     </button>
 @endif
+
