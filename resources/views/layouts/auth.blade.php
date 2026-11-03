@@ -15,7 +15,7 @@
     @livewireStyles
     @fluxAppearance
 </head>
-<body class="min-h-dvh bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 flex flex-col items-center justify-center p-4 antialiased">
+<body class="min-h-dvh bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 flex flex-col items-center justify-center p-4 sm:p-6 antialiased">
     <!-- Accessibility Skip Link -->
     <a href="#auth-card" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-zinc-900 focus:text-white focus:rounded-lg focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-zinc-500 font-semibold text-sm">
         Skip to form
@@ -36,46 +36,36 @@
         </flux:dropdown>
     </div>
 
-    <!-- Centered Auth Card with Official Flux Inset Pattern -->
-    <main id="auth-card" class="w-full max-w-md space-y-6">
-        <flux:card body="inset" variant="soft" size="lg">
-            <flux:card.header>
-                <div class="flex items-center gap-3">
-                    <a href="/" wire:navigate.hover class="shrink-0" aria-label="TUTUT Homepage">
-                        <img src="{{ asset('images/logo.png') }}" alt="TUTUT Logo" class="size-9 rounded-lg" width="36" height="36" />
-                    </a>
-                    <div>
-                        <flux:card.heading size="lg">{{ $heading ?? 'Sign In' }}</flux:card.heading>
-                        <flux:card.subheading>{{ $subheading ?? 'Enter your credentials to continue.' }}</flux:card.subheading>
-                    </div>
-                </div>
-            </flux:card.header>
+    <!-- Centered Auth Frame (Clean, Quiet & Premium Bezel) -->
+    <main id="auth-card" class="w-full max-w-sm space-y-6">
+        <flux:card class="space-y-6">
+            <div class="text-center space-y-2">
+                <a href="/" wire:navigate.hover class="inline-block" aria-label="TUTUT Homepage">
+                    <img src="{{ asset('images/logo.png') }}" alt="TUTUT Logo" class="size-10 mx-auto" width="40" height="40" />
+                </a>
+                <flux:heading size="xl" class="font-bold tracking-tight">{{ $heading ?? 'Sign In' }}</flux:heading>
+                <flux:subheading size="sm">{{ $subheading ?? 'Enter your credentials to continue.' }}</flux:subheading>
+            </div>
 
-            <flux:card.body class="space-y-6">
-                @if (session('error'))
-                    <flux:callout variant="danger" icon="exclamation-triangle">
-                        {{ session('error') }}
-                    </flux:callout>
-                @endif
+            @if (session('error'))
+                <flux:callout variant="danger" icon="exclamation-triangle">
+                    {{ session('error') }}
+                </flux:callout>
+            @endif
 
-                @if (session('success'))
-                    <flux:callout variant="success" icon="check-circle">
-                        {{ session('success') }}
-                    </flux:callout>
-                @endif
+            @if (session('success'))
+                <flux:callout variant="success" icon="check-circle">
+                    {{ session('success') }}
+                </flux:callout>
+            @endif
 
-                @if ($errors->any())
-                    <flux:callout variant="danger" icon="exclamation-triangle">
-                        {{ $errors->first() }}
-                    </flux:callout>
-                @endif
+            @if ($errors->any())
+                <flux:callout variant="danger" icon="exclamation-triangle">
+                    {{ $errors->first() }}
+                </flux:callout>
+            @endif
 
-                @yield('content')
-            </flux:card.body>
-
-            <flux:card.footer>
-                @yield('footer')
-            </flux:card.footer>
+            @yield('content')
         </flux:card>
 
         <flux:text size="xs" class="text-center">

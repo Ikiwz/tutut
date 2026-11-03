@@ -5,43 +5,45 @@
 ])
 
 @section('content')
-<form method="POST" action="{{ route('admin.login.submit') }}" class="space-y-6">
-    @csrf
+<div class="space-y-6">
+    <form method="POST" action="{{ route('admin.login.submit') }}" class="space-y-5">
+        @csrf
 
-    <flux:input
-        label="Email"
-        type="email"
-        name="email"
-        value="{{ old('email') }}"
-        placeholder="admin@example.com"
-        icon="envelope"
-        required
-        autofocus
-        autocomplete="email"
-    />
+        <flux:input
+            label="Email"
+            type="email"
+            name="email"
+            value="{{ old('email') }}"
+            placeholder="admin@example.com"
+            icon="envelope"
+            required
+            autofocus
+            autocomplete="email"
+        />
 
-    <flux:input
-        label="Password"
-        type="password"
-        name="password"
-        placeholder="••••••••"
-        icon="key"
-        viewable
-        required
-        autocomplete="current-password"
-    />
+        <flux:input
+            label="Password"
+            type="password"
+            name="password"
+            placeholder="••••••••"
+            icon="key"
+            viewable
+            required
+            autocomplete="current-password"
+        />
 
-    <flux:checkbox name="remember" label="Remember me" />
+        <flux:checkbox name="remember" label="Remember me" />
 
-    <flux:button variant="primary" type="submit" class="w-full">
-        Sign in
-    </flux:button>
-</form>
-@endsection
+        <flux:button variant="primary" type="submit" class="w-full">
+            Sign In
+        </flux:button>
+    </form>
 
-@section('footer')
-<div class="flex items-center justify-between w-full text-xs">
-    <flux:text size="xs" class="text-zinc-500">Authorized Personnel Only</flux:text>
-    <flux:link href="{{ route('student.login') }}" wire:navigate.hover>&larr; Candidate Portal</flux:link>
+    <flux:separator />
+
+    <div class="flex items-center justify-between text-xs">
+        <flux:text size="xs" class="text-zinc-500">Authorized Personnel Only</flux:text>
+        <flux:link href="{{ route('student.login') }}" wire:navigate.hover>&larr; Candidate Portal</flux:link>
+    </div>
 </div>
 @endsection
