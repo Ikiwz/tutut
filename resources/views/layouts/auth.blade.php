@@ -14,9 +14,9 @@
     @livewireStyles
     @fluxAppearance
 </head>
-<body class="min-h-dvh lg:h-dvh lg:overflow-hidden bg-zinc-50 dark:bg-zinc-900 grid lg:grid-cols-2 antialiased selection:bg-blue-600 selection:text-white">
-    {{-- Form Column: Only this column scrolls on desktop --}}
-    <div class="flex flex-col items-center p-6 sm:p-8 lg:p-10 h-full overflow-y-auto">
+<body class="min-h-dvh bg-zinc-50 dark:bg-zinc-900 antialiased selection:bg-blue-600 selection:text-white">
+    {{-- Form Column: Natural page flow on the left --}}
+    <div class="w-full lg:w-1/2 min-h-dvh flex flex-col items-center justify-center p-6 sm:p-8 lg:p-10 relative z-10">
         <div class="w-full max-w-md space-y-5 my-auto py-6">
             <div class="text-center">
                 <flux:brand href="/" logo="{{ asset('images/logo.png') }}" name="TUTUT" class="justify-center font-bold text-lg" />
@@ -75,9 +75,9 @@
         </div>
     </div>
 
-    {{-- Inset Framed Image Column (Large Screens Only: Fixed & Never Scrolls) --}}
-    <div class="hidden lg:flex lg:p-3 lg:h-full lg:w-full lg:overflow-hidden">
-        <div class="relative w-full h-full rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 shadow-xs bg-zinc-900">
+    {{-- Fixed Inset Framed Image Column (Large Screens Only: Fixed Position) --}}
+    <div class="hidden lg:block fixed top-0 right-0 w-1/2 h-dvh p-3 z-0 pointer-events-none">
+        <div class="relative w-full h-full rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 shadow-xs bg-zinc-900 pointer-events-auto">
             <img
                 src="https://images.unsplash.com/photo-1606326608726-07a8ee903449?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D"
                 alt="TUTUT Examination Campus"
