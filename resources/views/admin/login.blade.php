@@ -15,7 +15,7 @@
             type="email"
             name="email"
             value="{{ old('email') }}"
-            placeholder="admin@university.edu"
+            placeholder="name@example.com"
             icon="envelope"
             required
             autofocus

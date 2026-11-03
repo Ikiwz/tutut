@@ -16,11 +16,10 @@
         @csrf
 
         <flux:input
-            label="Full Legal Name"
-            description:trailing="Printed on your official score certificate."
+            label="Name"
             name="name"
             value="{{ old('name') }}"
-            placeholder="e.g. Alexander Pierce"
+            placeholder="John Doe"
             icon="user"
             required
             autofocus
@@ -28,12 +27,11 @@
         />
 
         <flux:input
-            label="Email Address"
-            description:trailing="Exam links and score results will be delivered here."
+            label="Email"
             type="email"
             name="email"
             value="{{ old('email') }}"
-            placeholder="candidate@university.edu"
+            placeholder="name@example.com"
             icon="envelope"
             required
             autocomplete="email"
