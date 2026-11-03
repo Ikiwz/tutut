@@ -6,7 +6,7 @@
 
 @section('content')
 <div class="space-y-6">
-    <form method="POST" action="{{ route('admin.login.submit') }}" class="space-y-5">
+    <form method="POST" action="{{ route('admin.login.submit') }}" class="space-y-6">
         @csrf
 
         <flux:input

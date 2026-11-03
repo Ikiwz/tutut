@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <title>{{ $title ?? 'Sign In' }} — TUTUT</title>
-    <meta name="description" content="TUTUT Examination Platform.">
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800&display=swap" rel="stylesheet" />
@@ -15,36 +14,16 @@
     @livewireStyles
     @fluxAppearance
 </head>
-<body class="min-h-dvh bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 flex flex-col items-center justify-center p-4 sm:p-6 antialiased">
-    <!-- Accessibility Skip Link -->
-    <a href="#auth-card" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-zinc-900 focus:text-white focus:rounded-lg focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-zinc-500 font-semibold text-sm">
-        Skip to form
-    </a>
+<body class="min-h-dvh bg-zinc-50 dark:bg-zinc-900 flex items-center justify-center p-6">
+    <div class="w-full max-w-sm space-y-6">
+        <div class="text-center">
+            <flux:brand href="/" logo="{{ asset('images/logo.png') }}" name="TUTUT" class="justify-center" />
+        </div>
 
-    <!-- Theme Switcher -->
-    <div class="fixed top-4 right-4 z-40">
-        <flux:dropdown x-data align="end">
-            <flux:button variant="subtle" square aria-label="Toggle theme">
-                <flux:icon.sun x-show="! $flux.dark" variant="mini" class="size-5" />
-                <flux:icon.moon x-show="$flux.dark" variant="mini" class="size-5" />
-            </flux:button>
-            <flux:menu>
-                <flux:menu.item icon="sun" x-on:click="$flux.appearance = 'light'">Light</flux:menu.item>
-                <flux:menu.item icon="moon" x-on:click="$flux.appearance = 'dark'">Dark</flux:menu.item>
-                <flux:menu.item icon="computer-desktop" x-on:click="$flux.appearance = 'system'">System</flux:menu.item>
-            </flux:menu>
-        </flux:dropdown>
-    </div>
-
-    <!-- Centered Auth Frame (Clean, Quiet & Premium Bezel) -->
-    <main id="auth-card" class="w-full max-w-sm space-y-6">
         <flux:card class="space-y-6">
-            <div class="text-center space-y-2">
-                <a href="/" wire:navigate.hover class="inline-block" aria-label="TUTUT Homepage">
-                    <img src="{{ asset('images/logo.png') }}" alt="TUTUT Logo" class="size-10 mx-auto" width="40" height="40" />
-                </a>
-                <flux:heading size="xl" class="font-bold tracking-tight">{{ $heading ?? 'Sign In' }}</flux:heading>
-                <flux:subheading size="sm">{{ $subheading ?? 'Enter your credentials to continue.' }}</flux:subheading>
+            <div>
+                <flux:heading size="lg">{{ $heading ?? 'Sign In' }}</flux:heading>
+                <flux:subheading>{{ $subheading ?? 'Enter your credentials to continue.' }}</flux:subheading>
             </div>
 
             @if (session('error'))
@@ -71,7 +50,7 @@
         <flux:text size="xs" class="text-center">
             &copy; {{ date('Y') }} TUTUT. All rights reserved.
         </flux:text>
-    </main>
+    </div>
 
     @livewireScripts
     @fluxScripts
