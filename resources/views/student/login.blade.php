@@ -1,7 +1,7 @@
 @extends('layouts.auth', [
     'title' => 'Log In',
     'heading' => 'Welcome Back',
-    'subheading' => 'Enter your details to continue.',
+    'subheading' => 'Enter your credentials to continue.',
 ])
 
 @section('content')
@@ -38,7 +38,7 @@
             autocomplete="current-password"
         />
 
-        <flux:checkbox name="remember" label="Remember this device" />
+        <flux:checkbox name="remember" label="Remember me" />
 
         <flux:button variant="primary" type="submit" class="w-full font-semibold">
             Log In
