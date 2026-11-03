@@ -25,6 +25,25 @@
             password_confirmation: '',
             touched: { name: false, email: false, password: false, password_confirmation: false },
             errors: { name: '', email: '', password: '', password_confirmation: '' },
+            get passwordScore() {
+                if (!this.password) return 0;
+                if (this.password.length < 8) return 1;
+                const hasLetters = /[a-zA-Z]/.test(this.password);
+                const hasNumbers = /[0-9]/.test(this.password);
+                const hasVariety = /[^a-zA-Z0-9]/.test(this.password) || (/[a-z]/.test(this.password) && /[A-Z]/.test(this.password));
+                if ((hasLetters && hasNumbers && this.password.length >= 10) || (hasLetters && hasNumbers && hasVariety)) {
+                    return 3;
+                }
+                return 2;
+            },
+            get passwordStrengthLabel() {
+                switch (this.passwordScore) {
+                    case 1: return 'Weak';
+                    case 2: return 'Good';
+                    case 3: return 'Strong';
+                    default: return '';
+                }
+            },
             init() {
                 this.$watch('name', () => { if (this.touched.name) this.validateName(); });
                 this.$watch('email', () => { if (this.touched.email) this.validateEmail(); });
@@ -138,6 +157,32 @@
                 autocomplete="new-password"
             />
             <p x-show="errors.password" x-cloak class="text-xs font-medium text-rose-600 dark:text-rose-400 mt-1.5" role="alert" x-text="errors.password"></p>
+            <div x-show="password.length > 0 && !errors.password" x-cloak class="space-y-1.5 mt-2" aria-live="polite">
+                <div class="flex items-center justify-between text-xs">
+                    <span class="text-zinc-500 dark:text-zinc-400">Password strength</span>
+                    <span class="font-medium" :class="{
+                        'text-rose-600 dark:text-rose-400': passwordScore === 1,
+                        'text-amber-600 dark:text-amber-400': passwordScore === 2,
+                        'text-emerald-600 dark:text-emerald-400': passwordScore === 3
+                    }" x-text="passwordStrengthLabel"></span>
+                </div>
+                <div class="grid grid-cols-3 gap-1.5 h-1">
+                    <div class="h-full rounded-full transition-colors duration-200" :class="{
+                        'bg-rose-500': passwordScore === 1,
+                        'bg-amber-500': passwordScore === 2,
+                        'bg-emerald-500': passwordScore === 3
+                    }"></div>
+                    <div class="h-full rounded-full transition-colors duration-200" :class="{
+                        'bg-amber-500': passwordScore === 2,
+                        'bg-emerald-500': passwordScore === 3,
+                        'bg-zinc-200 dark:bg-zinc-700': passwordScore < 2
+                    }"></div>
+                    <div class="h-full rounded-full transition-colors duration-200" :class="{
+                        'bg-emerald-500': passwordScore === 3,
+                        'bg-zinc-200 dark:bg-zinc-700': passwordScore < 3
+                    }"></div>
+                </div>
+            </div>
             <flux:error name="password" />
         </flux:field>
 
