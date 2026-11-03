@@ -1,0 +1,15 @@
+{
+    "css.lint.unknownAtRules": "ignore",
+    "scss.lint.unknownAtRules": "ignore",
+    "less.lint.unknownAtRules": "ignore",
+    "css.customData": [
+        ".vscode/css-custom-data.json"
+    ],
+    "tailwindCSS.includeLanguages": {
+        "blade": "html",
+        "php": "html"
+    },
+    "files.associations": {
+        "*.blade.php": "blade"
+    }
+}

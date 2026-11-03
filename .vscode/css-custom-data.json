@@ -1,0 +1,29 @@
+{
+    "version": 1.1,
+    "atDirectives": [
+        {
+            "name": "@theme",
+            "description": "Tailwind CSS v4 theme configuration block for defining theme tokens and CSS variables."
+        },
+        {
+            "name": "@source",
+            "description": "Tailwind CSS v4 source directive to specify paths for class extraction."
+        },
+        {
+            "name": "@custom-variant",
+            "description": "Tailwind CSS v4 custom variant definition."
+        },
+        {
+            "name": "@utility",
+            "description": "Tailwind CSS v4 custom utility class definition."
+        },
+        {
+            "name": "@variant",
+            "description": "Tailwind CSS v4 custom variant helper."
+        },
+        {
+            "name": "@plugin",
+            "description": "Tailwind CSS v4 plugin import directive."
+        }
+    ]
+}
