@@ -1,7 +1,7 @@
 @extends('layouts.auth', [
-    'title' => 'Sign In',
+    'title' => 'Candidate Sign In',
     'heading' => 'Candidate Sign In',
-    'subheading' => 'Enter your credentials to access your exam session.',
+    'subheading' => 'Access your scheduled TOEFL examination session with your registered account.',
 ])
 
 @section('content')
@@ -10,17 +10,17 @@
         Continue with Google
     </flux:button>
 
-    <flux:separator text="or" />
+    <flux:separator text="or with registered email" />
 
     <form method="POST" action="{{ route('student.login.submit') }}" class="space-y-6">
         @csrf
 
         <flux:input
-            label="Email"
+            label="Email Address"
             type="email"
             name="email"
             value="{{ old('email') }}"
-            placeholder="name@example.com"
+            placeholder="candidate@university.edu"
             icon="envelope"
             required
             autofocus
@@ -38,10 +38,10 @@
             autocomplete="current-password"
         />
 
-        <flux:checkbox name="remember" label="Remember me" />
+        <flux:checkbox name="remember" label="Remember this device" />
 
-        <flux:button variant="primary" type="submit" class="w-full">
-            Sign In
+        <flux:button variant="primary" type="submit" class="w-full font-semibold">
+            Sign In to Exam
         </flux:button>
     </form>
 
@@ -49,10 +49,10 @@
 
     <div class="flex items-center justify-between text-xs">
         <flux:text size="xs">
-            Don't have an account? <flux:link href="{{ route('student.register') }}" wire:navigate.hover>Register</flux:link>
+            Don't have an account? <flux:link href="{{ route('student.register') }}" wire:navigate.hover class="font-medium">Register</flux:link>
         </flux:text>
 
-        <flux:link href="{{ route('admin.login') }}" wire:navigate.hover>Admin Portal &rarr;</flux:link>
+        <flux:link href="{{ route('admin.login') }}" wire:navigate.hover class="font-medium">Administrator Portal &rarr;</flux:link>
     </div>
 </div>
 @endsection
