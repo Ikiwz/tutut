@@ -54,11 +54,9 @@
                     {{ $result['correct'] }} of {{ $result['total'] }} questions correct
                 </div>
 
-                <!-- Custom Progress -->
+                <!-- Official Flux Progress -->
                 @php $pct = $result['total'] > 0 ? round(($result['correct'] / $result['total']) * 100) : 0; @endphp
-                <div class="w-full bg-zinc-200 dark:bg-zinc-700 h-2 rounded-full overflow-hidden">
-                    <div class="bg-blue-600 dark:bg-blue-400 h-full rounded-full transition-all duration-1000" style="width: {{ $pct }}%"></div>
-                </div>
+                <flux:progress :value="$pct" color="blue" />
             </flux:card>
         @endforeach
     </div>

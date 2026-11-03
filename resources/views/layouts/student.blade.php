@@ -41,7 +41,7 @@
                 <flux:sidebar.item icon="speaker-wave" href="#" onclick="testAudio(); return false;" title="Test Audio Device (Shortcut: T)">
                     Audio Test (T)
                 </flux:sidebar.item>
-                <flux:sidebar.item icon="question-mark-circle" href="#" onclick="openShortcutsModal(); return false;" title="Keyboard Accessibility Shortcuts (Shortcut: H)">
+                <flux:sidebar.item icon="question-mark-circle" x-data x-on:click="$flux.modal('shortcuts-modal').show()" title="Keyboard Accessibility Shortcuts (Shortcut: H)">
                     Shortcuts Dialog (H)
                 </flux:sidebar.item>
             </flux:sidebar.group>
@@ -126,51 +126,52 @@
         @yield('content')
     </flux:main>
 
-    <!-- Keyboard Shortcuts Modal (Flux Native Modal) -->
-    <div id="shortcutsModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4 transition-opacity" role="dialog" aria-modal="true" aria-labelledby="modal-shortcuts-title">
-        <flux:card class="w-full max-w-lg space-y-4 shadow-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl">
-            <div class="flex items-center justify-between">
-                <flux:heading size="lg" id="modal-shortcuts-title" class="font-bold">Accessibility Keyboard Shortcuts</flux:heading>
-                <flux:button size="sm" variant="ghost" icon="x-mark" onclick="closeShortcutsModal()" aria-label="Close dialog" />
-            </div>
-            <flux:separator />
+    <!-- Keyboard Shortcuts Modal (Official Flux Modal) -->
+    <flux:modal name="shortcuts-modal" class="md:w-lg space-y-4">
+        <div>
+            <flux:heading level="2" size="lg">Accessibility Keyboard Shortcuts</flux:heading>
+            <flux:subheading>Full keyboard navigation controls for visually impaired candidates</flux:subheading>
+        </div>
 
-            <div class="space-y-3 text-sm" role="list">
-                <div role="listitem" class="flex items-center justify-between py-1.5 border-b border-zinc-100 dark:border-zinc-800">
-                    <span class="text-zinc-700 dark:text-zinc-300">Test Audio Output (TTS Voice)</span>
-                    <kbd class="px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 font-mono text-xs font-bold border border-zinc-200 dark:border-zinc-700">T</kbd>
-                </div>
-                <div role="listitem" class="flex items-center justify-between py-1.5 border-b border-zinc-100 dark:border-zinc-800">
-                    <span class="text-zinc-700 dark:text-zinc-300">Open Keyboard Shortcuts Help</span>
-                    <kbd class="px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 font-mono text-xs font-bold border border-zinc-200 dark:border-zinc-700">H</kbd>
-                </div>
-                <div role="listitem" class="flex items-center justify-between py-1.5 border-b border-zinc-100 dark:border-zinc-800">
-                    <span class="text-zinc-700 dark:text-zinc-300">Choose Options A, B, C, D</span>
-                    <div class="flex gap-1 font-mono text-xs font-bold">
-                        <kbd class="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">A</kbd>
-                        <kbd class="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">B</kbd>
-                        <kbd class="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">C</kbd>
-                        <kbd class="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">D</kbd>
-                    </div>
-                </div>
-                <div role="listitem" class="flex items-center justify-between py-1.5 border-b border-zinc-100 dark:border-zinc-800">
-                    <span class="text-zinc-700 dark:text-zinc-300">Navigate Next / Previous Question</span>
-                    <div class="flex gap-1 font-mono text-xs font-bold">
-                        <kbd class="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">→</kbd>
-                        <kbd class="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">←</kbd>
-                    </div>
-                </div>
-                <div role="listitem" class="flex items-center justify-between py-1.5">
-                    <span class="text-zinc-700 dark:text-zinc-300">Close Active Dialog</span>
-                    <kbd class="px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 font-mono text-xs font-bold border border-zinc-200 dark:border-zinc-700">Esc</kbd>
-                </div>
-            </div>
+        <flux:separator />
 
-            <div class="flex justify-end pt-2">
-                <flux:button variant="primary" onclick="closeShortcutsModal()">Dismiss</flux:button>
+        <div class="space-y-3 text-sm" role="list">
+            <div role="listitem" class="flex items-center justify-between py-1.5 border-b border-zinc-100 dark:border-zinc-800">
+                <flux:text>Test Audio Output (TTS Voice)</flux:text>
+                <kbd class="px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 font-mono text-xs font-bold border border-zinc-200 dark:border-zinc-700">T</kbd>
             </div>
-        </flux:card>
-    </div>
+            <div role="listitem" class="flex items-center justify-between py-1.5 border-b border-zinc-100 dark:border-zinc-800">
+                <flux:text>Open Keyboard Shortcuts Help</flux:text>
+                <kbd class="px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 font-mono text-xs font-bold border border-zinc-200 dark:border-zinc-700">H</kbd>
+            </div>
+            <div role="listitem" class="flex items-center justify-between py-1.5 border-b border-zinc-100 dark:border-zinc-800">
+                <flux:text>Choose Options A, B, C, D</flux:text>
+                <div class="flex gap-1 font-mono text-xs font-bold">
+                    <kbd class="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">A</kbd>
+                    <kbd class="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">B</kbd>
+                    <kbd class="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">C</kbd>
+                    <kbd class="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">D</kbd>
+                </div>
+            </div>
+            <div role="listitem" class="flex items-center justify-between py-1.5 border-b border-zinc-100 dark:border-zinc-800">
+                <flux:text>Navigate Next / Previous Question</flux:text>
+                <div class="flex gap-1 font-mono text-xs font-bold">
+                    <kbd class="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">→</kbd>
+                    <kbd class="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">←</kbd>
+                </div>
+            </div>
+            <div role="listitem" class="flex items-center justify-between py-1.5">
+                <flux:text>Close Active Dialog</flux:text>
+                <kbd class="px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 font-mono text-xs font-bold border border-zinc-200 dark:border-zinc-700">Esc</kbd>
+            </div>
+        </div>
+
+        <div class="flex justify-end pt-2">
+            <flux:modal.close>
+                <flux:button variant="primary">Dismiss</flux:button>
+            </flux:modal.close>
+        </div>
+    </flux:modal>
 
     <!-- Live Announcer for Screen Readers -->
     <div id="liveAnnouncer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
@@ -192,23 +193,6 @@
             }
         }
 
-        function openShortcutsModal() {
-            const m = document.getElementById('shortcutsModal');
-            if (m) {
-                m.classList.remove('hidden');
-                m.classList.add('flex');
-                speak('Accessibility shortcuts dialog opened.');
-            }
-        }
-
-        function closeShortcutsModal() {
-            const m = document.getElementById('shortcutsModal');
-            if (m) {
-                m.classList.add('hidden');
-                m.classList.remove('flex');
-            }
-        }
-
         function testAudio() {
             speak('TUTUT audio synthesis is active. Your audio device is connected and functioning properly.');
         }
@@ -221,9 +205,10 @@
                 testAudio();
             } else if (e.key === 'h' || e.key === 'H') {
                 e.preventDefault();
-                openShortcutsModal();
-            } else if (e.key === 'Escape') {
-                closeShortcutsModal();
+                if (window.Flux && window.Flux.modal) {
+                    window.Flux.modal('shortcuts-modal').show();
+                    speak('Accessibility shortcuts dialog opened.');
+                }
             }
         });
     </script>

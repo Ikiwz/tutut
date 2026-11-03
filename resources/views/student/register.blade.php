@@ -5,32 +5,32 @@
 ])
 
 @section('content')
-<h2 id="form-heading" class="sr-only">Candidate Registration Form</h2>
+<flux:heading level="2" id="form-heading" class="sr-only">Candidate Registration Form</flux:heading>
 
-<form method="POST" action="{{ route('student.register.submit') }}" class="space-y-4" aria-label="Candidate registration form">
+<form method="POST" action="{{ route('student.register.submit') }}" class="space-y-4" aria-labelledby="form-heading">
     @csrf
 
     <flux:field>
-        <flux:label id="label-name">Full Legal Name *</flux:label>
-        <flux:input name="name" value="{{ old('name') }}" required autofocus autocomplete="name" placeholder="Johnathan Doe" icon="user" aria-labelledby="label-name" />
+        <flux:label>Full Legal Name *</flux:label>
+        <flux:input name="name" value="{{ old('name') }}" required autofocus autocomplete="name" placeholder="Johnathan Doe" icon="user" />
         <flux:error name="name" />
     </flux:field>
 
     <flux:field>
-        <flux:label id="label-email">Campus or Personal Email Address *</flux:label>
-        <flux:input type="email" name="email" value="{{ old('email') }}" required autocomplete="email" placeholder="student@university.edu" icon="envelope" aria-labelledby="label-email" />
+        <flux:label>Campus or Personal Email Address *</flux:label>
+        <flux:input type="email" name="email" value="{{ old('email') }}" required autocomplete="email" placeholder="student@university.edu" icon="envelope" />
         <flux:error name="email" />
     </flux:field>
 
     <flux:field>
-        <flux:label id="label-password">Account Password * (Minimum 8 characters)</flux:label>
-        <flux:input type="password" name="password" required autocomplete="new-password" placeholder="••••••••" icon="key" aria-labelledby="label-password" />
+        <flux:label>Account Password * (Minimum 8 characters)</flux:label>
+        <flux:input type="password" name="password" required autocomplete="new-password" placeholder="••••••••" icon="key" />
         <flux:error name="password" />
     </flux:field>
 
     <flux:field>
-        <flux:label id="label-password-confirmation">Confirm Password *</flux:label>
-        <flux:input type="password" name="password_confirmation" required autocomplete="new-password" placeholder="••••••••" icon="key" aria-labelledby="label-password-confirmation" />
+        <flux:label>Confirm Password *</flux:label>
+        <flux:input type="password" name="password_confirmation" required autocomplete="new-password" placeholder="••••••••" icon="key" />
         <flux:error name="password_confirmation" />
     </flux:field>
 
@@ -38,8 +38,10 @@
         Create Candidate Account
     </flux:button>
 
-    <div class="text-center text-xs text-zinc-600 dark:text-zinc-400 pt-2 border-t border-zinc-100 dark:border-zinc-800">
-        Already registered? <a href="{{ route('student.login') }}" class="font-bold text-blue-600 dark:text-blue-400 hover:underline">Sign in to existing account</a>
-    </div>
+    <flux:separator />
+
+    <flux:text size="sm" class="text-center">
+        Already registered? <flux:link href="{{ route('student.login') }}" class="font-bold">Sign in to existing account</flux:link>
+    </flux:text>
 </form>
 @endsection
