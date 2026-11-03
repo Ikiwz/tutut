@@ -81,8 +81,17 @@
             </flux:card>
         </div>
 
-        {{-- Footer Copyright --}}
-        <footer class="w-full text-center py-2">
+        {{-- Footer Links & Copyright --}}
+        <footer class="w-full text-center py-2 space-y-2">
+            <div class="flex items-center justify-center gap-3 text-xs text-zinc-500 dark:text-zinc-400">
+                <flux:link href="{{ route('terms') }}" class="hover:underline">Terms</flux:link>
+                <span>&bull;</span>
+                <flux:link href="{{ route('privacy') }}" class="hover:underline">Privacy</flux:link>
+                <span>&bull;</span>
+                <flux:link href="{{ route('rules') }}" class="hover:underline">Exam Rules</flux:link>
+                <span>&bull;</span>
+                <flux:link href="{{ route('faq') }}" class="hover:underline">FAQ</flux:link>
+            </div>
             <flux:text size="xs" class="text-zinc-500 dark:text-zinc-400">
                 &copy; {{ date('Y') }} TUTUT. All rights reserved.
             </flux:text>

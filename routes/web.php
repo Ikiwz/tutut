@@ -11,6 +11,7 @@ use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\GoogleAuthController;
+use App\Http\Controllers\LegalController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\StudentAuthController;
 use App\Http\Middleware\EnsureUserIsAdmin;
@@ -28,6 +29,12 @@ Route::get('/', function () {
 
     return redirect()->route('student.login');
 });
+
+// Public Guidelines & Policy Routes
+Route::get('/terms', [LegalController::class, 'terms'])->name('terms');
+Route::get('/privacy', [LegalController::class, 'privacy'])->name('privacy');
+Route::get('/exam-rules', [LegalController::class, 'rules'])->name('rules');
+Route::get('/faq', [LegalController::class, 'faq'])->name('faq');
 
 // Student Guest Auth Routes
 Route::middleware(['guest', PreventBackForwardCache::class])->group(function () {

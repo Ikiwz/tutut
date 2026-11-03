@@ -174,7 +174,7 @@
         Already have an account? <flux:link href="{{ route('student.login') }}" wire:navigate.hover class="font-medium">Log In</flux:link>
     </flux:text>
     <flux:text size="xs" class="text-zinc-500 dark:text-zinc-400 block">
-        By creating an account, you agree to our <flux:link href="#" class="underline">Terms of Service</flux:link> and <flux:link href="#" class="underline">Privacy Policy</flux:link>.
+        By creating an account, you agree to our <flux:link href="{{ route('terms') }}" target="_blank" class="underline">Terms of Service</flux:link> and <flux:link href="{{ route('privacy') }}" target="_blank" class="underline">Privacy Policy</flux:link>.
     </flux:text>
 </div>
 @endsection
