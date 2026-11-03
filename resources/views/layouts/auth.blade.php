@@ -20,7 +20,15 @@
             <flux:brand href="/" logo="{{ asset('images/logo.png') }}" name="TUTUT" class="justify-center font-bold text-lg" />
         </div>
 
+        {{-- Role Selection segmented tabs outside the card --}}
+        <flux:tabs variant="segmented" class="w-full">
+            <flux:tab href="{{ route('student.login') }}" wire:navigate.hover :current="request()->routeIs('student.*')" icon="academic-cap">Student</flux:tab>
+            <flux:tab href="{{ route('admin.login') }}" wire:navigate.hover :current="request()->routeIs('admin.*')" icon="shield-check">Admin</flux:tab>
+        </flux:tabs>
+
+        {{-- Main Inset Card --}}
         <flux:card body="inset" variant="soft" size="lg">
+            {{-- Outer Container: Header --}}
             <flux:card.header>
                 <flux:card.heading>{{ $heading ?? 'Sign In' }}</flux:card.heading>
                 @if (isset($subheading))
@@ -28,6 +36,7 @@
                 @endif
             </flux:card.header>
 
+            {{-- Inner Container: Recessed Inset Body --}}
             <flux:card.body class="space-y-6">
                 @if (session('error'))
                     <flux:callout variant="danger" icon="exclamation-triangle">
@@ -50,6 +59,7 @@
                 @yield('content')
             </flux:card.body>
 
+            {{-- Outer Container: Footer --}}
             @hasSection('footer')
                 <flux:card.footer>
                     @yield('footer')
