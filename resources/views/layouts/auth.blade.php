@@ -15,24 +15,24 @@
     @fluxAppearance
 </head>
 <body class="min-h-dvh bg-zinc-50 dark:bg-zinc-900 antialiased selection:bg-blue-600 selection:text-white">
-    {{-- Form Column: Natural page flow on the left --}}
-    <div class="w-full lg:w-1/2 min-h-dvh flex flex-col items-center justify-center p-6 sm:p-8 lg:p-10 relative z-10">
+    {{-- Form Column: Accessible HTML5 Main Landmark --}}
+    <main class="w-full lg:w-1/2 min-h-dvh flex flex-col items-center justify-center p-6 sm:p-8 lg:p-10 relative z-10">
         <div class="w-full max-w-md space-y-5 my-auto py-6">
             <div class="text-center">
                 <flux:brand href="/" logo="{{ asset('images/logo.png') }}" name="TUTUT" class="justify-center font-bold text-lg" />
             </div>
 
             {{-- Role Selection segmented tabs outside the card --}}
-            <flux:tabs variant="segmented" class="w-full">
+            <flux:tabs variant="segmented" class="w-full" aria-label="Portal Selection">
                 <flux:tab href="{{ route('student.login') }}" wire:navigate.hover :current="request()->routeIs('student.*')" icon="academic-cap">Student</flux:tab>
                 <flux:tab href="{{ route('admin.login') }}" wire:navigate.hover :current="request()->routeIs('admin.*')" icon="shield-check">Admin</flux:tab>
             </flux:tabs>
 
             {{-- Main Inset Card --}}
             <flux:card body="inset" variant="soft" size="lg">
-                {{-- Outer Container: Centered Greeting Header --}}
+                {{-- Outer Container: Centered Greeting Header (Semantic H1) --}}
                 <flux:card.header class="flex flex-col items-center text-center">
-                    <flux:card.heading size="lg" class="text-center">{{ $heading ?? 'Welcome Back' }}</flux:card.heading>
+                    <flux:card.heading size="lg" level="1" class="text-center">{{ $heading ?? 'Welcome Back' }}</flux:card.heading>
                     @if (isset($subheading))
                         <flux:card.subheading class="text-center mt-1">{{ $subheading }}</flux:card.subheading>
                     @endif
@@ -41,19 +41,19 @@
                 {{-- Inner Container: Recessed Inset Body --}}
                 <flux:card.body class="space-y-6">
                     @if (session('error'))
-                        <flux:callout variant="danger" icon="exclamation-triangle">
+                        <flux:callout variant="danger" icon="exclamation-triangle" role="alert" aria-live="assertive">
                             {{ session('error') }}
                         </flux:callout>
                     @endif
 
                     @if (session('success'))
-                        <flux:callout variant="success" icon="check-circle">
+                        <flux:callout variant="success" icon="check-circle" role="status" aria-live="polite">
                             {{ session('success') }}
                         </flux:callout>
                     @endif
 
                     @if ($errors->any())
-                        <flux:callout variant="danger" icon="exclamation-triangle">
+                        <flux:callout variant="danger" icon="exclamation-triangle" role="alert" aria-live="assertive">
                             {{ $errors->first() }}
                         </flux:callout>
                     @endif
@@ -73,20 +73,20 @@
                 &copy; {{ date('Y') }} TUTUT. All rights reserved.
             </flux:text>
         </div>
-    </div>
+    </main>
 
-    {{-- Fixed Inset Framed Image Column (Large Screens Only: Fixed Position) --}}
-    <div class="hidden lg:block fixed top-0 right-0 w-1/2 h-dvh p-3 z-0 pointer-events-none">
+    {{-- Fixed Inset Framed Image Column (Decorative Aside, Hidden from Screen Readers) --}}
+    <aside aria-hidden="true" class="hidden lg:block fixed top-0 right-0 w-1/2 h-dvh p-3 z-0 pointer-events-none">
         <div class="relative w-full h-full rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 shadow-xs bg-zinc-900 pointer-events-auto">
             <img
                 src="https://images.unsplash.com/photo-1606326608726-07a8ee903449?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D"
-                alt="TUTUT Examination Campus"
+                alt=""
                 class="absolute inset-0 h-full w-full object-cover object-center"
                 loading="eager"
             />
             <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/60 via-transparent to-transparent"></div>
         </div>
-    </div>
+    </aside>
 
     @livewireScripts
     @fluxScripts

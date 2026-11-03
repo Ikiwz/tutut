@@ -18,14 +18,14 @@ $classes = Flux::classes('flex whitespace-nowrap flex-1 justify-center items-cen
 @endphp
 
 @if ($href)
-    <a href="{{ $href }}" {{ $attributes->class($classes) }} data-flux-tab @if ($current) data-current @endif>
+    <a href="{{ $href }}" {{ $attributes->class($classes) }} data-flux-tab @if ($current) data-current aria-current="page" @endif>
         @if ($icon)
             <flux:icon :$icon variant="mini" class="size-4" />
         @endif
         {{ $slot }}
     </a>
 @else
-    <button type="button" {{ $attributes->class($classes) }} data-flux-tab @if ($current) data-current @endif>
+    <button type="button" {{ $attributes->class($classes) }} data-flux-tab @if ($current) data-current aria-selected="true" @endif>
         @if ($icon)
             <flux:icon :$icon variant="mini" class="size-4" />
         @endif
