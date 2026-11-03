@@ -11,11 +11,12 @@ class TestSession extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['title', 'description', 'access_code', 'is_active', 'starts_at', 'ends_at'];
+    protected $fillable = ['title', 'description', 'access_code', 'capacity', 'is_active', 'starts_at', 'ends_at'];
 
     protected function casts(): array
     {
         return [
+            'capacity' => 'integer',
             'is_active' => 'boolean',
             'starts_at' => 'datetime',
             'ends_at' => 'datetime',
@@ -47,6 +48,29 @@ class TestSession extends Model
         }
 
         return true;
+    }
+
+    public function bookedSeatsCount(): int
+    {
+        return $this->examAttempts()->count();
+    }
+
+    public function remainingSeats(): ?int
+    {
+        if (is_null($this->capacity)) {
+            return null;
+        }
+
+        return max(0, $this->capacity - $this->bookedSeatsCount());
+    }
+
+    public function isFull(): bool
+    {
+        if (is_null($this->capacity)) {
+            return false;
+        }
+
+        return $this->remainingSeats() <= 0;
     }
 
     public function sections(): BelongsToMany

@@ -54,7 +54,18 @@ class ExamController extends Controller
                 ->with('error', 'The test schedule has ended.');
         }
 
+        if ($testSession->isFull()) {
+            return redirect()->route('student.dashboard')
+                ->with('error', "This test session has reached full capacity ({$testSession->capacity} seats). Please choose another schedule.");
+        }
+
         $user = auth()->user();
+
+        $eligibility = $user->isEligibleForTestSession($testSession);
+        if (! $eligibility['eligible']) {
+            return redirect()->route('student.dashboard')
+                ->with('error', $eligibility['reason']);
+        }
 
         // Check if already in progress
         $existing = ExamAttempt::where('user_id', $user->id)

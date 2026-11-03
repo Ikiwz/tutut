@@ -3,12 +3,14 @@
 use App\Http\Controllers\Admin\DirectionController;
 use App\Http\Controllers\Admin\ExamAttemptController;
 use App\Http\Controllers\Admin\PassageController;
+use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\QuestionController;
 use App\Http\Controllers\Admin\SectionController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\TestSessionController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\CandidateAffiliationAndPaymentController;
 use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\GoogleAuthController;
@@ -72,6 +74,9 @@ Route::middleware(['auth', PreventBackForwardCache::class])->group(function () {
 // Student Protected Routes
 Route::middleware(['auth', EnsureUserIsStudent::class, 'verified', PreventBackForwardCache::class])->group(function () {
     Route::get('/dashboard', [ExamController::class, 'dashboard'])->name('student.dashboard');
+    Route::post('/claim-campus', [CandidateAffiliationAndPaymentController::class, 'claimCampus'])->name('student.claim-campus');
+    Route::post('/payment/submit', [CandidateAffiliationAndPaymentController::class, 'submitPayment'])->name('student.payment.submit');
+    Route::get('/my-document', [CandidateAffiliationAndPaymentController::class, 'viewMyStudentCard'])->name('student.document');
     Route::post('/exam/start/{testSession}', [ExamController::class, 'startExam'])->name('exam.start');
     Route::get('/exam/{examAttempt}', [ExamController::class, 'takeExam'])->name('exam.take');
     Route::post('/exam/{examAttempt}/answer', [ExamController::class, 'saveAnswer'])->name('exam.answer');
@@ -109,6 +114,15 @@ Route::prefix('admin')->group(function () {
         // Students Verification Management
         Route::get('/students', [StudentController::class, 'index'])->name('admin.students.index');
         Route::post('/students/{user}/verify', [StudentController::class, 'verify'])->name('admin.students.verify');
+        Route::post('/students/{user}/approve-claim', [StudentController::class, 'approveClaim'])->name('admin.students.approve-claim');
+        Route::post('/students/{user}/reject-claim', [StudentController::class, 'rejectClaim'])->name('admin.students.reject-claim');
+        Route::get('/students/{user}/document', [StudentController::class, 'downloadDocument'])->name('admin.students.document');
         Route::delete('/students/{user}', [StudentController::class, 'destroy'])->name('admin.students.destroy');
+
+        // Payment Verification Management
+        Route::get('/payments', [PaymentController::class, 'index'])->name('admin.payments.index');
+        Route::post('/payments/{payment}/approve', [PaymentController::class, 'approve'])->name('admin.payments.approve');
+        Route::post('/payments/{payment}/reject', [PaymentController::class, 'reject'])->name('admin.payments.reject');
+        Route::get('/payments/{payment}/proof', [PaymentController::class, 'downloadProof'])->name('admin.payments.proof');
     });
 });

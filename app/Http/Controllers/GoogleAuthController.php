@@ -64,6 +64,8 @@ class GoogleAuthController extends Controller
             ->orWhere('email', $email)
             ->first();
 
+        $isCampusEmail = str_ends_with(strtolower($email), '@ummi.ac.id');
+
         if ($user) {
             // Update Google ID and Avatar if not set
             $updated = false;
@@ -79,6 +81,11 @@ class GoogleAuthController extends Controller
                 $user->email_verified_at = now();
                 $updated = true;
             }
+            if ($isCampusEmail && $user->affiliation !== 'internal') {
+                $user->affiliation = 'internal';
+                $user->verified_at = now();
+                $updated = true;
+            }
             if ($updated) {
                 $user->save();
             }
@@ -89,6 +96,8 @@ class GoogleAuthController extends Controller
                 'email' => $email,
                 'password' => Hash::make(Str::random(32)),
                 'role' => 'student',
+                'affiliation' => $isCampusEmail ? 'internal' : 'external',
+                'verified_at' => $isCampusEmail ? now() : null,
                 'google_id' => $googleUser->getId(),
                 'avatar' => $googleUser->getAvatar(),
                 'email_verified_at' => now(),

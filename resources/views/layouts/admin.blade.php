@@ -64,7 +64,10 @@
                     Exam Results &amp; Audit
                 </flux:sidebar.item>
                 <flux:sidebar.item icon="users" href="{{ route('admin.students.index') }}" wire:navigate.hover :current="request()->routeIs('admin.students.*')">
-                    Student Verification
+                    Candidates &amp; Claims
+                </flux:sidebar.item>
+                <flux:sidebar.item icon="credit-card" href="{{ route('admin.payments.index') }}" wire:navigate.hover :current="request()->routeIs('admin.payments.*')">
+                    Payment Verification
                 </flux:sidebar.item>
             </flux:sidebar.group>
         </flux:sidebar.nav>

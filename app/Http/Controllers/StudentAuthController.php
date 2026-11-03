@@ -138,11 +138,15 @@ class StudentAuthController extends Controller
             'password.confirmed' => 'Passwords do not match. Please try again.',
         ]);
 
+        $isCampusEmail = str_ends_with(strtolower($validated['email']), '@ummi.ac.id');
+
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'role' => 'student',
+            'affiliation' => $isCampusEmail ? 'internal' : 'external',
+            'verified_at' => $isCampusEmail ? now() : null,
         ]);
 
         RateLimiter::hit($registerThrottleKey, 900);
