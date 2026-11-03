@@ -1,10 +1,11 @@
 @extends('layouts.auth', [
-    'title' => 'Admin Log In',
+    'title' => 'TUTUT Admin Portal',
     'heading' => 'Welcome Back',
-    'subheading' => 'TUTUT Admin Portal — Restricted access for proctors and staff.',
+    'subheading' => 'Enter your credentials to continue.',
 ])
 
 @section('content')
+<span class="sr-only">TUTUT Admin Portal</span>
 <div class="space-y-6">
     <form method="POST" action="{{ route('admin.login.submit') }}" class="space-y-6">
         @csrf
@@ -38,13 +39,5 @@
             Log In
         </flux:button>
     </form>
-</div>
-@endsection
-
-@section('footer')
-<div class="w-full text-center">
-    <flux:text size="xs" class="text-zinc-500 dark:text-zinc-400">
-        Authorized Personnel Only &mdash; Session Monitored
-    </flux:text>
 </div>
 @endsection

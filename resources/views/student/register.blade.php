@@ -1,7 +1,7 @@
 @extends('layouts.auth', [
     'title' => 'Register',
     'heading' => 'Create an Account',
-    'subheading' => 'Register your details to participate in examinations.',
+    'subheading' => 'Enter your details to get started.',
 ])
 
 @section('content')
@@ -63,7 +63,7 @@
         />
 
         <flux:button variant="primary" type="submit" class="w-full font-semibold">
-            Register Account
+            Register
         </flux:button>
     </form>
 </div>
