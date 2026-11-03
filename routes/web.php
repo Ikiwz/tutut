@@ -74,14 +74,14 @@ Route::middleware(['auth', PreventBackForwardCache::class])->group(function () {
 // Student Protected Routes
 Route::middleware(['auth', EnsureUserIsStudent::class, 'verified', PreventBackForwardCache::class])->group(function () {
     Route::get('/dashboard', [ExamController::class, 'dashboard'])->name('student.dashboard');
-    Route::post('/claim-campus', [CandidateAffiliationAndPaymentController::class, 'claimCampus'])->name('student.claim-campus');
-    Route::post('/payment/submit', [CandidateAffiliationAndPaymentController::class, 'submitPayment'])->name('student.payment.submit');
+    Route::post('/claim-campus', [CandidateAffiliationAndPaymentController::class, 'claimCampus'])->middleware('throttle:5,1')->name('student.claim-campus');
+    Route::post('/payment/submit', [CandidateAffiliationAndPaymentController::class, 'submitPayment'])->middleware('throttle:5,1')->name('student.payment.submit');
     Route::get('/my-document', [CandidateAffiliationAndPaymentController::class, 'viewMyStudentCard'])->name('student.document');
-    Route::post('/exam/start/{testSession}', [ExamController::class, 'startExam'])->name('exam.start');
+    Route::post('/exam/start/{testSession}', [ExamController::class, 'startExam'])->middleware('throttle:30,1')->name('exam.start');
     Route::get('/exam/{examAttempt}', [ExamController::class, 'takeExam'])->name('exam.take');
-    Route::post('/exam/{examAttempt}/answer', [ExamController::class, 'saveAnswer'])->name('exam.answer');
-    Route::post('/exam/{examAttempt}/next-section', [ExamController::class, 'nextSection'])->name('exam.nextSection');
-    Route::get('/exam/{examAttempt}/submit', [ExamController::class, 'submitExam'])->name('exam.submit');
+    Route::post('/exam/{examAttempt}/answer', [ExamController::class, 'saveAnswer'])->middleware('throttle:120,1')->name('exam.answer');
+    Route::post('/exam/{examAttempt}/next-section', [ExamController::class, 'nextSection'])->middleware('throttle:30,1')->name('exam.nextSection');
+    Route::get('/exam/{examAttempt}/submit', [ExamController::class, 'submitExam'])->middleware('throttle:10,1')->name('exam.submit');
     Route::get('/exam/{examAttempt}/result', [ExamController::class, 'result'])->name('exam.result');
 });
 

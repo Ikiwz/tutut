@@ -7,6 +7,8 @@ use App\Models\ExamAttempt;
 use App\Models\Question;
 use App\Models\TestSession;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class ExamController extends Controller
 {
@@ -37,58 +39,61 @@ class ExamController extends Controller
 
     public function startExam(TestSession $testSession)
     {
-        if (! $testSession->is_active) {
-            return redirect()->route('student.dashboard')
-                ->with('error', 'This test is not active.');
-        }
+        return DB::transaction(function () use ($testSession) {
+            $user = auth()->user();
 
-        if ($testSession->isLocked()) {
-            $formattedTime = $testSession->starts_at->translatedFormat('d F Y, H:i');
+            $lockedSession = TestSession::where('id', $testSession->id)->lockForUpdate()->first();
+            if (! $lockedSession || ! $lockedSession->is_active) {
+                return redirect()->route('student.dashboard')
+                    ->with('error', 'This test is not active.');
+            }
 
-            return redirect()->route('student.dashboard')
-                ->with('error', "The test is locked. It will open on {$formattedTime} WIB.");
-        }
+            if ($lockedSession->isLocked()) {
+                $formattedTime = $lockedSession->starts_at->translatedFormat('d F Y, H:i');
 
-        if ($testSession->isEnded()) {
-            return redirect()->route('student.dashboard')
-                ->with('error', 'The test schedule has ended.');
-        }
+                return redirect()->route('student.dashboard')
+                    ->with('error', "The test is locked. It will open on {$formattedTime} WIB.");
+            }
 
-        if ($testSession->isFull()) {
-            return redirect()->route('student.dashboard')
-                ->with('error', "This test session has reached full capacity ({$testSession->capacity} seats). Please choose another schedule.");
-        }
+            if ($lockedSession->isEnded()) {
+                return redirect()->route('student.dashboard')
+                    ->with('error', 'The test schedule has ended.');
+            }
 
-        $user = auth()->user();
+            // Check if already in progress
+            $existing = ExamAttempt::where('user_id', $user->id)
+                ->where('test_session_id', $lockedSession->id)
+                ->where('status', 'in_progress')
+                ->first();
 
-        $eligibility = $user->isEligibleForTestSession($testSession);
-        if (! $eligibility['eligible']) {
-            return redirect()->route('student.dashboard')
-                ->with('error', $eligibility['reason']);
-        }
+            if ($existing) {
+                return redirect()->route('exam.take', $existing);
+            }
 
-        // Check if already in progress
-        $existing = ExamAttempt::where('user_id', $user->id)
-            ->where('test_session_id', $testSession->id)
-            ->where('status', 'in_progress')
-            ->first();
+            if ($lockedSession->isFull()) {
+                return redirect()->route('student.dashboard')
+                    ->with('error', "This test session has reached full capacity ({$lockedSession->capacity} seats). Please choose another schedule.");
+            }
 
-        if ($existing) {
-            return redirect()->route('exam.take', $existing);
-        }
+            $eligibility = $user->isEligibleForTestSession($lockedSession);
+            if (! $eligibility['eligible']) {
+                return redirect()->route('student.dashboard')
+                    ->with('error', $eligibility['reason']);
+            }
 
-        $firstSection = $testSession->sections()->orderBy('sections.order')->first();
+            $firstSection = $lockedSession->sections()->orderBy('sections.order')->first();
 
-        $attempt = ExamAttempt::create([
-            'user_id' => $user->id,
-            'test_session_id' => $testSession->id,
-            'current_section_slug' => $firstSection?->slug,
-            'current_question_index' => 0,
-            'started_at' => now(),
-            'status' => 'in_progress',
-        ]);
+            $attempt = ExamAttempt::create([
+                'user_id' => $user->id,
+                'test_session_id' => $lockedSession->id,
+                'current_section_slug' => $firstSection?->slug,
+                'current_question_index' => 0,
+                'started_at' => now(),
+                'status' => 'in_progress',
+            ]);
 
-        return redirect()->route('exam.take', $attempt);
+            return redirect()->route('exam.take', $attempt);
+        });
     }
 
     public function takeExam(ExamAttempt $examAttempt)
@@ -108,7 +113,10 @@ class ExamController extends Controller
                 ->with('error', "The test is locked. It will open on {$formattedTime} WIB.");
         }
 
-        $testSession = $examAttempt->testSession->load('sections.directions.questions', 'sections.questions');
+        $cacheKey = "test_session_structure_{$examAttempt->test_session_id}";
+        $testSession = Cache::remember($cacheKey, 300, function () use ($examAttempt) {
+            return $examAttempt->testSession->load('sections.directions.questions', 'sections.questions', 'sections.passages');
+        });
         $sections = $testSession->sections->sortBy('order')->values();
 
         $currentSection = $sections->firstWhere('slug', $examAttempt->current_section_slug)
@@ -128,7 +136,7 @@ class ExamController extends Controller
         // Get passages if reading section (multiple passages for different question groups)
         $passages = collect();
         if ($currentSection->slug === 'reading') {
-            $passages = $currentSection->passages()->orderBy('order')->get();
+            $passages = $currentSection->passages ? $currentSection->passages->sortBy('order')->values() : collect();
         }
 
         return view('student.exam.take', compact(
@@ -141,6 +149,10 @@ class ExamController extends Controller
     {
         if ($examAttempt->user_id !== auth()->id()) {
             return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        if ($examAttempt->status === 'completed') {
+            return response()->json(['error' => 'This exam session has already been completed.'], 409);
         }
 
         $validated = $request->validate([
@@ -195,9 +207,12 @@ class ExamController extends Controller
             abort(403);
         }
 
-        if ($examAttempt->status !== 'completed') {
-            $examAttempt->calculateScores();
-        }
+        DB::transaction(function () use ($examAttempt) {
+            $lockedAttempt = ExamAttempt::where('id', $examAttempt->id)->lockForUpdate()->first();
+            if ($lockedAttempt && $lockedAttempt->status !== 'completed') {
+                $lockedAttempt->calculateScores();
+            }
+        });
 
         return redirect()->route('exam.result', $examAttempt);
     }
