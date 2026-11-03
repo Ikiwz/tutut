@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
-    <title>{{ $title ?? 'Log In' }} — TUTUT</title>
+    <title>{{ $title ?? 'Student Log In' }} — TUTUT</title>
+
+    {{-- Anti-flicker Theme Initialization before any CSS/fonts render --}}
+    @fluxAppearance
 
     {{-- SEO & Security Metadata --}}
     <meta name="description" content="{{ $description ?? 'TUTUT Online TOEFL Examination Portal — Candidate and Administrator Authentication.' }}">
@@ -14,7 +17,7 @@
 
     {{-- Open Graph Metadata --}}
     <meta property="og:site_name" content="TUTUT">
-    <meta property="og:title" content="{{ $title ?? 'Log In' }} — TUTUT">
+    <meta property="og:title" content="{{ $title ?? 'Student Log In' }} — TUTUT">
     <meta property="og:description" content="TUTUT Online TOEFL Examination Portal.">
     <meta property="og:image" content="{{ asset('images/logo.png') }}">
     <meta property="og:type" content="website">
@@ -24,9 +27,8 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
-    @fluxAppearance
 </head>
-<body class="min-h-dvh bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 antialiased selection:bg-blue-600 selection:text-white transition-colors duration-200">
+<body class="min-h-dvh bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 antialiased selection:bg-blue-600 selection:text-white">
     {{-- Form Column: Accessible HTML5 Main Landmark --}}
     <main class="w-full lg:w-1/2 min-h-dvh flex flex-col justify-between p-6 sm:p-8 lg:p-10 relative z-10">
         {{-- Top Bar Header: Theme Mode Switcher (Always positioned at the very top) --}}

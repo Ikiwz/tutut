@@ -16,36 +16,37 @@
     <form method="POST" action="{{ route('admin.login.submit') }}" class="space-y-6" x-data="{ submitting: false }" @submit="submitting = true">
         @csrf
 
-        <flux:input
-            label="Email Address"
-            type="email"
-            name="email"
-            value="{{ old('email') }}"
-            placeholder="john.doe@example.com"
-            icon="envelope"
-            required
-            autofocus
-            autocomplete="email"
-        />
+        <flux:field>
+            <flux:label>Email Address</flux:label>
+            <flux:input
+                type="email"
+                name="email"
+                value="{{ old('email') }}"
+                placeholder="john.doe@example.com"
+                required
+                autofocus
+                autocomplete="email"
+            />
+            <flux:error name="email" />
+        </flux:field>
 
-        <flux:input
-            label="Password"
-            type="password"
-            name="password"
-            placeholder="••••••••"
-            icon="key"
-            viewable
-            required
-            autocomplete="current-password"
-        />
+        <flux:field>
+            <flux:label>Password</flux:label>
+            <flux:input
+                type="password"
+                name="password"
+                placeholder="••••••••"
+                viewable
+                required
+                autocomplete="current-password"
+            />
+            <flux:error name="password" />
+        </flux:field>
 
         <flux:checkbox name="remember" label="Remember me" />
 
         <flux:button variant="primary" type="submit" class="w-full font-semibold" ::disabled="submitting">
-            <span x-show="!submitting" class="inline-flex items-center gap-2">
-                <flux:icon name="shield-check" variant="mini" class="size-4" />
-                <span>Log In</span>
-            </span>
+            <span x-show="!submitting">Log In</span>
             <span x-show="submitting" x-cloak class="inline-flex items-center gap-2">
                 <flux:icon.loading class="size-4" />
                 <span>Authenticating...</span>
