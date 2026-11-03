@@ -7,6 +7,12 @@
 @section('content')
 <span class="sr-only">TUTUT Admin Portal</span>
 <div class="space-y-6">
+    <flux:button icon="google" href="{{ route('auth.google') }}" class="w-full">
+        Continue with Google
+    </flux:button>
+
+    <flux:separator text="or" />
+
     <form method="POST" action="{{ route('admin.login.submit') }}" class="space-y-6">
         @csrf
 

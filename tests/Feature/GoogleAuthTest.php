@@ -9,7 +9,7 @@ use Laravel\Socialite\Two\User as SocialiteUser;
 
 uses(RefreshDatabase::class);
 
-test('candidate login and register pages display official google oauth buttons', function () {
+test('candidate login, register, and admin login pages display official google oauth buttons', function () {
     $loginResponse = $this->get(route('student.login'));
     $loginResponse->assertOk()
         ->assertSee('Continue with Google')
@@ -17,7 +17,12 @@ test('candidate login and register pages display official google oauth buttons',
 
     $registerResponse = $this->get(route('student.register'));
     $registerResponse->assertOk()
-        ->assertSee('Sign up with Google')
+        ->assertSee('Continue with Google')
+        ->assertSee(route('auth.google'));
+
+    $adminResponse = $this->get(route('admin.login'));
+    $adminResponse->assertOk()
+        ->assertSee('Continue with Google')
         ->assertSee(route('auth.google'));
 });
 

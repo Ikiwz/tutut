@@ -7,7 +7,7 @@
 @section('content')
 <div class="space-y-6">
     <flux:button icon="google" href="{{ route('auth.google') }}" class="w-full">
-        Sign up with Google
+        Continue with Google
     </flux:button>
 
     <flux:separator text="or" />
