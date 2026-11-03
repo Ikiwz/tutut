@@ -28,6 +28,14 @@
                 }
                 return 2;
             },
+            get passwordPercentage() {
+                switch (this.passwordScore) {
+                    case 1: return 33;
+                    case 2: return 66;
+                    case 3: return 100;
+                    default: return 0;
+                }
+            },
             get passwordStrengthLabel() {
                 switch (this.passwordScore) {
                     case 1: return 'Weak';
@@ -131,22 +139,16 @@
                         'text-emerald-600 dark:text-emerald-400': passwordScore === 3
                     }" x-text="passwordStrengthLabel"></span>
                 </div>
-                <div class="grid grid-cols-3 gap-1.5 h-1">
-                    <div class="h-full rounded-full transition-colors duration-200" :class="{
-                        'bg-rose-500': passwordScore === 1,
-                        'bg-amber-500': passwordScore === 2,
-                        'bg-emerald-500': passwordScore === 3
-                    }"></div>
-                    <div class="h-full rounded-full transition-colors duration-200" :class="{
-                        'bg-amber-500': passwordScore === 2,
-                        'bg-emerald-500': passwordScore === 3,
-                        'bg-zinc-200 dark:bg-zinc-700': passwordScore < 2
-                    }"></div>
-                    <div class="h-full rounded-full transition-colors duration-200" :class="{
-                        'bg-emerald-500': passwordScore === 3,
-                        'bg-zinc-200 dark:bg-zinc-700': passwordScore < 3
-                    }"></div>
-                </div>
+                <flux:progress
+                    class="h-1.5"
+                    x-effect="
+                        let color = passwordScore === 1 ? 'var(--color-rose-500)' : (passwordScore === 2 ? 'var(--color-amber-500)' : 'var(--color-emerald-500)');
+                        $el.style.setProperty('--flux-progress-color', color);
+                        $el.style.setProperty('--flux-progress-percentage', passwordPercentage + '%');
+                        $el.setAttribute('aria-valuenow', passwordPercentage);
+                    "
+                    aria-label="Password strength"
+                />
             </div>
             <flux:error name="password" />
         </flux:field>
