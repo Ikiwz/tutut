@@ -28,9 +28,9 @@
 </head>
 <body class="min-h-dvh bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 antialiased selection:bg-blue-600 selection:text-white transition-colors duration-200">
     {{-- Form Column: Accessible HTML5 Main Landmark --}}
-    <main class="w-full lg:w-1/2 min-h-dvh flex flex-col items-center justify-center p-6 sm:p-8 lg:p-10 relative z-10">
-        {{-- Theme Mode Switcher (Light / Dark / System) --}}
-        <div class="absolute top-4 right-4 sm:top-6 sm:right-6 z-20">
+    <main class="w-full lg:w-1/2 min-h-dvh flex flex-col justify-between p-6 sm:p-8 lg:p-10 relative z-10">
+        {{-- Top Bar Header: Theme Mode Switcher (Always positioned at the very top) --}}
+        <header class="w-full flex justify-end items-center z-20">
             <flux:dropdown x-data align="end">
                 <flux:button variant="subtle" size="sm" square aria-label="Toggle color scheme">
                     <flux:icon.sun x-show="! $flux.dark" variant="mini" class="size-4 text-zinc-700 dark:text-zinc-200" />
@@ -42,9 +42,9 @@
                     <flux:menu.item icon="computer-desktop" x-on:click="$flux.appearance = 'system'">System Preference</flux:menu.item>
                 </flux:menu>
             </flux:dropdown>
-        </div>
+        </header>
 
-        <div class="w-full max-w-md space-y-5 my-auto py-6">
+        <div class="w-full max-w-md mx-auto space-y-5 my-auto py-4">
             <div class="text-center">
                 <flux:brand href="/" logo="{{ asset('images/logo.png') }}" name="TUTUT" class="justify-center font-bold text-lg" />
             </div>
@@ -95,11 +95,14 @@
                     </flux:card.footer>
                 @endif
             </flux:card>
+        </div>
 
-            <flux:text size="xs" class="text-center text-zinc-500 dark:text-zinc-400">
+        {{-- Footer Copyright --}}
+        <footer class="w-full text-center py-2">
+            <flux:text size="xs" class="text-zinc-500 dark:text-zinc-400">
                 &copy; {{ date('Y') }} TUTUT. All rights reserved.
             </flux:text>
-        </div>
+        </footer>
     </main>
 
     {{-- Fixed Inset Framed Image Column (Decorative Aside, Hidden from Screen Readers) --}}
