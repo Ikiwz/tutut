@@ -5,7 +5,9 @@ use App\Http\Middleware\SecurityHeaders;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\Request;
+use Illuminate\Session\TokenMismatchException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -47,4 +49,16 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*'),
         );
+
+        // Graceful handling of CSRF session expiration (419) with friendly toast
+        $exceptions->render(function (TokenMismatchException $e, Request $request) {
+            return back()->with('error', 'Your session has expired. Please try again.');
+        });
+
+        // Graceful handling of Rate Limit / Throttling exceptions (429) with friendly toast
+        $exceptions->render(function (ThrottleRequestsException $e, Request $request) {
+            $retryAfter = $e->getHeaders()['Retry-After'] ?? 60;
+
+            return back()->with('error', "Too many requests. Please wait {$retryAfter} seconds before trying again.");
+        });
     })->create();

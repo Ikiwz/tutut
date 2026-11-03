@@ -90,6 +90,7 @@
         @submit="handleSubmit($event)"
     >
         @csrf
+        <input type="text" name="portal_hp" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true" value="" />
 
         <flux:field>
             <flux:label>Full Name</flux:label>

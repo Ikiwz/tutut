@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 
 uses(RefreshDatabase::class);
 
@@ -153,4 +154,94 @@ test('invalid admin credentials flash toast error and do not attach validation e
     $response->assertRedirect(route('admin.login'));
     $response->assertSessionHas('error', 'Incorrect email or password. Please check your details and try again.');
     $response->assertSessionMissing('errors');
+});
+
+test('excessive failed login attempts triggers rate limit lockout', function () {
+    $email = 'bruteforce@student.com';
+
+    for ($i = 0; $i < 5; $i++) {
+        $this->from(route('student.login'))->post(route('student.login.submit'), [
+            'email' => $email,
+            'password' => 'wrongpassword',
+        ]);
+    }
+
+    $response = $this->from(route('student.login'))->post(route('student.login.submit'), [
+        'email' => $email,
+        'password' => 'wrongpassword',
+    ]);
+
+    $response->assertRedirect(route('student.login'));
+    $error = session('error');
+    expect($error)->toContain('Too many unsuccessful login attempts.');
+});
+
+test('registration honeypot rejects automated bot submissions', function () {
+    $response = $this->from(route('student.register'))->post(route('student.register.submit'), [
+        'name' => 'Spam Bot',
+        'email' => 'spambot@example.com',
+        'password' => 'secret1234',
+        'password_confirmation' => 'secret1234',
+        'portal_hp' => 'I am a bot',
+    ]);
+
+    $response->assertRedirect(route('student.register'));
+    $response->assertSessionHas('error', 'Invalid request. Please try again.');
+    expect(User::where('email', 'spambot@example.com')->exists())->toBeFalse();
+});
+
+test('candidate email is trimmed and normalized to lowercase on registration and login', function () {
+    $response = $this->post(route('student.register.submit'), [
+        'name' => 'John Doe',
+        'email' => '  John.Doe@University.edu  ',
+        'password' => 'secret1234',
+        'password_confirmation' => 'secret1234',
+    ]);
+
+    $response->assertRedirect(route('student.dashboard'));
+
+    $user = User::where('email', 'john.doe@university.edu')->first();
+    expect($user)->not->toBeNull()
+        ->and($user->email)->toBe('john.doe@university.edu');
+
+    Auth::logout();
+
+    // Login with mixed case and trailing spaces
+    $loginResponse = $this->post(route('student.login.submit'), [
+        'email' => '  JOHN.DOE@university.EDU  ',
+        'password' => 'secret1234',
+    ]);
+
+    $loginResponse->assertRedirect(route('student.dashboard'));
+    $this->assertAuthenticatedAs($user);
+});
+
+test('concurrent student login clears older database sessions for that user', function () {
+    $student = User::create([
+        'name' => 'Single Session Student',
+        'email' => 'single@university.edu',
+        'password' => 'secret1234',
+        'role' => 'student',
+    ]);
+
+    // Simulate older active session on Device A
+    DB::table('sessions')->insert([
+        'id' => 'device-a-session-id',
+        'user_id' => $student->id,
+        'ip_address' => '192.168.1.10',
+        'user_agent' => 'Device A Browser',
+        'payload' => 'payload-data',
+        'last_activity' => time(),
+    ]);
+
+    expect(DB::table('sessions')->where('user_id', $student->id)->count())->toBe(1);
+
+    // Device B logs in
+    $this->post(route('student.login.submit'), [
+        'email' => 'single@university.edu',
+        'password' => 'secret1234',
+    ]);
+
+    // Older Device A session must be deleted
+    expect(DB::table('sessions')->where('id', 'device-a-session-id')->exists())->toBeFalse();
 });
