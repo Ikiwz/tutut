@@ -9,6 +9,7 @@
         "php": "^8.3",
         "laravel/folio": "^1.2",
         "laravel/framework": "^13.8",
+        "laravel/socialite": "^5.31",
         "laravel/tinker": "^3.0",
         "livewire/flux": "^2.21",
         "livewire/volt": "^1.11"

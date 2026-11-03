@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'role', 'student_id', 'department', 'student_card', 'verified_at'])]
+#[Fillable(['name', 'email', 'password', 'role', 'student_id', 'department', 'student_card', 'verified_at', 'email_verified_at', 'google_id', 'avatar'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {

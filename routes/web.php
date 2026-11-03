@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\TestSessionController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\ExamController;
+use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\StudentAuthController;
 use App\Http\Middleware\EnsureUserIsAdmin;
 use App\Http\Middleware\EnsureUserIsStudent;
@@ -26,6 +27,10 @@ Route::post('/login', [StudentAuthController::class, 'login'])->middleware('thro
 Route::get('/register', [StudentAuthController::class, 'showRegister'])->name('student.register');
 Route::post('/register', [StudentAuthController::class, 'register'])->middleware('throttle:5,1')->name('student.register.submit');
 Route::post('/logout', [StudentAuthController::class, 'logout'])->name('student.logout');
+
+// Google OAuth Routes
+Route::get('/auth/google', [GoogleAuthController::class, 'redirect'])->name('auth.google');
+Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->name('auth.google.callback');
 
 // Student Protected Routes
 Route::middleware(['auth', EnsureUserIsStudent::class])->group(function () {
