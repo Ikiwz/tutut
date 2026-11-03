@@ -31,7 +31,7 @@
 </head>
 <body class="min-h-dvh bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 antialiased selection:bg-blue-600 selection:text-white">
     {{-- Form Column: Accessible HTML5 Main Landmark --}}
-    <main class="w-full lg:w-1/2 min-h-dvh flex flex-col justify-between p-6 sm:p-8 lg:p-10 relative z-10">
+    <main class="w-full lg:w-1/2 min-h-dvh flex flex-col justify-between px-6 py-4 sm:px-8 sm:py-6 lg:px-10 lg:py-6 relative z-10">
         {{-- Top Bar Header: Theme Mode Switcher (Always positioned at the very top) --}}
         <header class="w-full flex justify-end items-center z-20">
             <flux:dropdown x-data align="end">
@@ -47,13 +47,13 @@
             </flux:dropdown>
         </header>
 
-        <div class="w-full max-w-md mx-auto space-y-4 my-auto py-2">
+        <div class="w-full max-w-md mx-auto space-y-3 my-auto py-1">
             <div class="text-center">
                 <flux:brand href="/" logo="{{ asset('images/logo.png') }}" name="TUTUT" class="justify-center font-bold text-lg" />
             </div>
 
             {{-- Main Inset Card --}}
-            <flux:card body="inset" variant="soft" size="lg">
+            <flux:card body="inset" variant="soft" size="{{ $cardSize ?? 'base' }}">
                 {{-- Outer Container: Centered Greeting Header (Semantic H1) --}}
                 <flux:card.header class="flex flex-col items-center text-center">
                     <flux:card.heading size="lg" level="1" class="text-center">{{ $heading ?? 'Welcome Back' }}</flux:card.heading>
@@ -63,7 +63,7 @@
                 </flux:card.header>
 
                 {{-- Inner Container: Recessed Inset Body --}}
-                <flux:card.body class="space-y-6">
+                <flux:card.body class="{{ $bodyClass ?? 'space-y-5' }}">
                     @yield('content')
                 </flux:card.body>
 

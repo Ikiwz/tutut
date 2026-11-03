@@ -2,10 +2,11 @@
     'title' => 'Register',
     'heading' => 'Welcome',
     'subheading' => 'Enter your details to get started.',
+    'bodyClass' => 'space-y-3',
 ])
 
 @section('content')
-<div class="space-y-4">
+<div class="space-y-3">
     <flux:button icon="google" href="{{ route('auth.google') }}" class="w-full">
         Continue with Google
     </flux:button>
@@ -15,7 +16,7 @@
     <form
         method="POST"
         action="{{ route('student.register.submit') }}"
-        class="space-y-4"
+        class="space-y-3"
         x-data="{
             submitting: false,
             name: '{{ old('name', '') }}',
