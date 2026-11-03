@@ -12,16 +12,17 @@
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800&display=swap" rel="stylesheet" />
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @livewireStyles
     @fluxAppearance
 </head>
-<body class="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 antialiased selection:bg-blue-600 selection:text-white transition-colors duration-200">
+<body class="min-h-dvh bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 antialiased selection:bg-blue-600 selection:text-white transition-colors duration-200">
     <!-- Skip to Content Link for Accessibility -->
     <a href="#admin-main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-lg focus:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 font-bold text-sm">
         Skip to content
     </a>
 
     <!-- Desktop Sidebar (Official Flux Layout) -->
-    <flux:sidebar sticky collapsible="mobile" class="bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800">
+    <flux:sidebar sticky collapsible="mobile" class="bg-zinc-50 dark:bg-zinc-950 border-r border-zinc-200 dark:border-zinc-800">
         <flux:sidebar.header>
             <flux:sidebar.brand
                 href="{{ route('admin.dashboard') }}"
@@ -32,33 +33,33 @@
         </flux:sidebar.header>
 
         <flux:sidebar.nav role="navigation" aria-label="Main Administration Menu">
-            <flux:sidebar.item icon="home" href="{{ route('admin.dashboard') }}" :current="request()->routeIs('admin.dashboard')">
+            <flux:sidebar.item icon="home" href="{{ route('admin.dashboard') }}" wire:navigate.hover :current="request()->routeIs('admin.dashboard')">
                 Dashboard Overview
             </flux:sidebar.item>
 
             <flux:sidebar.group heading="Test Management" class="grid">
-                <flux:sidebar.item icon="clipboard-document-list" href="{{ route('admin.test-sessions.index') }}" :current="request()->routeIs('admin.test-sessions.*')">
+                <flux:sidebar.item icon="clipboard-document-list" href="{{ route('admin.test-sessions.index') }}" wire:navigate.hover :current="request()->routeIs('admin.test-sessions.*')">
                     Test Sessions
                 </flux:sidebar.item>
-                <flux:sidebar.item icon="academic-cap" href="{{ route('admin.sections.index') }}" :current="request()->routeIs('admin.sections.*')">
+                <flux:sidebar.item icon="academic-cap" href="{{ route('admin.sections.index') }}" wire:navigate.hover :current="request()->routeIs('admin.sections.*')">
                     Exam Sections
                 </flux:sidebar.item>
-                <flux:sidebar.item icon="question-mark-circle" href="{{ route('admin.questions.index') }}" :current="request()->routeIs('admin.questions.*')">
+                <flux:sidebar.item icon="question-mark-circle" href="{{ route('admin.questions.index') }}" wire:navigate.hover :current="request()->routeIs('admin.questions.*')">
                     Questions Vault
                 </flux:sidebar.item>
-                <flux:sidebar.item icon="document-text" href="{{ route('admin.passages.index') }}" :current="request()->routeIs('admin.passages.*')">
+                <flux:sidebar.item icon="document-text" href="{{ route('admin.passages.index') }}" wire:navigate.hover :current="request()->routeIs('admin.passages.*')">
                     Reading Passages
                 </flux:sidebar.item>
-                <flux:sidebar.item icon="bookmark" href="{{ route('admin.directions.index') }}" :current="request()->routeIs('admin.directions.*')">
+                <flux:sidebar.item icon="bookmark" href="{{ route('admin.directions.index') }}" wire:navigate.hover :current="request()->routeIs('admin.directions.*')">
                     Directions &amp; Audio
                 </flux:sidebar.item>
             </flux:sidebar.group>
 
             <flux:sidebar.group heading="Reports &amp; Students" class="grid">
-                <flux:sidebar.item icon="chart-bar" href="{{ route('admin.attempts.index') }}" :current="request()->routeIs('admin.attempts.*')">
+                <flux:sidebar.item icon="chart-bar" href="{{ route('admin.attempts.index') }}" wire:navigate.hover :current="request()->routeIs('admin.attempts.*')">
                     Exam Results &amp; Audit
                 </flux:sidebar.item>
-                <flux:sidebar.item icon="users" href="{{ route('admin.students.index') }}" :current="request()->routeIs('admin.students.*')">
+                <flux:sidebar.item icon="users" href="{{ route('admin.students.index') }}" wire:navigate.hover :current="request()->routeIs('admin.students.*')">
                     Student Verification
                 </flux:sidebar.item>
             </flux:sidebar.group>
@@ -125,8 +126,8 @@
         </flux:dropdown>
     </flux:header>
 
-    <!-- Main Content Region -->
-    <flux:main id="admin-main-content" role="main" class="p-6 lg:p-8 max-w-7xl mx-auto w-full">
+    <!-- Main Content Region (Official Inset Frame) -->
+    <flux:main inset id="admin-main-content" role="main" class="p-6 lg:p-8 max-w-7xl mx-auto w-full">
         @if (session('success'))
             <flux:callout variant="success" icon="check-circle" role="status" class="mb-6">
                 {{ session('success') }}
@@ -143,6 +144,7 @@
         @yield('content')
     </flux:main>
 
+    @livewireScripts
     @fluxScripts
 </body>
 </html>

@@ -15,14 +15,14 @@
     @livewireStyles
     @fluxAppearance
 </head>
-<body class="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 antialiased selection:bg-blue-600 selection:text-white transition-colors duration-200">
+<body class="min-h-dvh bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 antialiased selection:bg-blue-600 selection:text-white transition-colors duration-200">
     <!-- Skip to Content Link for Accessibility -->
     <a href="#student-main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-lg focus:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 font-bold text-sm">
         Skip to content
     </a>
 
     <!-- Desktop Sidebar (Official Flux Layout) -->
-    <flux:sidebar sticky collapsible="mobile" class="bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800">
+    <flux:sidebar sticky collapsible="mobile" class="bg-zinc-50 dark:bg-zinc-950 border-r border-zinc-200 dark:border-zinc-800">
         <flux:sidebar.header>
             <flux:sidebar.brand
                 href="{{ route('student.dashboard') }}"
@@ -33,7 +33,7 @@
         </flux:sidebar.header>
 
         <flux:sidebar.nav role="navigation" aria-label="Candidate Navigation">
-            <flux:sidebar.item icon="home" href="{{ route('student.dashboard') }}" :current="request()->routeIs('student.dashboard')">
+            <flux:sidebar.item icon="home" href="{{ route('student.dashboard') }}" wire:navigate.hover :current="request()->routeIs('student.dashboard')">
                 My Dashboard
             </flux:sidebar.item>
 
@@ -108,8 +108,8 @@
         </flux:dropdown>
     </flux:header>
 
-    <!-- Main Content -->
-    <flux:main id="student-main-content" role="main" class="p-6 lg:p-8 max-w-7xl mx-auto w-full">
+    <!-- Main Content (Official Inset Frame) -->
+    <flux:main inset id="student-main-content" role="main" class="p-6 lg:p-8 max-w-7xl mx-auto w-full">
         @if (session('success'))
             <flux:callout variant="success" icon="check-circle" role="status" class="mb-6">
                 {{ session('success') }}

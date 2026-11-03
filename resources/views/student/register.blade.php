@@ -41,7 +41,7 @@
     <flux:separator />
 
     <flux:text size="sm" class="text-center text-zinc-500 dark:text-zinc-400">
-        Already registered? <flux:link href="{{ route('student.login') }}" class="font-medium text-blue-600 dark:text-blue-400">Sign In</flux:link>
+        Already registered? <flux:link href="{{ route('student.login') }}" wire:navigate.hover class="font-medium text-blue-600 dark:text-blue-400">Sign In</flux:link>
     </flux:text>
 </form>
 @endsection

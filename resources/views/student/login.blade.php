@@ -36,7 +36,7 @@
     <flux:separator />
 
     <flux:text size="sm" class="text-center text-zinc-500 dark:text-zinc-400">
-        Don't have an account? <flux:link href="{{ route('student.register') }}" class="font-medium text-blue-600 dark:text-blue-400">Register</flux:link>
+        Don't have an account? <flux:link href="{{ route('student.register') }}" wire:navigate.hover class="font-medium text-blue-600 dark:text-blue-400">Register</flux:link>
     </flux:text>
 </form>
 @endsection
