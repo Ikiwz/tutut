@@ -5,7 +5,7 @@
 ])
 
 @section('content')
-<div class="space-y-6">
+<div class="space-y-4">
     <flux:button icon="google" href="{{ route('auth.google') }}" class="w-full">
         Continue with Google
     </flux:button>
@@ -15,7 +15,7 @@
     <form
         method="POST"
         action="{{ route('student.register.submit') }}"
-        class="space-y-6"
+        class="space-y-4"
         x-data="{
             submitting: false,
             name: '{{ old('name', '') }}',
@@ -126,13 +126,12 @@
 
         <flux:field>
             <flux:label>Password</flux:label>
-            <flux:description>Must be at least 8 characters long.</flux:description>
             <flux:input
                 type="password"
                 name="password"
                 x-model="password"
                 @blur="touched.password = true; validatePassword()"
-                placeholder="••••••••"
+                placeholder="At least 8 characters"
                 viewable
                 required
                 autocomplete="new-password"
@@ -169,12 +168,9 @@
 @endsection
 
 @section('footer')
-<div class="w-full text-center space-y-2">
+<div class="w-full text-center">
     <flux:text size="xs">
         Already have an account? <flux:link href="{{ route('student.login') }}" wire:navigate.hover class="font-medium">Log In</flux:link>
-    </flux:text>
-    <flux:text size="xs" class="text-zinc-500 dark:text-zinc-400 block">
-        By creating an account, you agree to our <flux:link href="{{ route('terms') }}" target="_blank" class="underline">Terms of Service</flux:link> and <flux:link href="{{ route('privacy') }}" target="_blank" class="underline">Privacy Policy</flux:link>.
     </flux:text>
 </div>
 @endsection

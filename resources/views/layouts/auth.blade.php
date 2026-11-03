@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="notranslate" translate="no">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="google" content="notranslate">
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <title>{{ $title ?? 'Student Log In' }} — TUTUT</title>
 
@@ -46,16 +47,16 @@
             </flux:dropdown>
         </header>
 
-        <div class="w-full max-w-md mx-auto space-y-5 my-auto py-4">
+        <div class="w-full max-w-md mx-auto space-y-4 my-auto py-2">
             <div class="text-center">
                 <flux:brand href="/" logo="{{ asset('images/logo.png') }}" name="TUTUT" class="justify-center font-bold text-lg" />
             </div>
 
-            {{-- Role Selection segmented tabs outside the card --}}
-            <flux:tabs variant="segmented" class="w-full" aria-label="Portal Selection">
-                <flux:tab href="{{ route('student.login') }}" wire:navigate.hover :current="request()->routeIs('student.*')" icon="academic-cap">Student</flux:tab>
-                <flux:tab href="{{ route('admin.login') }}" wire:navigate.hover :current="request()->routeIs('admin.*')" icon="shield-check">Admin</flux:tab>
-            </flux:tabs>
+            @if (request()->routeIs('admin.*'))
+                <div class="flex justify-center">
+                    <flux:badge color="zinc" size="sm" icon="shield-check">Administrator Access Portal</flux:badge>
+                </div>
+            @endif
 
             {{-- Main Inset Card --}}
             <flux:card body="inset" variant="soft" size="lg">
@@ -221,6 +222,13 @@
                     return false;
                 }
 
+                // Ctrl+P / Cmd+P (Print Page)
+                if (modifier && (key === 'P' || keyCode === 80)) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+
                 // ContextMenu key or Shift+F10 (Context Menu via Keyboard)
                 if (key === 'CONTEXTMENU' || (e.shiftKey && (key === 'F10' || keyCode === 121))) {
                     e.preventDefault();
@@ -229,9 +237,32 @@
                 }
             }, { capture: true });
 
-            // 3. Disable Dragging of Images and Decorative Assets
+            // 3. Disable Text Selection on Document (Allowing only input fields)
+            document.addEventListener('selectstart', function (e) {
+                if (!e.target.matches('input, textarea, [contenteditable="true"]')) {
+                    e.preventDefault();
+                    return false;
+                }
+            }, { capture: true });
+
+            // 4. Disable Copy & Cut on Document (Allowing only input fields)
+            document.addEventListener('copy', function (e) {
+                if (!e.target.matches('input, textarea')) {
+                    e.preventDefault();
+                    return false;
+                }
+            }, { capture: true });
+
+            document.addEventListener('cut', function (e) {
+                if (!e.target.matches('input, textarea')) {
+                    e.preventDefault();
+                    return false;
+                }
+            }, { capture: true });
+
+            // 5. Disable Dragging of Images and Sensitive Elements
             document.addEventListener('dragstart', function (e) {
-                if (e.target && e.target.tagName === 'IMG') {
+                if (!e.target.matches('input, textarea')) {
                     e.preventDefault();
                     return false;
                 }

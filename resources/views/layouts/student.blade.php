@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth notranslate" translate="no">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="google" content="notranslate">
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <title>@yield('title', 'Student Portal') — TUTUT</title>
     <meta name="description" content="TUTUT Online TOEFL Examination Portal.">
@@ -322,6 +323,13 @@
                     return false;
                 }
 
+                // Ctrl+P / Cmd+P (Print Page)
+                if (modifier && (key === 'P' || keyCode === 80)) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+
                 // ContextMenu key or Shift+F10 (Context Menu via Keyboard)
                 if (key === 'CONTEXTMENU' || (e.shiftKey && (key === 'F10' || keyCode === 121))) {
                     e.preventDefault();
@@ -330,13 +338,55 @@
                 }
             }, { capture: true });
 
-            // 3. Disable Dragging of Images and Sensitive Elements
-            document.addEventListener('dragstart', function (e) {
-                if (e.target && e.target.tagName === 'IMG') {
+            // 3. Disable Text Selection on Document (Allowing only input fields)
+            document.addEventListener('selectstart', function (e) {
+                if (!e.target.matches('input, textarea, [contenteditable="true"]')) {
                     e.preventDefault();
                     return false;
                 }
             }, { capture: true });
+
+            // 4. Disable Copy & Cut on Document (Allowing only input fields)
+            document.addEventListener('copy', function (e) {
+                if (!e.target.matches('input, textarea')) {
+                    e.preventDefault();
+                    return false;
+                }
+            }, { capture: true });
+
+            document.addEventListener('cut', function (e) {
+                if (!e.target.matches('input, textarea')) {
+                    e.preventDefault();
+                    return false;
+                }
+            }, { capture: true });
+
+            // 5. Disable Dragging of Images and Sensitive Elements
+            document.addEventListener('dragstart', function (e) {
+                if (!e.target.matches('input, textarea')) {
+                    e.preventDefault();
+                    return false;
+                }
+            }, { capture: true });
+
+            // 6. Anti-Tab Switching Monitor During Examination Take
+            @if (request()->routeIs('exam.take'))
+                let blurWarningTriggered = false;
+                window.addEventListener('visibilitychange', function () {
+                    if (document.hidden) {
+                        if (typeof window.Flux?.toast === 'function' && !blurWarningTriggered) {
+                            blurWarningTriggered = true;
+                            window.Flux.toast({
+                                heading: 'Integrity Warning',
+                                text: 'Tab switching and leaving the examination window are monitored and recorded.',
+                                variant: 'warning',
+                                duration: 7000
+                            });
+                            setTimeout(() => { blurWarningTriggered = false; }, 10000);
+                        }
+                    }
+                });
+            @endif
 
             // 4. Security Console Notice
             try {
