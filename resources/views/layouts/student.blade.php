@@ -6,7 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <title>@yield('title', 'Student Portal') — TUTUT</title>
-    <meta name="description" content="TUTUT Accessible TOEFL Examination Portal for Visually Impaired Candidates.">
+    <meta name="description" content="TUTUT Online TOEFL Examination Portal.">
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800&display=swap" rel="stylesheet" />
@@ -16,9 +16,9 @@
     @fluxAppearance
 </head>
 <body class="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 antialiased selection:bg-blue-600 selection:text-white transition-colors duration-200">
-    <!-- Skip to Main Content Link for Screen Readers (WCAG 2.1 AA) -->
+    <!-- Skip to Content Link for Accessibility -->
     <a href="#student-main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-lg focus:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 font-bold text-sm">
-        Skip to candidate content
+        Skip to content
     </a>
 
     <!-- Desktop Sidebar (Official Flux Layout) -->
@@ -130,7 +130,7 @@
     <flux:modal name="shortcuts-modal" class="md:w-lg space-y-4">
         <div>
             <flux:heading level="2" size="lg">Accessibility Keyboard Shortcuts</flux:heading>
-            <flux:subheading>Full keyboard navigation controls for visually impaired candidates</flux:subheading>
+            <flux:subheading>Keyboard shortcuts for examination sessions</flux:subheading>
         </div>
 
         <flux:separator />
@@ -194,7 +194,7 @@
         }
 
         function testAudio() {
-            speak('TUTUT audio synthesis is active. Your audio device is connected and functioning properly.');
+            speak('Audio output is active and functioning properly.');
         }
 
         document.addEventListener('keydown', (e) => {
@@ -207,7 +207,7 @@
                 e.preventDefault();
                 if (window.Flux && window.Flux.modal) {
                     window.Flux.modal('shortcuts-modal').show();
-                    speak('Accessibility shortcuts dialog opened.');
+                    speak('Keyboard shortcuts opened.');
                 }
             }
         });

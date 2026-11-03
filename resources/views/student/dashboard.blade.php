@@ -10,7 +10,7 @@
                     Welcome back, {{ auth()->user()->name }}! 👋
                 </flux:heading>
                 <flux:text class="text-blue-100 text-sm max-w-xl">
-                    TUTUT is an accessible, independent TOEFL exam platform for visually impaired candidates.
+                    Online TOEFL examination session.
                     Press <kbd class="px-2 py-0.5 rounded bg-white/20 text-white font-mono text-xs font-bold border border-white/30">H</kbd> anytime for keyboard shortcuts.
                 </flux:text>
             </div>
