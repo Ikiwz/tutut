@@ -53,7 +53,12 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // Non-technical human-friendly password reset email
-        ResetPassword::toMailUsing(function (User $user, string $url) {
+        ResetPassword::toMailUsing(function (User $user, string $token) {
+            $url = route('password.reset', [
+                'token' => $token,
+                'email' => $user->getEmailForPasswordReset(),
+            ]);
+
             return (new MailMessage)
                 ->subject('Reset Your Password — TUTUT')
                 ->greeting("Hello {$user->name},")
