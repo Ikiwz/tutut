@@ -12,9 +12,9 @@ Route::get('/', function () {
 
 // Student Auth Routes
 Route::get('/login', [StudentAuthController::class, 'showLogin'])->name('student.login');
-Route::post('/login', [StudentAuthController::class, 'login'])->name('student.login.submit');
+Route::post('/login', [StudentAuthController::class, 'login'])->middleware('throttle:6,1')->name('student.login.submit');
 Route::get('/register', [StudentAuthController::class, 'showRegister'])->name('student.register');
-Route::post('/register', [StudentAuthController::class, 'register'])->name('student.register.submit');
+Route::post('/register', [StudentAuthController::class, 'register'])->middleware('throttle:5,1')->name('student.register.submit');
 Route::post('/logout', [StudentAuthController::class, 'logout'])->name('student.logout');
 
 // Student Protected Routes

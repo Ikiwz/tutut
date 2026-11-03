@@ -462,6 +462,7 @@
         }
     </style>
     @yield('styles')
+    @fluxAppearance
 </head>
 <body>
     <a href="#main-content" class="skip-link" aria-label="Skip to main content">
@@ -708,5 +709,6 @@
         });
     </script>
     @yield('scripts')
+    @fluxScripts
 </body>
 </html>
