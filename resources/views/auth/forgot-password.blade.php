@@ -50,7 +50,7 @@
                 x-model="email"
                 @blur="touched = true; validate()"
                 value="{{ old('email') }}"
-                placeholder="john.doe@example.com"
+                placeholder="name@example.com"
                 required
                 autofocus
                 autocomplete="email"

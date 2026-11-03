@@ -6,7 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="google" content="notranslate">
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
-    <title>{{ $title ?? 'Student Log In' }} — TUTUT</title>
+    <title>{{ $title ?? 'Log In' }} — TUTUT</title>
 
     {{-- Anti-flicker Theme Initialization before any CSS/fonts render --}}
     @fluxAppearance
@@ -18,7 +18,7 @@
 
     {{-- Open Graph Metadata --}}
     <meta property="og:site_name" content="TUTUT">
-    <meta property="og:title" content="{{ $title ?? 'Student Log In' }} — TUTUT">
+    <meta property="og:title" content="{{ $title ?? 'Log In' }} — TUTUT">
     <meta property="og:description" content="TUTUT Online TOEFL Examination Portal.">
     <meta property="og:image" content="{{ asset('images/logo.png') }}">
     <meta property="og:type" content="website">

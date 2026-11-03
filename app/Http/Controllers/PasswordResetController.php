@@ -57,18 +57,12 @@ class PasswordResetController extends Controller
 
         RateLimiter::hit($throttleKey, 300);
 
-        // Send reset link using default broker
-        $status = Password::broker()->sendResetLink(
+        // Send reset link using default broker (privacy-preserving: identical confirmation response)
+        Password::broker()->sendResetLink(
             $request->only('email')
         );
 
-        if ($status === Password::RESET_LINK_SENT) {
-            return back()->with('success', 'A password reset link has been sent to your email address.');
-        }
-
-        return back()
-            ->with('error', 'We could not find an account with that email address.')
-            ->onlyInput('email');
+        return back()->with('success', 'If an account exists for that email, a password reset link has been sent.');
     }
 
     /**

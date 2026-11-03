@@ -46,20 +46,20 @@ test('user can request a password reset link with a valid registered email', fun
     ]);
 
     $response->assertRedirect(route('password.request'));
-    $response->assertSessionHas('success', 'A password reset link has been sent to your email address.');
+    $response->assertSessionHas('success', 'If an account exists for that email, a password reset link has been sent.');
 
     // Check password_reset_tokens table has an entry
     $tokenEntry = DB::table('password_reset_tokens')->where('email', 'candidate.forgot@campus.ac.id')->first();
     expect($tokenEntry)->not->toBeNull();
 });
 
-test('requesting password reset for non-existent email returns friendly error', function () {
+test('requesting password reset for non-existent email returns privacy-preserving confirmation', function () {
     $response = $this->from(route('password.request'))->post(route('password.email'), [
         'email' => 'nobody@nowhere.com',
     ]);
 
     $response->assertRedirect(route('password.request'));
-    $response->assertSessionHas('error', 'We could not find an account with that email address.');
+    $response->assertSessionHas('success', 'If an account exists for that email, a password reset link has been sent.');
 });
 
 test('guest can view the reset password form with valid token', function () {

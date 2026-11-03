@@ -81,7 +81,7 @@
                 x-model="email"
                 @blur="touched.email = true; validateEmail()"
                 value="{{ old('email', $email ?? '') }}"
-                placeholder="john.doe@example.com"
+                placeholder="name@example.com"
                 required
                 autocomplete="email"
             />
@@ -91,13 +91,12 @@
 
         <flux:field>
             <flux:label>New Password</flux:label>
-            <flux:description>Must be at least 8 characters long.</flux:description>
             <flux:input
                 type="password"
                 name="password"
                 x-model="password"
                 @blur="touched.password = true; validatePassword()"
-                placeholder="••••••••"
+                placeholder="At least 8 characters"
                 viewable
                 required
                 autofocus
@@ -114,7 +113,7 @@
                 name="password_confirmation"
                 x-model="password_confirmation"
                 @blur="touched.password_confirmation = true; validateConfirm()"
-                placeholder="••••••••"
+                placeholder="Repeat password"
                 viewable
                 required
                 autocomplete="new-password"

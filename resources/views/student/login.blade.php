@@ -1,5 +1,5 @@
 @extends('layouts.auth', [
-    'title' => 'Student Log In',
+    'title' => 'Log In',
     'heading' => 'Welcome Back',
     'subheading' => 'Enter your email and password to continue.',
 ])
@@ -68,7 +68,7 @@
                 x-model="email"
                 @blur="touched.email = true; validateEmail()"
                 value="{{ old('email') }}"
-                placeholder="john.doe@example.com"
+                placeholder="name@example.com"
                 required
                 autofocus
                 autocomplete="email"

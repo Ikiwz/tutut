@@ -1,7 +1,7 @@
 @extends('layouts.auth', [
-    'title' => 'Student Register',
+    'title' => 'Register',
     'heading' => 'Welcome',
-    'subheading' => 'Enter your details to register.',
+    'subheading' => 'Enter your details to get started.',
 ])
 
 @section('content')
@@ -36,8 +36,8 @@
             validateName() {
                 if (!this.name.trim()) {
                     this.errors.name = 'Full name is required.';
-                } else if (this.name.trim().length < 3) {
-                    this.errors.name = 'Name must be at least 3 characters.';
+                } else if (this.name.trim().length < 2) {
+                    this.errors.name = 'Full name must be at least 2 characters.';
                 } else {
                     this.errors.name = '';
                 }
@@ -99,7 +99,7 @@
                 x-model="name"
                 @blur="touched.name = true; validateName()"
                 value="{{ old('name') }}"
-                placeholder="John Doe"
+                placeholder="Full name"
                 required
                 autofocus
                 autocomplete="name"
@@ -116,7 +116,7 @@
                 x-model="email"
                 @blur="touched.email = true; validateEmail()"
                 value="{{ old('email') }}"
-                placeholder="john.doe@example.com"
+                placeholder="name@example.com"
                 required
                 autocomplete="email"
             />
@@ -147,7 +147,7 @@
                 name="password_confirmation"
                 x-model="password_confirmation"
                 @blur="touched.password_confirmation = true; validateConfirm()"
-                placeholder="••••••••"
+                placeholder="Repeat password"
                 viewable
                 required
                 autocomplete="new-password"
