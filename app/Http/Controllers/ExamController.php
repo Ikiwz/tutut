@@ -178,6 +178,44 @@ class ExamController extends Controller
         return response()->json(['success' => true]);
     }
 
+    public function recordIntegrityViolation(Request $request, ExamAttempt $examAttempt)
+    {
+        if ($examAttempt->user_id !== auth()->id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        if ($examAttempt->status === 'completed') {
+            return response()->json(['error' => 'Attempt already completed.'], 409);
+        }
+
+        $validated = $request->validate([
+            'event_type' => 'required|string|max:50',
+            'severity' => 'required|in:minor,medium,severe',
+            'title' => 'required|string|max:100',
+            'description' => 'nullable|string|max:255',
+            'section_slug' => 'nullable|string|max:50',
+            'question_number' => 'nullable|integer',
+            'metadata' => 'nullable|array',
+        ]);
+
+        $log = $examAttempt->logViolation(
+            eventType: $validated['event_type'],
+            severity: $validated['severity'],
+            title: $validated['title'],
+            description: $validated['description'] ?? null,
+            sectionSlug: $validated['section_slug'] ?? null,
+            questionNumber: $validated['question_number'] ?? null,
+            metadata: $validated['metadata'] ?? []
+        );
+
+        return response()->json([
+            'success' => true,
+            'log_id' => $log->id,
+            'focus_violations' => $examAttempt->focus_violations,
+            'kiosk_violations' => $examAttempt->kiosk_violations,
+        ]);
+    }
+
     public function nextSection(Request $request, ExamAttempt $examAttempt)
     {
         if ($examAttempt->user_id !== auth()->id()) {
@@ -223,7 +261,7 @@ class ExamController extends Controller
             abort(403);
         }
 
-        $examAttempt->load('testSession', 'answers.question');
+        $examAttempt->load('testSession', 'answers.question', 'integrityLogs');
 
         $sections = $examAttempt->testSession->sections()->orderBy('sections.order')->get();
 

@@ -35,7 +35,7 @@ class ExamAttemptController extends Controller
 
     public function show(ExamAttempt $examAttempt): View
     {
-        $examAttempt->load(['user', 'testSession.sections.questions', 'answers.question']);
+        $examAttempt->load(['user', 'testSession.sections.questions', 'answers.question', 'integrityLogs']);
 
         return view('admin.attempts.show', compact('examAttempt'));
     }

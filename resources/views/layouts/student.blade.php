@@ -293,14 +293,61 @@
         }
     </script>
 
-    {{-- Client-Side Security Hardening: Disable Right-Click Context Menu & Developer Tools Shortcuts --}}
+    {{-- Client-Side Security Hardening & Real-Time Integrity Telemetry --}}
     <script>
         (function () {
             'use strict';
 
+            @if (request()->routeIs('exam.take') && isset($examAttempt))
+                window.TUTUT_INTEGRITY = {
+                    logUrl: "{{ route('exam.integrity.log', $examAttempt) }}",
+                    csrfToken: "{{ csrf_token() }}",
+                    sectionSlug: "{{ $currentSection->slug ?? $examAttempt->current_section_slug ?? '' }}",
+                    lastReported: {},
+
+                    report: function (eventType, severity, title, description, metadata) {
+                        const now = Date.now();
+                        if (this.lastReported[eventType] && (now - this.lastReported[eventType]) < 3000) {
+                            return;
+                        }
+                        this.lastReported[eventType] = now;
+
+                        const qNum = (typeof currentStep !== 'undefined' && typeof stepMap !== 'undefined' && stepMap[currentStep] && stepMap[currentStep].questionIndex !== null)
+                            ? (stepMap[currentStep].questionIndex + 1)
+                            : null;
+
+                        const payload = {
+                            event_type: eventType,
+                            severity: severity,
+                            title: title,
+                            description: description,
+                            section_slug: this.sectionSlug,
+                            question_number: qNum,
+                            metadata: metadata || {}
+                        };
+
+                        try {
+                            fetch(this.logUrl, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': this.csrfToken,
+                                    'Accept': 'application/json'
+                                },
+                                body: JSON.stringify(payload),
+                                keepalive: true
+                            }).catch(function () {});
+                        } catch (_) {}
+                    }
+                };
+            @endif
+
             // 1. Disable Right-Click Context Menu
             document.addEventListener('contextmenu', function (e) {
                 e.preventDefault();
+                if (window.TUTUT_INTEGRITY) {
+                    window.TUTUT_INTEGRITY.report('contextmenu', 'minor', 'Right-Click Context Menu Attempt', 'Candidate attempted to open right-click context menu.');
+                }
                 return false;
             }, { capture: true });
 
@@ -315,6 +362,9 @@
                 if (key === 'F12' || keyCode === 123) {
                     e.preventDefault();
                     e.stopPropagation();
+                    if (window.TUTUT_INTEGRITY) {
+                        window.TUTUT_INTEGRITY.report('devtools_key', 'minor', 'Developer Tools Key (F12)', 'Candidate pressed F12 developer console key.');
+                    }
                     return false;
                 }
 
@@ -326,6 +376,9 @@
                 if (modifier && e.shiftKey && ['I', 'J', 'C', 'K', 'E'].includes(key)) {
                     e.preventDefault();
                     e.stopPropagation();
+                    if (window.TUTUT_INTEGRITY) {
+                        window.TUTUT_INTEGRITY.report('devtools_key', 'minor', 'Inspect Element Shortcut', 'Candidate pressed shortcut to open browser developer inspector.');
+                    }
                     return false;
                 }
 
@@ -333,6 +386,9 @@
                 if (modifier && (key === 'U' || keyCode === 85)) {
                     e.preventDefault();
                     e.stopPropagation();
+                    if (window.TUTUT_INTEGRITY) {
+                        window.TUTUT_INTEGRITY.report('view_source', 'minor', 'View Page Source Shortcut (Ctrl+U)', 'Candidate attempted to view HTML source code.');
+                    }
                     return false;
                 }
 
@@ -340,6 +396,9 @@
                 if (modifier && (key === 'S' || keyCode === 83)) {
                     e.preventDefault();
                     e.stopPropagation();
+                    if (window.TUTUT_INTEGRITY) {
+                        window.TUTUT_INTEGRITY.report('save_page', 'minor', 'Save Page Shortcut (Ctrl+S)', 'Candidate attempted to save examination webpage.');
+                    }
                     return false;
                 }
 
@@ -347,6 +406,9 @@
                 if (modifier && (key === 'P' || keyCode === 80)) {
                     e.preventDefault();
                     e.stopPropagation();
+                    if (window.TUTUT_INTEGRITY) {
+                        window.TUTUT_INTEGRITY.report('print_attempt', 'minor', 'Print Page Attempt (Ctrl+P)', 'Candidate attempted to print or export examination page.');
+                    }
                     return false;
                 }
 
@@ -354,6 +416,9 @@
                 if (key === 'CONTEXTMENU' || (e.shiftKey && (key === 'F10' || keyCode === 121))) {
                     e.preventDefault();
                     e.stopPropagation();
+                    if (window.TUTUT_INTEGRITY) {
+                        window.TUTUT_INTEGRITY.report('contextmenu', 'minor', 'Context Menu Keyboard Shortcut', 'Candidate attempted to trigger context menu via keyboard.');
+                    }
                     return false;
                 }
             }, { capture: true });
@@ -362,6 +427,9 @@
             document.addEventListener('selectstart', function (e) {
                 if (!e.target.matches('input, textarea, [contenteditable="true"]')) {
                     e.preventDefault();
+                    if (window.TUTUT_INTEGRITY) {
+                        window.TUTUT_INTEGRITY.report('text_selection', 'minor', 'Text Selection Attempt', 'Candidate attempted to highlight or select question text.');
+                    }
                     return false;
                 }
             }, { capture: true });
@@ -370,6 +438,9 @@
             document.addEventListener('copy', function (e) {
                 if (!e.target.matches('input, textarea')) {
                     e.preventDefault();
+                    if (window.TUTUT_INTEGRITY) {
+                        window.TUTUT_INTEGRITY.report('copy_paste', 'minor', 'Clipboard Copy Attempt', 'Candidate attempted to copy question content to clipboard.');
+                    }
                     return false;
                 }
             }, { capture: true });
@@ -377,6 +448,9 @@
             document.addEventListener('cut', function (e) {
                 if (!e.target.matches('input, textarea')) {
                     e.preventDefault();
+                    if (window.TUTUT_INTEGRITY) {
+                        window.TUTUT_INTEGRITY.report('copy_paste', 'minor', 'Clipboard Cut Attempt', 'Candidate attempted to cut exam content to clipboard.');
+                    }
                     return false;
                 }
             }, { capture: true });
@@ -385,15 +459,24 @@
             document.addEventListener('dragstart', function (e) {
                 if (!e.target.matches('input, textarea')) {
                     e.preventDefault();
+                    if (window.TUTUT_INTEGRITY) {
+                        window.TUTUT_INTEGRITY.report('drag_content', 'minor', 'Content Drag Attempt', 'Candidate attempted to drag question element.');
+                    }
                     return false;
                 }
             }, { capture: true });
 
-            // 6. Anti-Tab Switching Monitor During Examination Take
+            // 6. Real-time Proctoring Monitors (Tab Switch, Window Blur, Resize) During Examination Take
             @if (request()->routeIs('exam.take'))
                 let blurWarningTriggered = false;
+                let tabHiddenStart = null;
+
                 window.addEventListener('visibilitychange', function () {
                     if (document.hidden) {
+                        tabHiddenStart = Date.now();
+                        if (window.TUTUT_INTEGRITY) {
+                            window.TUTUT_INTEGRITY.report('tab_switch', 'medium', 'Tab Switch Detected', 'Candidate switched away from active examination tab.');
+                        }
                         if (typeof window.Flux?.toast === 'function' && !blurWarningTriggered) {
                             blurWarningTriggered = true;
                             window.Flux.toast({
@@ -404,11 +487,35 @@
                             });
                             setTimeout(() => { blurWarningTriggered = false; }, 10000);
                         }
+                    } else {
+                        if (tabHiddenStart) {
+                            const durationSeconds = Math.round((Date.now() - tabHiddenStart) / 1000);
+                            if (durationSeconds >= 15 && window.TUTUT_INTEGRITY) {
+                                window.TUTUT_INTEGRITY.report('prolonged_away', 'severe', 'Prolonged Away From Exam', 'Candidate left the examination tab in background for ' + durationSeconds + ' seconds.', { duration_seconds: durationSeconds });
+                            }
+                            tabHiddenStart = null;
+                        }
                     }
+                });
+
+                window.addEventListener('blur', function () {
+                    if (window.TUTUT_INTEGRITY && !document.hidden) {
+                        window.TUTUT_INTEGRITY.report('window_blur', 'medium', 'Window Focus Lost', 'Candidate clicked outside browser window or switched active application.');
+                    }
+                });
+
+                let resizeTimer = null;
+                window.addEventListener('resize', function () {
+                    clearTimeout(resizeTimer);
+                    resizeTimer = setTimeout(function () {
+                        if (window.innerWidth < 850 && window.TUTUT_INTEGRITY) {
+                            window.TUTUT_INTEGRITY.report('window_resize', 'medium', 'Window Resized (Potential Split Screen)', 'Candidate resized examination window to ' + window.innerWidth + 'x' + window.innerHeight + 'px (potential split-screen application).', { width: window.innerWidth, height: window.innerHeight });
+                        }
+                    }, 1000);
                 });
             @endif
 
-            // 4. Security Console Notice
+            // 7. Security Console Notice
             try {
                 if (window.console && typeof window.console.log === 'function') {
                     console.clear();

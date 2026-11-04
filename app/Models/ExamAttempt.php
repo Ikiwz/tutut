@@ -54,6 +54,33 @@ class ExamAttempt extends Model
         return $this->hasMany(ExamAnswer::class);
     }
 
+    public function integrityLogs(): HasMany
+    {
+        return $this->hasMany(ExamIntegrityLog::class)->orderBy('recorded_at', 'asc');
+    }
+
+    public function logViolation(string $eventType, string $severity, string $title, ?string $description = null, ?string $sectionSlug = null, ?int $questionNumber = null, array $metadata = []): ExamIntegrityLog
+    {
+        $log = $this->integrityLogs()->create([
+            'event_type' => $eventType,
+            'severity' => $severity,
+            'title' => $title,
+            'description' => $description,
+            'section_slug' => $sectionSlug,
+            'question_number' => $questionNumber,
+            'metadata' => $metadata,
+            'recorded_at' => now(),
+        ]);
+
+        if (in_array($eventType, ['tab_switch', 'window_blur', 'prolonged_away'], true)) {
+            $this->increment('focus_violations');
+        } elseif (in_array($eventType, ['fullscreen_exit', 'kiosk_exit'], true)) {
+            $this->increment('kiosk_violations');
+        }
+
+        return $log;
+    }
+
     private function getConvertedScore(string $sectionSlug, int $correctCount): int
     {
         // Tabel konversi TOEFL PBT (berdasarkan referensi umum dan gambar yang Anda berikan)

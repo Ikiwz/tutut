@@ -80,6 +80,7 @@ Route::middleware(['auth', EnsureUserIsStudent::class, 'verified', PreventBackFo
     Route::post('/exam/start/{testSession}', [ExamController::class, 'startExam'])->middleware('throttle:30,1')->name('exam.start');
     Route::get('/exam/{examAttempt}', [ExamController::class, 'takeExam'])->name('exam.take');
     Route::post('/exam/{examAttempt}/answer', [ExamController::class, 'saveAnswer'])->middleware('throttle:120,1')->name('exam.answer');
+    Route::post('/exam/{examAttempt}/integrity-log', [ExamController::class, 'recordIntegrityViolation'])->middleware('throttle:120,1')->name('exam.integrity.log');
     Route::post('/exam/{examAttempt}/next-section', [ExamController::class, 'nextSection'])->middleware('throttle:30,1')->name('exam.nextSection');
     Route::get('/exam/{examAttempt}/submit', [ExamController::class, 'submitExam'])->middleware('throttle:10,1')->name('exam.submit');
     Route::get('/exam/{examAttempt}/result', [ExamController::class, 'result'])->name('exam.result');

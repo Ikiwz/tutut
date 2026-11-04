@@ -122,6 +122,69 @@
         </flux:card>
     </div>
 
+    <!-- Proctoring Integrity Audit Log -->
+    @php
+        $integrityLogs = $examAttempt->integrityLogs;
+    @endphp
+    <flux:card class="space-y-4">
+        <div class="flex items-center justify-between">
+            <div>
+                <flux:heading size="lg">Proctoring Integrity Audit Log</flux:heading>
+                <flux:text class="text-xs mt-0.5">Comprehensive audit trail of all minor, medium, and severe infractions recorded during this session.</flux:text>
+            </div>
+            <div class="flex items-center gap-2">
+                <flux:badge size="sm" color="{{ $integrityLogs->count() > 0 ? 'warning' : 'success' }}">
+                    {{ $integrityLogs->count() }} Total Infraction(s)
+                </flux:badge>
+            </div>
+        </div>
+        <flux:separator />
+
+        @if ($integrityLogs->count() > 0)
+            <flux:table>
+                <flux:table.columns>
+                    <flux:table.column>Time</flux:table.column>
+                    <flux:table.column>Severity</flux:table.column>
+                    <flux:table.column>Event / Activity</flux:table.column>
+                    <flux:table.column>Section / Context</flux:table.column>
+                    <flux:table.column>Proctoring Note</flux:table.column>
+                </flux:table.columns>
+
+                <flux:table.rows>
+                    @foreach ($integrityLogs as $log)
+                        <flux:table.row>
+                            <flux:table.cell class="font-mono text-xs text-zinc-500 whitespace-nowrap">
+                                {{ $log->recorded_at?->format('H:i:s') ?? $log->created_at?->format('H:i:s') }}
+                            </flux:table.cell>
+                            <flux:table.cell>
+                                <flux:badge size="xs" color="{{ $log->severityColor() }}">
+                                    {{ $log->severityLabel() }}
+                                </flux:badge>
+                            </flux:table.cell>
+                            <flux:table.cell class="font-semibold text-xs text-zinc-900 dark:text-zinc-100 whitespace-nowrap">
+                                {{ $log->title }}
+                            </flux:table.cell>
+                            <flux:table.cell class="text-xs text-zinc-600 dark:text-zinc-400 whitespace-nowrap">
+                                {{ $log->section_slug ? ucfirst($log->section_slug) : 'General' }}
+                                @if ($log->question_number)
+                                    &bull; Q#{{ $log->question_number }}
+                                @endif
+                            </flux:table.cell>
+                            <flux:table.cell class="text-xs text-zinc-500">
+                                {{ $log->description ?: '-' }}
+                            </flux:table.cell>
+                        </flux:table.row>
+                    @endforeach
+                </flux:table.rows>
+            </flux:table>
+        @else
+            <div class="py-6 text-center text-xs text-zinc-500">
+                <flux:icon icon="shield-check" class="size-8 mx-auto text-emerald-500 mb-1" />
+                No integrity violations or suspicious activities were detected during this attempt.
+            </div>
+        @endif
+    </flux:card>
+
     <!-- Answers Audit Table -->
     <flux:card class="space-y-4">
         <flux:heading size="lg">Answer Sheet Audit Log</flux:heading>
