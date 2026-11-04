@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@toefl.com',
             'password' => bcrypt('password'),
             'role' => 'admin',
+            'email_verified_at' => now(),
         ]);
 
         // Create Student
@@ -27,6 +28,9 @@ class DatabaseSeeder extends Seeder
             'email' => 'student@toefl.com',
             'password' => bcrypt('password'),
             'role' => 'student',
+            'affiliation' => 'internal',
+            'verified_at' => now(),
+            'email_verified_at' => now(),
         ]);
 
         // Create Sections
@@ -339,6 +343,7 @@ class DatabaseSeeder extends Seeder
         $testSession = TestSession::create([
             'title' => 'TOEFL Practice Test #1',
             'description' => 'Complete practice test with all three sections: Listening, Structure, and Reading.',
+            'capacity' => 50,
             'is_active' => true,
             'starts_at' => now()->subDay(),
             'ends_at' => now()->addYear(),
