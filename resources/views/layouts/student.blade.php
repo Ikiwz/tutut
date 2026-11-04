@@ -6,8 +6,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="google" content="notranslate">
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
-    <title>@yield('title', 'Student Portal') — TUTUT</title>
-    <meta name="description" content="TUTUT Online TOEFL Examination Portal.">
+    <title>@yield('title', 'Candidate Portal') — TUTUT</title>
+    <meta name="description" content="TUTUT — Institutional English Proficiency Test (EPT) Portal in Standardized TOEFL® Format.">
     <meta name="robots" content="noindex, nofollow">
     <meta name="theme-color" content="#18181b">
 
@@ -32,7 +32,7 @@
             <flux:sidebar.brand
                 href="{{ route('student.dashboard') }}"
                 logo="{{ asset('images/logo.png') }}"
-                name="TUTUT TOEFL"
+                name="TUTUT EPT"
             />
             <flux:sidebar.collapse class="in-data-flux-sidebar-on-desktop:not-in-data-flux-sidebar-collapsed-desktop:-mr-2" />
         </flux:sidebar.header>
@@ -117,6 +117,26 @@
     <flux:main container inset class="lg:ms-0" id="student-main-content">
         {{ $slot ?? '' }}
         @yield('content')
+
+        @unless (request()->routeIs('exam.take'))
+            <footer class="mt-16 pt-6 border-t border-zinc-200 dark:border-zinc-800 text-center space-y-1.5 pb-6">
+                <div class="flex items-center justify-center gap-3 text-xs text-zinc-500 dark:text-zinc-400">
+                    <flux:link href="{{ route('terms') }}" class="hover:underline">Terms</flux:link>
+                    <span>&bull;</span>
+                    <flux:link href="{{ route('privacy') }}" class="hover:underline">Privacy</flux:link>
+                    <span>&bull;</span>
+                    <flux:link href="{{ route('rules') }}" class="hover:underline">Exam Rules</flux:link>
+                    <span>&bull;</span>
+                    <flux:link href="{{ route('faq') }}" class="hover:underline">FAQ</flux:link>
+                </div>
+                <flux:text size="xs" class="text-zinc-500 dark:text-zinc-400">
+                    &copy; {{ date('Y') }} TUTUT. All rights reserved.
+                </flux:text>
+                <p class="text-[10px] text-zinc-400 dark:text-zinc-500 max-w-lg mx-auto leading-normal">
+                    TOEFL® is a registered trademark of Educational Testing Service (ETS). This portal administers an independent institutional English Proficiency Test (EPT) and is not affiliated with or endorsed by ETS.
+                </p>
+            </footer>
+        @endunless
     </flux:main>
 
     <!-- Keyboard Shortcuts Modal (Official Flux Modal) -->

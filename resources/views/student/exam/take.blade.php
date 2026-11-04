@@ -1,5 +1,5 @@
 @extends('layouts.student')
-@section('title', $currentSection->name . ' — TOEFL Exam')
+@section('title', $currentSection->name . ' — EPT Exam')
 
 @section('styles')
 <style>

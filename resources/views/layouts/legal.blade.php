@@ -10,7 +10,7 @@
     @fluxAppearance
 
     {{-- SEO & Metadata --}}
-    <meta name="description" content="TUTUT Online TOEFL Examination Portal Policies, Terms of Service, and Exam Rules.">
+    <meta name="description" content="TUTUT Institutional English Proficiency Test (EPT) Policies, Terms of Service, and Exam Rules.">
     <meta name="theme-color" content="#18181b">
 
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -117,8 +117,11 @@
                 <flux:link href="{{ route('faq') }}">FAQ</flux:link>
             </div>
             <flux:text size="xs" class="text-zinc-500 dark:text-zinc-400">
-                &copy; {{ date('Y') }} TUTUT — TOEFL Online Examination Portal. All rights reserved.
+                &copy; {{ date('Y') }} TUTUT. All rights reserved.
             </flux:text>
+            <p class="text-[11px] text-zinc-400 dark:text-zinc-500 max-w-xl mx-auto leading-relaxed pt-1">
+                TOEFL® is a registered trademark of Educational Testing Service (ETS). This portal administers an independent institutional English Proficiency Test (EPT) for university academic evaluation and is not affiliated with or endorsed by ETS.
+            </p>
         </div>
     </footer>
 

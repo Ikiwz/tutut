@@ -28,7 +28,7 @@
             <ul class="list-disc pl-5 space-y-1.5">
                 <li><strong>Identity Information:</strong> Full legal name, email address, student identification number (NIM), department/faculty, and profile photo/avatar.</li>
                 <li><strong>OAuth Account Data:</strong> When signing in via Google, we receive your verified Google ID, primary email address, and avatar image. We do not access your Google password or private drive files.</li>
-                <li><strong>Examination & Performance Data:</strong> Selected answers, response timestamps, section completion times, converted scaled TOEFL scores, raw scores, and certification records.</li>
+                <li><strong>Examination & Performance Data:</strong> Selected answers, response timestamps, section completion times, converted scaled scores, raw scores, and certification records.</li>
                 <li><strong>Technical & Audit Logs:</strong> IP address, device user-agent string, session identifiers, and security event logs to verify that examination attempts originate from authorized clients.</li>
             </ul>
         </section>
@@ -40,7 +40,7 @@
             </p>
             <ul class="list-disc pl-5 space-y-1.5">
                 <li>Authenticating candidate identity and securing test-taking sessions.</li>
-                <li>Computing TOEFL section scores (Listening, Structure, Reading) according to standard conversion tables.</li>
+                <li>Computing scaled section scores (Listening, Structure, Reading) according to standard conversion tables.</li>
                 <li>Generating verifiable score transcripts and completion certificates for university graduation audits.</li>
                 <li>Detecting unauthorized concurrent logins or anomalous response patterns.</li>
             </ul>

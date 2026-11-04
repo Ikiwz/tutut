@@ -61,7 +61,7 @@
                 <flux:icon icon="chart-bar" class="size-6" />
             </div>
             <div>
-                <flux:text class="text-sm font-medium">Average TOEFL Score</flux:text>
+                <flux:text class="text-sm font-medium">Average EPT Score</flux:text>
                 <div class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white mt-1">
                     {{ $stats['avg_score'] > 0 ? $stats['avg_score'] : 'N/A' }}
                 </div>

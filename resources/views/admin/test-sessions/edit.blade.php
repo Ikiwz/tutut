@@ -30,7 +30,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <flux:field>
                     <flux:label>Access Code (Proctor Passcode)</flux:label>
-                    <flux:input name="access_code" value="{{ old('access_code', $testSession->access_code) }}" placeholder="e.g. TOEFL-2026" />
+                    <flux:input name="access_code" value="{{ old('access_code', $testSession->access_code) }}" placeholder="e.g. EPT-2026" />
                     <flux:description>Required by candidates to unlock this exam.</flux:description>
                     <flux:error name="access_code" />
                 </flux:field>

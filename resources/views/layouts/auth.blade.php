@@ -12,14 +12,14 @@
     @fluxAppearance
 
     {{-- SEO & Security Metadata --}}
-    <meta name="description" content="{{ $description ?? 'TUTUT Online TOEFL Examination Portal — Candidate and Administrator Authentication.' }}">
+    <meta name="description" content="{{ $description ?? 'TUTUT — Institutional English Proficiency Test (EPT) Portal in Standardized TOEFL® Format.' }}">
     <meta name="robots" content="noindex, nofollow">
     <meta name="theme-color" content="#18181b">
 
     {{-- Open Graph Metadata --}}
     <meta property="og:site_name" content="TUTUT">
     <meta property="og:title" content="{{ $title ?? 'Log In' }} — TUTUT">
-    <meta property="og:description" content="TUTUT Online TOEFL Examination Portal.">
+    <meta property="og:description" content="TUTUT — Institutional English Proficiency Test (EPT) Portal in Standardized TOEFL® Format.">
     <meta property="og:image" content="{{ asset('images/logo.png') }}">
     <meta property="og:type" content="website">
 
@@ -90,6 +90,9 @@
             <flux:text size="xs" class="text-zinc-500 dark:text-zinc-400">
                 &copy; {{ date('Y') }} TUTUT. All rights reserved.
             </flux:text>
+            <p class="text-[10px] text-zinc-400 dark:text-zinc-500 max-w-sm mx-auto leading-tight">
+                TOEFL® is a registered trademark of ETS. This portal administers an independent institutional English Proficiency Test (EPT) and is not affiliated with or endorsed by ETS.
+            </p>
         </footer>
     </main>
 

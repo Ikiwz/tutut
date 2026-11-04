@@ -48,7 +48,7 @@
                 </div>
 
                 <flux:text class="text-blue-100 text-xs sm:text-sm max-w-xl">
-                    Online TOEFL examination session. Press <kbd class="px-2 py-0.5 rounded bg-white/20 text-white font-mono text-xs font-bold border border-white/30">H</kbd> anytime for keyboard shortcuts.
+                    Institutional English Proficiency Test (EPT) session. Press <kbd class="px-2 py-0.5 rounded bg-white/20 text-white font-mono text-xs font-bold border border-white/30">H</kbd> anytime for keyboard shortcuts.
                 </flux:text>
             </div>
 
@@ -79,7 +79,7 @@
                 <div>
                     <div class="font-bold text-zinc-900 dark:text-white">Active Test Session In Progress</div>
                     <div class="text-xs text-zinc-600 dark:text-zinc-400 mt-0.5">
-                        {{ $inProgressAttempt->testSession?->title ?? 'TOEFL Exam' }} — Section: {{ ucfirst($inProgressAttempt->current_section_slug ?? 'General') }}
+                        {{ $inProgressAttempt->testSession?->title ?? 'EPT Exam' }} — Section: {{ ucfirst($inProgressAttempt->current_section_slug ?? 'General') }}
                     </div>
                 </div>
                 <flux:button href="{{ route('exam.take', $inProgressAttempt) }}" variant="primary" icon:trailing="arrow-right" size="sm">
@@ -114,7 +114,7 @@
                                         {{ $test->title }}
                                     </flux:heading>
                                     <flux:text class="text-xs mt-1 text-zinc-500 line-clamp-2">
-                                        {{ $test->description ?: 'Official TOEFL examination session.' }}
+                                        {{ $test->description ?: 'Institutional EPT examination session.' }}
                                     </flux:text>
                                 </div>
                                 <div class="flex flex-col items-end gap-1">
@@ -200,7 +200,7 @@
             <flux:card class="text-center py-12 space-y-3">
                 <flux:icon icon="clipboard-document-list" class="size-10 mx-auto text-zinc-400" />
                 <flux:heading size="md">No tests currently available</flux:heading>
-                <flux:text class="text-xs">There are no open TOEFL test schedules assigned to you right now.</flux:text>
+                <flux:text class="text-xs">There are no open EPT test schedules assigned to you right now.</flux:text>
             </flux:card>
         @endif
     </div>
@@ -210,7 +210,7 @@
         <div class="flex items-center justify-between">
             <div>
                 <flux:heading size="lg" level="2">Exam History</flux:heading>
-                <flux:text class="text-xs">Completed examination sessions and official TOEFL score reports.</flux:text>
+                <flux:text class="text-xs">Completed examination sessions and performance score reports.</flux:text>
             </div>
         </div>
 
@@ -232,7 +232,7 @@
                         <flux:table.row>
                             <flux:table.cell>
                                 <div class="font-semibold text-zinc-900 dark:text-white">
-                                    {{ $attempt->testSession?->title ?? 'TOEFL Exam' }}
+                                    {{ $attempt->testSession?->title ?? 'EPT Exam' }}
                                 </div>
                                 <div class="text-xs text-zinc-500 font-mono">
                                     {{ $attempt->serial_number ?? ('#' . $attempt->id) }}

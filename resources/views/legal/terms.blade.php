@@ -16,7 +16,7 @@
         <section class="space-y-3">
             <flux:heading size="lg" level="2">1. Acceptance of Terms</flux:heading>
             <p>
-                By creating an account, logging in, or accessing the <strong>TUTUT Online TOEFL Examination Portal</strong> ("Platform", "we", or "us"), you agree to be bound by these Terms of Service and all related academic regulations. If you do not agree to these terms, you must not access or use this portal.
+                By creating an account, logging in, or accessing the <strong>TUTUT Institutional English Proficiency Test (EPT) Portal</strong> ("Platform", "we", or "us"), you agree to be bound by these Terms of Service and all related academic regulations. If you do not agree to these terms, you must not access or use this portal.
             </p>
         </section>
 
@@ -46,7 +46,7 @@
         <section class="space-y-3">
             <flux:heading size="lg" level="2">4. Intellectual Property Rights</flux:heading>
             <p>
-                All test materials, including listening audio recordings, reading passages, question items, answer keys, score conversion tables, and software source code, are proprietary intellectual property. You may not copy, record, transcribe, distribute, publish, or reproduce any examination content in any medium without express written authorization.
+                All test materials, including listening audio recordings, reading passages, question items, answer keys, score conversion tables, and software source code, are proprietary intellectual property. TOEFL® is a registered trademark of Educational Testing Service (ETS); this portal operates as an independent institutional assessment tool and is not affiliated with or endorsed by ETS. You may not copy, record, transcribe, distribute, publish, or reproduce any examination content in any medium without express written authorization.
             </p>
         </section>
 

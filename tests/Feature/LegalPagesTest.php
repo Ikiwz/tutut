@@ -22,7 +22,7 @@ test('exam rules and honor code page is accessible and displays section details'
     $response = $this->get(route('rules'));
 
     $response->assertOk()
-        ->assertSee('Official TOEFL Exam Rules')
+        ->assertSee('Institutional EPT Exam Rules')
         ->assertSee('Listening Comprehension')
         ->assertSee('Structure')
         ->assertSee('Reading Comprehension')
@@ -34,7 +34,7 @@ test('faq and help center page is accessible and displays questions', function (
 
     $response->assertOk()
         ->assertSee('Frequently Asked Questions')
-        ->assertSee('Taking the TOEFL Exam')
+        ->assertSee('Taking the EPT Exam')
         ->assertSee('Scoring');
 });
 

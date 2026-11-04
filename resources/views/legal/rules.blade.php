@@ -5,9 +5,9 @@
     {{-- Document Header --}}
     <div class="space-y-2 border-b border-zinc-200 dark:border-zinc-800 pb-6">
         <flux:badge color="amber" size="sm">Academic Integrity Pledge</flux:badge>
-        <flux:heading size="xl" level="1">Official TOEFL Exam Rules & Honor Code</flux:heading>
+        <flux:heading size="xl" level="1">Institutional EPT Exam Rules & Honor Code</flux:heading>
         <flux:text size="sm" class="text-zinc-500 dark:text-zinc-400">
-            Mandatory guidelines for all candidates taking the institutional online TOEFL assessment.
+            Mandatory guidelines for all candidates taking the institutional English Proficiency Test (EPT).
         </flux:text>
     </div>
 
@@ -17,7 +17,7 @@
         <section class="space-y-3">
             <flux:heading size="lg" level="2">1. Test Format & Section Breakdown</flux:heading>
             <p>
-                The TUTUT Institutional TOEFL examination consists of three sequentially timed sections totaling 140 multiple-choice questions over approximately 115 minutes:
+                The TUTUT Institutional English Proficiency Test (EPT) follows standardized TOEFL® format, consisting of three sequentially timed sections totaling 140 multiple-choice questions over approximately 115 minutes:
             </p>
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 my-4">

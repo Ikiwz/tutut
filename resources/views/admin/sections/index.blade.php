@@ -5,7 +5,7 @@
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
             <flux:heading size="xl" level="1">Exam Sections</flux:heading>
-            <flux:text class="mt-1">Configure TOEFL PBT sections (Listening, Structure, Reading) and durations.</flux:text>
+            <flux:text class="mt-1">Configure sections (Listening, Structure, Reading) and durations.</flux:text>
         </div>
         <flux:button href="{{ route('admin.sections.create') }}" variant="primary" icon="plus">
             Create Section

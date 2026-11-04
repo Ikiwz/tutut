@@ -5,7 +5,7 @@
     <div class="flex items-center justify-between">
         <div>
             <flux:heading size="xl" level="1">Create Exam Section</flux:heading>
-            <flux:text class="mt-1">Define an official section of the TOEFL exam.</flux:text>
+            <flux:text class="mt-1">Define an exam section in standardized TOEFL® format.</flux:text>
         </div>
         <flux:button href="{{ route('admin.sections.index') }}" variant="ghost" icon="arrow-left">Back</flux:button>
     </div>

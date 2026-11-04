@@ -1,4 +1,4 @@
-@extends('layouts.student', ['title' => 'TOEFL Exam Results'])
+@extends('layouts.student', ['title' => 'EPT Examination Results'])
 
 @section('content')
 <div class="max-w-4xl mx-auto space-y-8 py-4">
@@ -8,10 +8,10 @@
             <flux:icon icon="academic-cap" class="size-10" />
         </div>
         <flux:heading size="xl" level="1" class="text-3xl font-extrabold tracking-tight">
-            Official TOEFL Examination Results
+            Institutional EPT Examination Results
         </flux:heading>
         <flux:text class="text-sm">
-            {{ $examAttempt->testSession->title ?? 'TOEFL Exam Session' }} &bull;
+            {{ $examAttempt->testSession->title ?? 'EPT Session' }} &bull;
             Serial: <span class="font-mono font-bold text-zinc-800 dark:text-zinc-200">{{ $examAttempt->serial_number ?? ('#' . $examAttempt->id) }}</span>
         </flux:text>
     </div>
@@ -22,7 +22,7 @@
             {{ $examAttempt->total_score ?? 0 }}
         </div>
         <div class="text-base font-semibold text-blue-100 uppercase tracking-widest text-xs">
-            Official Scaled TOEFL Score (Max 677)
+            Converted Scaled Score &bull; Standardized TOEFL® Format (Max 677)
         </div>
         <div class="flex items-center justify-center gap-6 pt-4 text-xs text-blue-100 border-t border-white/20">
             <span>Date: {{ $examAttempt->started_at?->format('d M Y') }}</span>
@@ -73,7 +73,7 @@
 @section('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        speak('Congratulations! Your official TOEFL scaled score is {{ $examAttempt->total_score }}. Press H for keyboard shortcuts.');
+        speak('Congratulations! Your converted scaled score is {{ $examAttempt->total_score }}. Press H for keyboard shortcuts.');
     });
 </script>
 @endsection
